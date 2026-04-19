@@ -1,2 +1,2 @@
 # Games
-Different Tyypes of Games I develop for fun and freelancing
+Various Types of Games I Developed for Personal Projects and Freelance Work
