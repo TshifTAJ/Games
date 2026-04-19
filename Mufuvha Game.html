@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mufuvha — Traditional Game of Limpopo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+:root{
+  --bg:#1a0f04;--s1:#2e2010;--s2:#382a16;--s3:#42341c;
+  --bg-mid:#5a3e1e;
+  --pr:#8a5820;--pr2:#b07838;--pr3:#d09848;
+  --gold:#d4a832;--gold2:#f0c860;--gold3:#ffe090;
+  --amber:#e07820;--amber2:#f09030;
+  --green:#3a9060;--green2:#50b878;--green3:#80e0a0;
+  --red:#b03820;--red2:#d05030;
+  --teal:#2a8888;--teal2:#40a8a8;
+  --p1:#f0c040;--p1d:rgba(240,192,64,.15);--p1b:rgba(240,192,64,.35);
+  --p2:#e07030;--p2d:rgba(224,112,48,.15);--p2b:rgba(224,112,48,.35);
+  --tx:#f0e4c8;--tx2:#c8b088;--tx3:#907050;--tx4:#604838;
+  --pit:#1c120a;--pit2:#281c0e;--pit3:#342614;
+  --border:#4a3420;--border2:#6a5030;
+  --card:#241608;--card2:#301e0c;
+  --modal-bg:rgba(0,0,0,.82);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{background:radial-gradient(ellipse at 50% 0%,#3a2010 0%,#1a0f04 60%);color:var(--tx);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;transition:background .5s,color .5s}
+.app,.footer,.hand{position:relative;z-index:1}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35}
+
+/* ── THEMES ── */
+body.theme-night{--bg-mid:#1c2140;--bg:#05060f;--s1:#0a0c1a;--s2:#10142a;--s3:#181e38;--border:#1e2848;--border2:#2e3868;--card:#0c1020;--card2:#141828;--pr:#2848a8;--pr2:#3860c8;--pr3:#5080e0;--gold:#7090f0;--gold2:#90b0ff;--tx2:#9090c0;--tx3:#5050a0;--pit:#050810;--pit2:#0a1020;--pit3:#101828;}
+body.theme-forest{--bg-mid:#1a3018;--bg:#060f06;--s1:#0a180a;--s2:#102010;--s3:#182818;--border:#1e3c1e;--border2:#2e5a2e;--card:#0c180c;--card2:#142014;--pr:#285828;--pr2:#386838;--pr3:#508050;--gold:#70c070;--gold2:#90e090;--tx2:#90b890;--tx3:#508050;--pit:#050f05;--pit2:#0a180a;--pit3:#101e10;}
+body.theme-sunset{--bg-mid:#3d1818;--bg:#150505;--s1:#200808;--s2:#2c1010;--s3:#381818;--border:#4a2020;--border2:#6a3030;--card:#1c0808;--card2:#281010;--pr:#882828;--pr2:#a83838;--pr3:#c85050;--gold:#e08030;--gold2:#f0a050;--tx2:#c09080;--tx3:#805050;--pit:#100404;--pit2:#1c0808;--pit3:#280c0c;}
+body.theme-sky{--bg-mid:#0e2440;--bg:#040c18;--s1:#081420;--s2:#0c1c2c;--s3:#102438;--border:#183048;--border2:#204868;--card:#081018;--card2:#0c1820;--pr:#186080;--pr2:#2080a8;--pr3:#30a0d0;--gold:#40c0e0;--gold2:#60d8f8;--tx2:#80b8d0;--tx3:#408090;--pit:#040810;--pit2:#081018;--pit3:#0c1820;}
+
+/* ── LAYOUT ── */
+.app{max-width:980px;margin:0 auto;padding:12px 12px 80px}
+
+/* ── HEADER ── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 0 12px;border-bottom:1px solid var(--border2);margin-bottom:14px;gap:12px}
+.header-left{display:flex;flex-direction:column;gap:4px}
+.logo-wrap{display:flex;align-items:center;gap:0;line-height:1}
+.logo-svg{display:block;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(212,168,50,.45))}
+.header-sub{font-size:.7rem;color:var(--tx3);letter-spacing:1px;padding-left:2px}
+.header-right{display:flex;align-items:center;gap:8px}
+
+/* ── NAV BAR ── */
+.nav{display:flex;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:4px;gap:3px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{flex:1;min-width:60px;padding:9px 12px;border:none;border-radius:10px;background:transparent;color:var(--tx3);font-size:.76rem;font-weight:500;cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:5px}
+.nav-btn.active{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a0800;font-weight:700;box-shadow:0 2px 10px rgba(212,168,50,.3)}
+.nav-btn:hover:not(.active){background:var(--card2);color:var(--tx2)}
+.nav-icon{font-size:1rem}
+
+/* ── PANELS ── */
+.panel{display:none}
+.panel.active{display:block;animation:fadeUp .22s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SETTINGS MODAL ── */
+.settings-backdrop{display:none;position:fixed;inset:0;background:var(--modal-bg);z-index:900;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.settings-backdrop.open{display:flex}
+.settings-drawer{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--border2);border-radius:20px;padding:24px;max-width:560px;width:100%;margin:auto;animation:drawerIn .28s cubic-bezier(.34,1.4,.64,1)}
+@keyframes drawerIn{from{transform:scale(.9) translateY(-20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.settings-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.settings-hdr h2{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);font-weight:700}
+.close-btn{background:var(--card2);border:1px solid var(--border);color:var(--tx2);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.close-btn:hover{background:var(--red2);color:#fff;border-color:var(--red2)}
+.settings-section{margin-bottom:20px}
+.settings-section-hdr{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;gap:12px;border-bottom:1px solid rgba(74,52,32,.4)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:.82rem;color:var(--tx);flex:1}
+.setting-hint{font-size:.68rem;color:var(--tx3);margin-top:2px}
+.setting-ctrl select,.setting-ctrl input[type=number]{background:var(--card2);border:1px solid var(--border2);color:var(--tx);border-radius:7px;padding:5px 9px;font-size:.8rem;font-family:'Inter',sans-serif;outline:none;cursor:pointer;min-width:100px}
+.setting-ctrl select:focus,.setting-ctrl input[type=number]:focus{border-color:var(--gold)}
+.setting-ctrl input[type=number]{width:70px;text-align:center}
+
+/* Theme swatches inside settings */
+.theme-swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.tswatch{width:32px;height:32px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:all .2s}
+.tswatch:hover,.tswatch.active{border-color:var(--gold);transform:scale(1.15);box-shadow:0 0 10px rgba(212,168,50,.4)}
+.ts-earth{background:radial-gradient(circle,#d4a832,#5a3e1e)}
+.ts-night{background:radial-gradient(circle,#7090f0,#05060f)}
+.ts-forest{background:radial-gradient(circle,#70c070,#060f06)}
+.ts-sunset{background:radial-gradient(circle,#e08030,#150505)}
+.ts-sky{background:radial-gradient(circle,#40c0e0,#040c18)}
+.ts-jungle{background:radial-gradient(circle,#40d870,#030a04);box-shadow:0 0 8px rgba(64,216,112,.5)}
+
+/* Toggle switch */
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:22px;cursor:pointer;transition:background .2s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle input:checked+.toggle-slider{background:var(--gold)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+
+/* ── PLAY PANEL LAYOUT ── */
+.play-layout{display:grid;grid-template-columns:1fr;gap:12px}
+
+/* SCORE BAR */
+.score-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 16px;margin-bottom:12px}
+.score-player{display:flex;align-items:center;gap:10px}
+.score-player.p2{flex-direction:row-reverse;text-align:right}
+.score-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2.5px solid var(--border2);flex-shrink:0}
+.score-avatar.a1{border-color:var(--p1);box-shadow:0 0 10px rgba(240,192,64,.3)}
+.score-avatar.a2{border-color:var(--p2);box-shadow:0 0 10px rgba(224,112,48,.3)}
+.score-info .sname{font-size:.86rem;font-weight:700;color:var(--tx)}
+.score-info .srole{font-size:.62rem;color:var(--tx3)}
+.score-info .scap{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:var(--gold);line-height:1;text-shadow:0 0 12px rgba(212,168,50,.4);transition:all .3s}
+.score-info .scap.bump{animation:capBump .4s ease}
+@keyframes capBump{0%,100%{transform:scale(1)}50%{transform:scale(1.4);filter:drop-shadow(0 0 8px var(--gold2))}}
+.score-center{text-align:center;padding:0 10px}
+.score-timer{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);letter-spacing:2px;text-shadow:0 0 8px rgba(212,168,50,.3)}
+.score-vs{font-size:.62rem;color:var(--tx4);margin-bottom:4px;letter-spacing:2px}
+.score-moves{font-size:.62rem;color:var(--tx3);margin-top:4px}
+
+/* CAPTURE BANNER */
+.cap-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:8000;pointer-events:none;background:linear-gradient(135deg,rgba(28,18,8,.95),rgba(44,28,14,.95));border:2px solid var(--gold);border-radius:18px;padding:18px 32px;text-align:center;box-shadow:0 0 60px rgba(212,168,50,.6),0 8px 32px rgba(0,0,0,.8);min-width:260px}
+.cap-banner.show{animation:bannerPop .5s cubic-bezier(.34,1.56,.64,1) forwards,bannerFade .4s ease .9s forwards}
+@keyframes bannerPop{0%{transform:translate(-50%,-50%) scale(0) rotate(-6deg)}100%{transform:translate(-50%,-50%) scale(1) rotate(0)}}
+@keyframes bannerFade{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-55%) scale(.9)}}
+.cap-banner-name{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:700;letter-spacing:2px;margin-bottom:6px}
+.cap-banner-score{font-family:'Cinzel',serif;font-size:2.4rem;font-weight:900;line-height:1;text-shadow:0 0 20px currentColor;margin-bottom:4px}
+.cap-banner-label{font-size:.72rem;color:var(--tx2);letter-spacing:1px}
+.cap-banner.p1-cap{color:var(--p1);border-color:var(--p1);box-shadow:0 0 60px rgba(240,192,64,.5),0 8px 32px rgba(0,0,0,.8)}
+.cap-banner.p2-cap{color:var(--p2);border-color:var(--p2);box-shadow:0 0 60px rgba(224,112,48,.5),0 8px 32px rgba(0,0,0,.8)}
+
+/* STATUS BAR */
+.statusbar{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 13px;display:flex;align-items:center;gap:9px;margin-bottom:10px;min-height:40px}
+.si{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s,box-shadow .3s}
+.si-idle{background:var(--tx4)}
+.si-p1{background:var(--p1);box-shadow:0 0 6px var(--p1);animation:siPulse 1.5s ease-in-out infinite}
+.si-p2{background:var(--p2);box-shadow:0 0 6px var(--p2);animation:siPulse 1.5s ease-in-out infinite}
+.si-win{background:var(--green2);box-shadow:0 0 8px var(--green2)}
+.si-anim{background:var(--amber);box-shadow:0 0 5px var(--amber)}
+@keyframes siPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.status-text{font-size:.82rem;flex:1;line-height:1.4}
+
+/* GAME CONTROLS */
+.game-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.cg{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 9px}
+.cg label{font-size:.7rem;color:var(--tx3);white-space:nowrap}
+.cg select{background:var(--card2);border:1px solid var(--border2);color:var(--tx);border-radius:5px;padding:3px 6px;font-size:.75rem;cursor:pointer;outline:none;font-family:'Inter',sans-serif}
+.btn{padding:7px 13px;border-radius:8px;border:none;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:active{transform:scale(.95)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a0800;box-shadow:0 2px 8px rgba(212,168,50,.3)}
+.btn-gold:hover{background:linear-gradient(135deg,var(--gold2),var(--gold3));box-shadow:0 4px 16px rgba(212,168,50,.4)}
+.btn-wood{background:var(--card2);color:var(--tx2);border:1px solid var(--border)}
+.btn-wood:hover{color:var(--tx);border-color:var(--border2);background:var(--s2)}
+.btn-icon{width:34px;height:34px;padding:0;justify-content:center;border-radius:9px;font-size:1rem}
+.btn-settings{background:var(--card2);border:1px solid var(--border2);color:var(--tx2)}
+.btn-settings:hover{border-color:var(--gold);color:var(--gold)}
+
+/* BOARD */
+.board-scene{
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(120,70,20,.2) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 50%,rgba(80,40,10,.18) 0%,transparent 60%),
+    repeating-linear-gradient(175deg,transparent,transparent 22px,rgba(0,0,0,.022) 22px,rgba(0,0,0,.022) 23px),
+    var(--s1);
+  border:3px solid var(--pr2);border-radius:20px;padding:16px 12px;
+  margin-bottom:10px;position:relative;overflow:visible;
+  box-shadow:0 8px 40px rgba(0,0,0,.6),0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(180,120,40,.1);
+}
+.board-scene::after{content:'';position:absolute;inset:3px;border-radius:17px;background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,transparent 25%,transparent 75%,rgba(0,0,0,.07) 100%);pointer-events:none}
+
+/* Player label strips */
+.player-strip{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 8px}
+.pstrip-info{display:flex;align-items:center;gap:8px}
+.pstrip-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+.pstrip-avatar.a1{border-color:var(--p1)}
+.pstrip-avatar.a2{border-color:var(--p2)}
+.pstrip-name{font-size:.84rem;font-weight:700;color:var(--tx)}
+.pstrip-role{font-size:.6rem;color:var(--tx3)}
+.pit-row{display:grid;gap:5px;margin:3px 0}
+.row-lbl{font-size:.58rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx2);text-align:center;padding:2px 0;margin-bottom:2px;opacity:.8}
+.row-lbl.r-front-p1{color:rgba(240,192,64,.9)}
+.row-lbl.r-front-p2{color:rgba(224,112,48,.9)}
+.centre-rail{display:flex;align-items:center;gap:10px;margin:8px 0}
+.centre-rail::before,.centre-rail::after{content:'';flex:1;height:5px;background:linear-gradient(90deg,transparent,var(--pr2),var(--pr3),var(--pr2),transparent);border-radius:3px}
+.centre-text{font-family:'Cinzel',serif;font-size:.6rem;font-weight:900;letter-spacing:3px;color:var(--gold2);white-space:nowrap;text-shadow:0 0 10px rgba(212,168,50,.5)}
+
+/* PITS */
+.pit{position:relative;aspect-ratio:1;cursor:default;user-select:none}
+.pit-bowl{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at 50% 50%,var(--pit3) 0%,var(--pit2) 35%,var(--pit) 65%,#020100 100%);border:2px solid var(--border);box-shadow:inset 0 6px 18px rgba(0,0,0,.85),inset 0 2px 4px rgba(0,0,0,.6),0 3px 8px rgba(0,0,0,.7),0 1px 0 rgba(160,100,40,.2);transition:border-color .2s,box-shadow .2s,transform .15s;overflow:hidden}
+.pit-bowl::before{content:'';position:absolute;top:4%;left:8%;width:84%;height:18%;border-radius:50% 50% 0 0;background:linear-gradient(180deg,rgba(180,120,50,.12) 0%,transparent 100%);pointer-events:none}
+.pit.legal .pit-bowl{border-color:var(--gold);box-shadow:inset 0 6px 18px rgba(0,0,0,.7),0 0 0 2px rgba(212,168,50,.3),0 0 18px rgba(212,168,50,.25),0 3px 8px rgba(0,0,0,.6);cursor:pointer;animation:pitGlow 2s ease-in-out infinite}
+@keyframes pitGlow{0%,100%{box-shadow:inset 0 6px 18px rgba(0,0,0,.7),0 0 0 2px rgba(212,168,50,.3),0 0 14px rgba(212,168,50,.2),0 3px 8px rgba(0,0,0,.6)}50%{box-shadow:inset 0 6px 18px rgba(0,0,0,.65),0 0 0 3px rgba(212,168,50,.5),0 0 28px rgba(212,168,50,.4),0 3px 8px rgba(0,0,0,.5)}}
+.pit.legal .pit-bowl:hover{border-color:var(--gold2);transform:scale(1.12) translateY(-2px);box-shadow:inset 0 4px 12px rgba(0,0,0,.6),0 0 0 3px rgba(240,200,80,.5),0 0 30px rgba(212,168,50,.5),0 6px 16px rgba(0,0,0,.5)}
+.pit.last-sow .pit-bowl{border-color:var(--green2);box-shadow:inset 0 6px 18px rgba(0,0,0,.7),0 0 0 2px rgba(80,184,120,.4),0 0 18px rgba(80,184,120,.3)}
+.pit.hint-pit .pit-bowl{border-color:var(--amber2)!important;animation:hintPulse 1s ease-in-out infinite!important}
+@keyframes hintPulse{0%,100%{box-shadow:inset 0 6px 18px rgba(0,0,0,.75),0 0 0 2px rgba(240,144,48,.4),0 0 14px rgba(240,144,48,.25)}50%{box-shadow:inset 0 5px 14px rgba(0,0,0,.65),0 0 0 5px rgba(240,144,48,.6),0 0 30px rgba(240,144,48,.45)}}
+.pit.sow-flash .pit-bowl{animation:sowFlash .3s ease}
+@keyframes sowFlash{0%{border-color:var(--teal2);box-shadow:0 0 20px rgba(64,168,168,.7)}100%{border-color:var(--border);box-shadow:inset 0 6px 18px rgba(0,0,0,.85)}}
+.pit.capture-flash .pit-bowl{animation:capFlash .55s ease}
+@keyframes capFlash{0%,100%{transform:scale(1)}30%{border-color:var(--green3);box-shadow:inset 0 4px 10px rgba(0,0,0,.5),0 0 30px rgba(128,224,160,.85);transform:scale(1.1)}}
+.pit.seed-land .pit-bowl{animation:seedLand .18s ease-out}
+@keyframes seedLand{0%{transform:scale(1.08)}60%{transform:scale(.96)}100%{transform:scale(1)}}
+.pit.dimmed{opacity:.38}
+.pit-seeds{position:absolute;inset:5px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:2px;padding:3px;pointer-events:none}
+.seed{width:8px;height:10px;border-radius:50% 50% 48% 48%/58% 58% 42% 42%;flex-shrink:0}
+.s-p1{background:radial-gradient(ellipse at 32% 22%,#fff8d0 0%,#f0d870 18%,#d4a030 48%,#8a5c18 80%,#5c3a0a 100%);box-shadow:0 2px 3px rgba(0,0,0,.7),inset 0 1px 1px rgba(255,255,200,.3)}
+.s-p2{background:radial-gradient(ellipse at 32% 22%,#ffe0c0 0%,#f09860 18%,#c06020 48%,#7a3810 80%,#4a1e08 100%);box-shadow:0 2px 3px rgba(0,0,0,.7),inset 0 1px 1px rgba(255,200,150,.25)}
+.pit-count{position:absolute;bottom:2px;right:3px;font-size:.68rem;font-weight:900;color:rgba(255,220,120,.95);text-shadow:0 1px 3px rgba(0,0,0,.9);pointer-events:none;line-height:1}
+.pit-id{position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);font-size:.44rem;color:var(--tx4);pointer-events:none;white-space:nowrap;opacity:.6}
+
+/* ── PREMIUM GREEN THEME ── */
+body.theme-jungle{--bg-mid:#0a2010;--bg:#030a04;--s1:#060e07;--s2:#0c1a0d;--s3:#122214;--border:#1a3320;--border2:#2a5530;--card:#08110a;--card2:#101c12;--pr:#1a6030;--pr2:#268040;--pr3:#38a858;--gold:#40d870;--gold2:#68f090;--gold3:#a0ffb8;--amber:#30c060;--amber2:#50e080;--green:#20a040;--green2:#38c060;--green3:#80f0a8;--tx:#d0f0d8;--tx2:#90c8a0;--tx3:#508860;--tx4:#305040;--pit:#020804;--pit2:#061008;--pit3:#0a1a0c;--p1:#40d870;--p1d:rgba(64,216,112,.15);--p1b:rgba(64,216,112,.35);--p2:#e07030;--p2d:rgba(224,112,48,.15);--p2b:rgba(224,112,48,.35);}
+
+/* FALLING SEED — drops from cartoon downward */
+.fall-seed{position:fixed;pointer-events:none;z-index:9000;filter:drop-shadow(0 3px 5px rgba(0,0,0,.7))}
+
+/* ══ CARTOON MEEPLE CONTAINER ══
+   Sized smaller than a pit (~28px vs ~40px pit).  Centre anchored. */
+.hand-wrap{
+  position:fixed;pointer-events:none;z-index:9002;display:none;
+  transform:translate(-50%,-50%);
+  transition:left .18s linear, top .18s linear;
+  transform-origin:50% 50%;
+  width:28px;height:28px;
+}
+.hand-svg{display:block;width:28px;height:28px;transition:transform .15s ease;filter:drop-shadow(0 2px 4px rgba(0,0,0,.7));}
+
+/* Seeds floating above the cartoon */
+.hand-seeds{
+  position:absolute;
+  top:-14px;left:50%;transform:translateX(-50%);
+  display:flex;flex-wrap:wrap;justify-content:center;align-content:center;
+  gap:1px;width:30px;max-height:16px;overflow:hidden;
+  pointer-events:none;
+}
+.hand-seed-dot{width:5px;height:6px;border-radius:50% 50% 48% 48%/58% 58% 42% 42%;flex-shrink:0;transition:opacity .15s}
+.hs-p1{background:radial-gradient(ellipse at 32% 22%,#fff8d0,#f0d870 18%,#d4a030 48%,#8a5c18);box-shadow:0 1px 3px rgba(0,0,0,.65),inset 0 1px 1px rgba(255,250,180,.3)}
+.hs-p2{background:radial-gradient(ellipse at 32% 22%,#ffe0c0,#f09860 18%,#c06020 48%,#7a3810);box-shadow:0 1px 3px rgba(0,0,0,.65),inset 0 1px 1px rgba(255,210,160,.25)}
+
+/* ── CARTOON STATES ── */
+/* GRAB: bounce down onto pit */
+.hand-wrap.state-grab{animation:cartoonDescend .22s ease-out forwards}
+@keyframes cartoonDescend{0%{transform:translate(-50%,-50%) scale(.7) translateY(-10px)}60%{transform:translate(-50%,-50%) scale(1.15) translateY(2px)}100%{transform:translate(-50%,-50%) scale(1) translateY(0)}}
+.hand-wrap.state-grab .hand-svg{animation:cartoonBounce .22s ease-in-out}
+@keyframes cartoonBounce{0%,100%{transform:scaleY(1)}40%{transform:scaleY(.82) scaleX(1.1)}70%{transform:scaleY(1.05)}}
+
+/* MOVE: hop along */
+.hand-wrap.state-move .hand-svg{animation:cartoonHop .28s ease-in-out infinite}
+@keyframes cartoonHop{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-5px) rotate(-8deg)}70%{transform:translateY(-3px) rotate(5deg)}}
+
+/* DROP: squash and spin when releasing seed */
+.hand-wrap.state-drop .hand-svg{animation:cartoonDrop .2s ease-in-out}
+@keyframes cartoonDrop{0%{transform:scale(1) rotate(0)}40%{transform:scale(1.2,.8) rotate(15deg)}80%{transform:scale(.95,1.1) rotate(-5deg)}100%{transform:scale(1) rotate(0)}}
+
+/* GRAB_OPPONENT: aggressive spin-swoop */
+.hand-wrap.state-grab-opp .hand-svg{animation:cartoonSwoop .3s cubic-bezier(.34,1.4,.64,1)}
+@keyframes cartoonSwoop{0%{transform:scale(1)}20%{transform:scale(.7,.7) rotate(-20deg)}60%{transform:scale(1.3,1.1) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+
+/* LIFT: jump up triumphantly */
+.hand-wrap.state-lift{animation:cartoonLift .55s cubic-bezier(.34,1.4,.64,1) forwards}
+@keyframes cartoonLift{0%{transform:translate(-50%,-50%) translateY(0) scale(1)}40%{transform:translate(-50%,-50%) translateY(-28px) scale(1.2) rotate(-12deg)}70%{transform:translate(-50%,-50%) translateY(-20px) scale(1.1) rotate(6deg)}100%{transform:translate(-50%,-50%) translateY(-22px) scale(1.05) rotate(-4deg)}}
+
+/* Character picker in settings */
+.char-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.char-opt{width:44px;height:44px;border-radius:10px;border:2.5px solid var(--border2);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;padding:4px}
+.char-opt svg{width:100%;height:100%}
+.char-opt:hover{border-color:var(--gold);transform:scale(1.12)}
+.char-opt.active{border-color:var(--gold);background:rgba(212,168,50,.12);box-shadow:0 0 12px rgba(212,168,50,.35)}
+
+/* BURST */
+.burst{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;z-index:10;animation:burstAnim .7s ease-out forwards}
+@keyframes burstAnim{0%{box-shadow:0 0 0 0 rgba(80,184,120,.95),0 0 0 0 rgba(240,200,80,.5);transform:scale(1);opacity:1}40%{box-shadow:0 0 0 14px rgba(80,184,120,.4),0 0 0 8px rgba(240,200,80,.3);transform:scale(1.15)}100%{box-shadow:0 0 0 32px rgba(80,184,120,0),0 0 0 22px rgba(240,200,80,0);transform:scale(1.6);opacity:0}}
+
+/* FLOAT NUM */
+.float-num{position:fixed;pointer-events:none;z-index:9500;font-size:1rem;font-weight:900;color:var(--green3);text-shadow:0 2px 6px rgba(0,0,0,.8),0 0 16px rgba(80,224,120,.6);animation:floatUp 1.5s ease-out forwards;font-family:'Cinzel',serif}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}30%{opacity:1;transform:translateY(-16px) scale(1.15)}100%{opacity:0;transform:translateY(-60px) scale(.7)}}
+
+/* MOVE LOG */
+.move-log{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;max-height:88px;overflow-y:auto;margin-bottom:10px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.log-row{display:flex;align-items:center;gap:7px;padding:3px 0;border-bottom:1px solid rgba(60,40,20,.4);font-size:.73rem;color:var(--tx2)}
+.log-row:last-child{border-bottom:none}
+.log-badge{font-weight:700;font-size:.65rem;padding:1px 6px;border-radius:4px;flex-shrink:0}
+.lb1{background:var(--p1d);color:var(--p1)}
+.lb2{background:var(--p2d);color:var(--p2)}
+.log-cap{color:var(--green2);font-weight:600;margin-left:auto;font-size:.68rem}
+
+/* WIN OVERLAY */
+.win-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;align-items:center;justify-content:center;padding:20px}
+.win-overlay.show{display:flex}
+.win-box{background:linear-gradient(160deg,var(--card2),var(--card));border:2px solid var(--gold);border-radius:24px;padding:30px 36px;text-align:center;max-width:440px;width:100%;animation:winPop .6s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 80px rgba(212,168,50,.3),0 24px 64px rgba(0,0,0,.8)}
+@keyframes winPop{from{transform:scale(.3) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.win-emoji{font-size:2.8rem;margin-bottom:10px;animation:winBounce 1s ease-in-out infinite}
+@keyframes winBounce{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(5deg)}}
+.win-title{font-family:'Cinzel',serif;font-size:2.4rem;font-weight:900;color:var(--gold);margin-bottom:8px;line-height:1;text-shadow:0 0 30px rgba(212,168,50,.5)}
+.win-sub{font-size:.9rem;color:var(--tx2);margin-bottom:16px}
+.win-scores{display:flex;justify-content:center;gap:24px;margin-bottom:16px;flex-wrap:wrap}
+.win-score-card{background:rgba(0,0,0,.3);border-radius:12px;padding:12px 20px;min-width:110px}
+.win-score-card.winner{border:1px solid var(--gold);background:rgba(212,168,50,.08)}
+.win-score-num{font-family:'Cinzel',serif;font-size:3rem;font-weight:900;line-height:1}
+.win-score-name{font-size:.74rem;color:var(--tx2);margin-top:4px}
+.win-time{font-size:.76rem;color:var(--tx3);margin-bottom:18px}
+.win-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* CONFETTI CANVAS */
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:790;display:none}
+
+/* ── TUTORIAL ── */
+.tut-prog{display:flex;gap:4px;align-items:center;margin-bottom:12px}
+.tpd{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .2s}
+.tpd.active{background:var(--gold);transform:scale(1.2);box-shadow:0 0 6px var(--gold)}
+.tpd.done{background:var(--green2)}
+.tlbl{font-size:.7rem;color:var(--tx3);margin-left:6px}
+.tut-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px}
+.tut-hdr{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.tut-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a0800;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:1rem;font-weight:900;flex-shrink:0}
+.tut-hdr h3{font-family:'Cinzel',serif;font-size:.95rem;color:var(--gold)}
+.tut-hdr p{font-size:.72rem;color:var(--tx3);margin-top:2px}
+.tut-body p{font-size:.8rem;color:var(--tx2);line-height:1.7;margin-bottom:8px}
+.tut-body strong{color:var(--tx)}
+.tut-nav{display:flex;gap:8px;margin-top:12px}
+.tip-box{background:rgba(212,168,50,.07);border:1px solid rgba(212,168,50,.2);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;margin-top:10px}
+.tip-ico{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.tip-box p{font-size:.76rem;color:var(--tx2);line-height:1.65;margin:0}
+.mini-board{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0}
+.mini-row{display:flex;gap:4px;justify-content:center;margin:3px 0}
+.mp{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--tx2)}
+.mp.gold{border-color:var(--gold);color:var(--gold)}
+.mp.green{border-color:var(--green2);color:var(--green2)}
+.strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sc{background:var(--card2);border-radius:8px;padding:11px;border-left:3px solid var(--teal)}
+.sc-amber{border-left-color:var(--amber)}
+.sc h4{font-size:.78rem;font-weight:700;color:var(--tx);margin-bottom:4px}
+.sc p{font-size:.72rem;color:var(--tx2);line-height:1.55;margin:0}
+.highlight{background:rgba(212,168,50,.06);border:1px solid rgba(212,168,50,.18);border-radius:8px;padding:12px;margin:10px 0;font-size:.79rem;color:var(--tx2);line-height:1.7}
+
+/* ── TRAIN PANEL ── */
+.train-explain{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+.train-explain h3{font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold);margin-bottom:10px}
+.train-explain p{font-size:.79rem;color:var(--tx2);line-height:1.7;margin-bottom:8px}
+.train-explain ul{font-size:.77rem;color:var(--tx2);padding-left:16px;line-height:1.9;margin:0}
+.train-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.m-tile{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px;text-align:center}
+.m-tile .lbl{font-size:.68rem;color:var(--tx3);font-weight:500;margin-bottom:4px}
+.m-tile .val{font-size:1.6rem;font-weight:800;color:var(--gold);line-height:1}
+.m-tile .dlt{font-size:.67rem;margin-top:2px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:9px}
+.chart-card h3{font-size:.76rem;font-weight:600;color:var(--tx3);margin-bottom:8px}
+canvas.chart{width:100%}
+.prog-wrap{background:var(--card2);border-radius:4px;height:5px;overflow:hidden;margin:8px 0;display:none}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;transition:width .3s}
+
+/* ── ABOUT PANEL ── */
+.about-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:11px}
+.about-card h2{font-family:'Cinzel',serif;font-size:.92rem;font-weight:700;color:var(--gold);margin-bottom:9px}
+.about-card p{font-size:.8rem;color:var(--tx2);margin-bottom:7px;line-height:1.7}
+.about-card ul{font-size:.79rem;color:var(--tx2);padding-left:16px;line-height:2}
+.ethical-box{background:rgba(224,120,32,.07);border:1px solid rgba(224,120,32,.25);border-radius:9px;padding:12px 14px;margin-bottom:9px}
+.ethical-box h3{font-size:.85rem;font-weight:700;color:var(--amber2);margin-bottom:8px}
+.ethical-box p{font-size:.78rem;color:rgba(240,180,120,.85);line-height:1.7;margin-bottom:4px}
+.disclaimer{background:rgba(176,56,32,.08);border:1px solid rgba(176,56,32,.3);border-radius:9px;padding:11px 14px;margin-bottom:9px}
+.disclaimer h3{font-size:.82rem;font-weight:700;color:var(--red2);margin-bottom:6px}
+.disclaimer p{font-size:.75rem;color:rgba(240,160,140,.8);line-height:1.6;margin:0}
+.tep-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.tep-c{background:var(--card2);border-radius:8px;padding:11px;border-left:3px solid var(--gold)}
+.tep-c h4{font-size:.8rem;font-weight:700;color:var(--tx);margin-bottom:5px}
+.tep-c p{font-size:.72rem;color:var(--tx2);margin:0;line-height:1.5}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding:14px 0 8px;border-top:1px solid var(--border2);margin-top:12px}
+.footer p{font-size:.68rem;color:var(--tx3);line-height:2}
+
+/* ── RESPONSIVE ── */
+@media(max-width:580px){
+  .pit-row{gap:3px}
+  .pit{min-height:32px}
+  .seed{width:5px;height:7px}
+  .train-grid{grid-template-columns:1fr 1fr}
+  .strat-grid{grid-template-columns:1fr}
+  .tep-grid{grid-template-columns:1fr}
+  .logo-svg{width:200px;height:auto}
+  .win-title{font-size:1.8rem}
+  .win-score-num{font-size:2.2rem}
+  .score-bar{grid-template-columns:1fr auto}
+  .score-player.p2{display:none}
+}
+
+/* ── KID-APPEAL & LEARN PANEL STYLES ── */
+/* Subtle fun badge on score bar for kids */
+.streak-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(240,192,64,.18),rgba(212,168,50,.08));border:1px solid rgba(212,168,50,.35);border-radius:20px;padding:3px 10px;font-size:.68rem;font-weight:700;color:var(--gold);animation:badgePop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes badgePop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.achievement-toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--card2),var(--card));border:2px solid var(--gold);border-radius:14px;padding:14px 18px;z-index:9600;display:flex;align-items:center;gap:12px;max-width:300px;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 30px rgba(212,168,50,.2);animation:toastSlide .4s cubic-bezier(.34,1.4,.64,1)}
+@keyframes toastSlide{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+.achievement-toast.hiding{animation:toastHide .3s ease forwards}
+@keyframes toastHide{to{transform:translateX(120%);opacity:0}}
+.toast-icon{font-size:2rem;flex-shrink:0}
+.toast-title{font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;color:var(--gold)}
+.toast-msg{font-size:.74rem;color:var(--tx2);margin-top:2px}
+
+/* LEARN PANEL */
+.learn-hero{background:linear-gradient(135deg,rgba(212,168,50,.14),rgba(80,184,120,.08));border:1px solid rgba(212,168,50,.3);border-radius:18px;padding:22px 24px;margin-bottom:18px;text-align:center}
+.learn-hero h2{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;color:var(--gold);margin-bottom:8px;text-shadow:0 0 20px rgba(212,168,50,.3)}
+.learn-hero p{font-size:.82rem;color:var(--tx2);line-height:1.7;max-width:600px;margin:0 auto}
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.skill-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;transition:transform .2s,box-shadow .2s;cursor:default}
+.skill-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.skill-icon{font-size:2.2rem;margin-bottom:10px;display:block}
+.skill-name{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:6px}
+.skill-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-bottom:8px}
+.tag-cognitive{background:rgba(80,184,120,.15);color:var(--green2);border:1px solid rgba(80,184,120,.3)}
+.tag-social{background:rgba(64,168,168,.15);color:var(--teal2);border:1px solid rgba(64,168,168,.3)}
+.tag-math{background:rgba(212,168,50,.12);color:var(--gold);border:1px solid rgba(212,168,50,.28)}
+.tag-emotional{background:rgba(224,112,48,.12);color:var(--amber2);border:1px solid rgba(224,112,48,.28)}
+.tag-cultural{background:rgba(160,80,200,.15);color:#c080f0;border:1px solid rgba(160,80,200,.3)}
+.tag-motor{background:rgba(176,56,32,.15);color:var(--red2);border:1px solid rgba(176,56,32,.3)}
+.skill-desc{font-size:.78rem;color:var(--tx2);line-height:1.65;margin-bottom:10px}
+.skill-howto{background:rgba(212,168,50,.06);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:8px 12px;font-size:.74rem;color:var(--tx3);line-height:1.6;font-style:italic}
+.age-banner{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.age-pill{flex:1;min-width:130px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.age-emoji{font-size:1.8rem;margin-bottom:6px;display:block}
+.age-range{font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;color:var(--gold);margin-bottom:4px}
+.age-desc{font-size:.72rem;color:var(--tx2);line-height:1.55}
+.amplify-section{background:linear-gradient(135deg,rgba(80,184,120,.08),rgba(42,136,136,.06));border:1px solid rgba(80,184,120,.25);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+.amplify-section h3{font-family:'Cinzel',serif;font-size:.94rem;font-weight:700;color:var(--green2);margin-bottom:14px}
+.amplify-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.amp-item{background:rgba(0,0,0,.2);border-radius:10px;padding:12px 14px;border-left:3px solid var(--teal2)}
+.amp-item h4{font-size:.8rem;font-weight:700;color:var(--tx);margin-bottom:5px}
+.amp-item p{font-size:.74rem;color:var(--tx2);line-height:1.6;margin:0}
+.research-box{background:rgba(42,136,136,.07);border:1px solid rgba(42,136,136,.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:.76rem;color:var(--tx2);line-height:1.7}
+.research-box strong{color:var(--teal2)}
+@media(max-width:580px){.skill-grid{grid-template-columns:1fr}.age-banner{flex-direction:column}.amplify-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<canvas id="confetti-canvas"></canvas>
+
+<!-- CARTOON CHARACTER — swapped by JS based on user choice -->
+<div class="hand-wrap" id="hand-wrap">
+  <svg class="hand-svg" id="hand-svg" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"></svg>
+  <div class="hand-seeds" id="hand-seeds"></div>
+</div>
+<div class="cap-banner" id="cap-banner">
+  <div class="cap-banner-name" id="cb-name"></div>
+  <div class="cap-banner-score" id="cb-score"></div>
+  <div class="cap-banner-label">SEEDS CAPTURED!</div>
+</div>
+
+<div class="app">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-wrap">
+      <!-- MUFUVHA SVG LOGO — pit bowl + seeds + Cinzel wordmark -->
+      <svg class="logo-svg" width="280" height="52" viewBox="0 0 280 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Mufuvha">
+        <defs>
+          <!-- Bowl gradient — deep dark pit -->
+          <radialGradient id="lbowl" cx="50%" cy="40%" r="62%">
+            <stop offset="0%" stop-color="#2e1c08"/>
+            <stop offset="55%" stop-color="#1a0e04"/>
+            <stop offset="100%" stop-color="#080400"/>
+          </radialGradient>
+          <!-- Bowl rim glow -->
+          <radialGradient id="lrim" cx="50%" cy="0%" r="100%">
+            <stop offset="0%" stop-color="#d4a832" stop-opacity=".9"/>
+            <stop offset="100%" stop-color="#8a5810" stop-opacity=".3"/>
+          </radialGradient>
+          <!-- Seed gold -->
+          <radialGradient id="lsg1" cx="30%" cy="28%" r="65%">
+            <stop offset="0%" stop-color="#fff8c0"/>
+            <stop offset="35%" stop-color="#f0d050"/>
+            <stop offset="75%" stop-color="#c88a18"/>
+            <stop offset="100%" stop-color="#7a4e08"/>
+          </radialGradient>
+          <!-- Seed orange -->
+          <radialGradient id="lsg2" cx="30%" cy="28%" r="65%">
+            <stop offset="0%" stop-color="#ffe8c0"/>
+            <stop offset="35%" stop-color="#f09040"/>
+            <stop offset="75%" stop-color="#b85810"/>
+            <stop offset="100%" stop-color="#6a2e08"/>
+          </radialGradient>
+          <!-- Outer glow filter -->
+          <filter id="lglow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <!-- Subtle drop shadow on bowl -->
+          <filter id="lshadow" x="-20%" y="-20%" width="140%" height="160%">
+            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".7"/>
+          </filter>
+          <!-- Text glow -->
+          <filter id="ltglow" x="-5%" y="-20%" width="110%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <!-- Clip the bowl contents -->
+          <clipPath id="lbclip">
+            <ellipse cx="26" cy="28" rx="21" ry="19"/>
+          </clipPath>
+        </defs>
+
+        <!-- ── PIT BOWL ── -->
+        <!-- Outer glow ring -->
+        <ellipse cx="26" cy="28" rx="23" ry="21" fill="none" stroke="#d4a832" stroke-width="1.5" opacity=".25" filter="url(#lglow)"/>
+        <!-- Bowl body -->
+        <ellipse cx="26" cy="28" rx="21" ry="19" fill="url(#lbowl)" filter="url(#lshadow)"/>
+        <!-- Inner shadow depth ring -->
+        <ellipse cx="26" cy="30" rx="18" ry="16" fill="none" stroke="#000" stroke-width="4" opacity=".55"/>
+        <!-- Rim highlight top arc -->
+        <path d="M 6 22 Q 26 8 46 22" stroke="url(#lrim)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>
+        <!-- Subtle wood grain lines across bowl -->
+        <path d="M 8 32 Q 26 29 44 32" stroke="rgba(100,60,10,.18)" stroke-width="1" fill="none" clip-path="url(#lbclip)"/>
+        <path d="M 10 37 Q 26 34 42 37" stroke="rgba(100,60,10,.14)" stroke-width=".8" fill="none" clip-path="url(#lbclip)"/>
+
+        <!-- ── 6 SEEDS arranged in a natural cluster ── -->
+        <!-- back row: 3 seeds -->
+        <ellipse cx="19" cy="23" rx="4.8" ry="5.4" fill="url(#lsg1)" transform="rotate(-8,19,23)"/>
+        <ellipse cx="26" cy="21" rx="4.8" ry="5.4" fill="url(#lsg2)" transform="rotate(0,26,21)"/>
+        <ellipse cx="33" cy="23" rx="4.8" ry="5.4" fill="url(#lsg1)" transform="rotate(8,33,23)"/>
+        <!-- front row: 3 seeds -->
+        <ellipse cx="15" cy="32" rx="4.8" ry="5.4" fill="url(#lsg2)" transform="rotate(-6,15,32)"/>
+        <ellipse cx="26" cy="33" rx="4.8" ry="5.4" fill="url(#lsg1)" transform="rotate(2,26,33)"/>
+        <ellipse cx="37" cy="32" rx="4.8" ry="5.4" fill="url(#lsg2)" transform="rotate(6,37,32)"/>
+        <!-- Seed shine dots -->
+        <circle cx="18" cy="21.5" r="1.4" fill="#fff" opacity=".45"/>
+        <circle cx="25" cy="19.5" r="1.4" fill="#fff" opacity=".4"/>
+        <circle cx="32" cy="21.5" r="1.4" fill="#fff" opacity=".45"/>
+        <circle cx="14" cy="30.5" r="1.2" fill="#fff" opacity=".38"/>
+        <circle cx="25" cy="31.5" r="1.4" fill="#fff" opacity=".42"/>
+        <circle cx="36" cy="30.5" r="1.2" fill="#fff" opacity=".38"/>
+        <!-- Bowl rim bottom shadow -->
+        <path d="M 7 35 Q 26 44 45 35" stroke="rgba(0,0,0,.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+        <!-- ── WORDMARK: MUFUVHA ── -->
+        <!-- Glow layer (duplicate behind) -->
+        <text x="58" y="38"
+          font-family="'Cinzel', 'Palatino Linotype', serif"
+          font-size="30" font-weight="900"
+          letter-spacing="5"
+          fill="#d4a832" opacity=".45"
+          filter="url(#ltglow)"
+        >MUFUVHA</text>
+        <!-- Main gold text -->
+        <text x="58" y="38"
+          font-family="'Cinzel', 'Palatino Linotype', serif"
+          font-size="30" font-weight="900"
+          letter-spacing="5"
+          fill="url(#lrim)"
+        >MUFUVHA</text>
+        <!-- Subtle highlight sheen on letters -->
+        <text x="58" y="26"
+          font-family="'Cinzel', 'Palatino Linotype', serif"
+          font-size="30" font-weight="900"
+          letter-spacing="5"
+          fill="#fff8e0" opacity=".09"
+          clip-path="url(#lbclip)"
+        >MUFUVHA</text>
+
+        <!-- ── Decorative dot separators flanking the bowl ── -->
+        <circle cx="52" cy="28" r="2.5" fill="#d4a832" opacity=".5"/>
+        <circle cx="52" cy="28" r="1.2" fill="#ffe090" opacity=".9"/>
+      </svg>
+    </div>
+    <div class="header-sub">Traditional Strategy Game of Limpopo</div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-settings btn-icon" onclick="openSettings()" title="Settings">⚙️</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="goPanel('play')"><span class="nav-icon">♟</span> Play</button>
+  <button class="nav-btn" onclick="goPanel('tutorial')"><span class="nav-icon">📖</span> Tutorial</button>
+  <button class="nav-btn" onclick="goPanel('train')"><span class="nav-icon">🧠</span> Train AI</button>
+  <button class="nav-btn" onclick="goPanel('learn')"><span class="nav-icon">🌱</span> Learn</button>
+  <button class="nav-btn" onclick="goPanel('about')"><span class="nav-icon">ℹ</span> About</button>
+</div>
+
+<!-- ════════════ PLAY PANEL ════════════ -->
+<div class="panel active" id="panel-play">
+
+  <!-- SCORE BAR -->
+  <div class="score-bar" id="score-bar">
+    <div class="score-player p1" id="score-p1">
+      <img id="sbav1" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Ccircle cx='26' cy='26' r='26' fill='%23d4a832'/%3E%3Ctext x='26' y='33' text-anchor='middle' fill='%230e0a04' font-size='20' font-family='serif' font-weight='bold'%3EP1%3C/text%3E%3C/svg%3E" class="score-avatar a1" alt="P1">
+      <div class="score-info">
+        <div class="sname" id="sb-name1">Player 1</div>
+        <div class="srole">Gold Seeds</div>
+        <div class="scap" id="sb-cap1">0</div>
+      </div>
+    </div>
+    <div class="score-center">
+      <div class="score-vs">VS</div>
+      <div class="score-timer" id="game-timer">0:00</div>
+      <div class="score-moves" id="move-counter">Move 0</div>
+    </div>
+    <div class="score-player p2" id="score-p2">
+      <div class="score-info" style="text-align:right">
+        <div class="sname" id="sb-name2">Opponent</div>
+        <div class="srole">Red Seeds</div>
+        <div class="scap" id="sb-cap2">0</div>
+      </div>
+      <img id="sbav2" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Ccircle cx='26' cy='26' r='26' fill='%23e07030'/%3E%3Ctext x='26' y='33' text-anchor='middle' fill='%230e0a04' font-size='20' font-family='serif' font-weight='bold'%3EP2%3C/text%3E%3C/svg%3E" class="score-avatar a2" alt="P2">
+    </div>
+  </div>
+
+  <!-- GAME CONTROLS -->
+  <div class="game-controls">
+    <div class="cg">
+      <label>Mode</label>
+      <select id="sel-mode" onchange="onModeChange()">
+        <option value="hva">Human vs AI</option>
+        <option value="ava">AI vs AI</option>
+        <option value="hvh">Human vs Human</option>
+      </select>
+    </div>
+    <div class="cg" id="grp-diff">
+      <label>AI</label>
+      <select id="sel-diff">
+        <option value="rand">Easy</option>
+        <option value="heur">Medium</option>
+        <option value="ql" selected>Hard</option>
+      </select>
+    </div>
+    <div class="cg" id="grp-spd" style="display:none">
+      <label>Speed</label>
+      <select id="sel-spd">
+        <option value="1400">Slow</option>
+        <option value="800" selected>Normal</option>
+        <option value="300">Fast</option>
+        <option value="80">Turbo</option>
+      </select>
+    </div>
+    <button class="btn btn-gold" onclick="startGame()">▶ New Game</button>
+    <button class="btn btn-wood" id="btn-stop" onclick="stopGame()">⏹ Stop</button>
+    <button class="btn btn-wood" onclick="undoMove()" id="btn-undo">↩ Undo</button>
+    <button class="btn btn-wood" onclick="showHint()" id="btn-hint">💡 Hint</button>
+    <button class="btn btn-wood btn-icon" id="snd-btn" onclick="toggleSfx()" title="Toggle SFX">🔊</button>
+    <span style="font-size:.63rem;color:var(--tx4);margin-left:2px" title="N=New, U=Undo, H=Hint">⌨ N/U/H</span>
+  </div>
+
+  <!-- STATUS -->
+  <div class="statusbar">
+    <div class="si si-idle" id="si"></div>
+    <span class="status-text" id="status-msg">Press ▶ New Game to begin.</span>
+  </div>
+
+  <!-- BOARD -->
+  <div class="board-scene" id="board-scene"><div id="board-inner"></div></div>
+
+  <!-- MOVE LOG -->
+  <div class="move-log" id="move-log"><div style="font-size:.73rem;color:var(--tx4);font-style:italic">Game log will appear here…</div></div>
+
+</div>
+
+<!-- ════════════ TUTORIAL PANEL ════════════ -->
+<div class="panel" id="panel-tutorial">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <div><h2 style="font-family:'Cinzel',serif;font-size:1.05rem;font-weight:700;color:var(--gold)">How to play Mufuvha</h2><p style="font-size:.74rem;color:var(--tx2);margin-top:2px">7 steps — authentic rules from Mancala World &amp; ethnographic sources</p></div>
+    <button class="btn btn-gold" onclick="launchTutGame()">▶ Play now</button>
+  </div>
+  <div class="tut-prog">
+    <div class="tpd active" id="td0"></div><div class="tpd" id="td1"></div><div class="tpd" id="td2"></div>
+    <div class="tpd" id="td3"></div><div class="tpd" id="td4"></div><div class="tpd" id="td5"></div><div class="tpd" id="td6"></div>
+    <span class="tlbl" id="tut-lbl">Step 1 of 7</span>
+  </div>
+  <div id="tut-content"></div>
+  <div class="tut-nav">
+    <button class="btn btn-wood" id="tprev" onclick="tutGo(tutIdx-1)" style="display:none">← Previous</button>
+    <button class="btn btn-gold" id="tnext" onclick="tutGo(tutIdx+1)">Next →</button>
+    <button class="btn btn-wood" id="trestart" onclick="tutGo(0)" style="display:none;margin-left:auto">↺ Restart</button>
+  </div>
+</div>
+
+<!-- ════════════ TRAIN PANEL ════════════ -->
+<div class="panel" id="panel-train">
+  <div class="train-explain">
+    <h3>How AI Training Works — Q-Learning Agent</h3>
+    <p>The Mufuvha AI learns through <strong style="color:var(--tx)">Reinforcement Learning (RL)</strong> — the same family powering AlphaGo, chess engines, and robotics. It plays thousands of self-play games, updating a 50-element feature weight vector after each move.</p>
+    <div class="highlight">
+      <strong style="color:var(--gold)">4-step learning loop:</strong> Self-play → Q(s,a) estimation → TD update (w ← w + α·error·φ) → ε-greedy exploration decay (1.0→0.05)
+    </div>
+    <p><strong style="color:var(--tx)">Architecture:</strong> Linear function approximation over a 50-dim feature vector φ(s). State space ~2<sup>64</sup> makes table-lookup impossible — a dot product w·φ(s) gives Q instantly.</p>
+    <ul><li>Swap LinearQAgent → NeuralQAgent to evolve</li><li>Weights persist in localStorage between sessions</li><li>Add MCTS lookahead for deeper play</li></ul>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+    <div><h2 style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold)">Train the Q-Agent</h2><p style="font-size:.73rem;color:var(--tx2);margin-top:2px">2 000 self-play episodes — watch it learn in real time</p></div>
+    <button class="btn btn-gold" id="train-btn" onclick="startTraining()">▶ Start training</button>
+  </div>
+  <div class="prog-wrap" id="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="train-grid">
+    <div class="m-tile"><div class="lbl">Win vs Random</div><div class="val" id="m-wr">—</div><div class="dlt" id="m-wr-d"></div></div>
+    <div class="m-tile"><div class="lbl">Win vs Heuristic</div><div class="val" id="m-wh">—</div><div class="dlt" id="m-wh-d"></div></div>
+    <div class="m-tile"><div class="lbl">Episodes</div><div class="val" id="m-ep">0</div></div>
+    <div class="m-tile"><div class="lbl">Exploration ε</div><div class="val" id="m-eps">1.00</div></div>
+  </div>
+  <div class="chart-card"><h3>Win rate over training</h3><canvas id="chart-wr" class="chart" height="180"></canvas></div>
+  <div class="chart-card"><h3>ε decay</h3><canvas id="chart-eps" class="chart" height="120"></canvas></div>
+</div>
+
+<!-- ════════════ ABOUT PANEL ════════════ -->
+<div class="panel" id="panel-about">
+  <div class="disclaimer">
+    <h3>Research Disclaimer</h3>
+    <p>This digital implementation of Mufuvha is created solely for academic research purposes by Tshifhiwa AJ Tshitaka. Rules are based on Stayt (1931), Mancala World, and related literature. The authentic, living practice of Mufuvha in Limpopo communities is the authoritative source of the game's rules and cultural meaning.</p>
+  </div>
+  <div class="about-card" style="border-color:rgba(212,168,50,.3);background:linear-gradient(135deg,rgba(212,168,50,.05),transparent)">
+    <h2>About Mufuvha (Mefuvha)</h2>
+    <p>Mufuvha (also Mefuvha, meaning <em style="color:var(--gold)">"foggy rain"</em> in Tshivenda) is an indigenous four-row Mancala strategy game of <strong style="color:var(--tx)">Limpopo Province, South Africa</strong>, closely related to Moruba (Pedi) and Tsoro (Shona). Played by the Venda people on solid wooden boards carved from tree trunks — some measuring two meters with up to 28 holes per row, making it one of the <strong style="color:var(--tx)">largest Mancala games ever documented</strong>.</p>
+    <p>Featured at the <strong style="color:var(--tx)">2004 inaugural indigenous games festival</strong> at Peter Mokaba Stadium, Polokwane. The "Story of Sankhambi and the Baboons" — a legend about the game — was documented by ethnologist Hugh Stayt in 1931. Traditionally prohibited after sunset (believed to provoke cattle theft); fruit pips, not stones, used during the rainy season (to avoid turning rain to hail).</p>
+    <div style="background:rgba(80,184,120,.07);border:1px solid rgba(80,184,120,.2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.76rem;color:var(--tx2);line-height:1.7">
+      🌱 <strong style="color:var(--green2)">Educational legacy:</strong> Mancala is one of the most researched traditional games in the world. Hundreds of schools across Europe and the USA run Mancala tournaments to teach mathematical skills and intercultural awareness. Mufuvha specifically connects South African learners to their own intellectual heritage. <button onclick="goPanel('learn')" style="background:var(--green2);color:var(--bg);border:none;border-radius:6px;padding:4px 12px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;margin-left:6px">See Learning Skills →</button>
+    </div>
+  </div>
+  <div class="about-card">
+    <h2>Authentic Rules (Researched)</h2>
+    <ul>
+      <li><strong style="color:var(--tx)">Board:</strong> 4 rows × 8 holes. Each player controls inner + outer row.</li>
+      <li><strong style="color:var(--tx)">Setup:</strong> 2 seeds per hole, except leftmost inner = 0, next = 1.</li>
+      <li><strong style="color:var(--tx)">Move:</strong> Pick any non-empty hole in either of your rows.</li>
+      <li><strong style="color:var(--tx)">Relay:</strong> Last seed in occupied pit → pick up and continue sowing.</li>
+      <li><strong style="color:var(--tx)">Capture:</strong> Last seed in empty inner pit, opposite non-empty opponent inner → capture inner + outer same column.</li>
+      <li><strong style="color:var(--tx)">Win:</strong> Opponent has no seeds. Most captures when board exhausted.</li>
+    </ul>
+  </div>
+  <div class="about-card">
+    <h2>TEP Framework (Mitchell, 1997)</h2>
+    <div class="tep-grid">
+      <div class="tep-c"><h4>Task (T)</h4><p>Select moves to capture all opponent seeds. 1–16 legal moves per turn; relay chains create deep horizons.</p></div>
+      <div class="tep-c" style="border-color:var(--amber)"><h4>Experience (E)</h4><p>Self-play. Agent plays both sides; updates on P1 turns. +1 win, −1 loss, +0.05×n captured.</p></div>
+      <div class="tep-c" style="border-color:var(--green)"><h4>Performance (P)</h4><p>Win rate vs Random and Heuristic every 200 episodes, 60 eval games, ε=0.</p></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════ LEARN PANEL ════════════ -->
+<div class="panel" id="panel-learn">
+
+  <div class="learn-hero">
+    <h2>🌱 Mufuvha Grows Your Mind</h2>
+    <p>Mufuvha is not just a game — it is one of Africa's oldest tools for developing real-world skills. Hundreds of schools worldwide use Mancala games to teach mathematics, critical thinking, and social skills. Every move you make trains your brain in ways that matter for school, work, and life.</p>
+  </div>
+
+  <!-- WHO IS THIS FOR -->
+  <div class="age-banner">
+    <div class="age-pill"><span class="age-emoji">🧒</span><div class="age-range">Ages 6–10</div><div class="age-desc">Counting, turn-taking, patience, and cause-and-effect thinking. A safe and exciting introduction to strategy.</div></div>
+    <div class="age-pill"><span class="age-emoji">🧑</span><div class="age-range">Ages 11–15</div><div class="age-desc">Multi-step planning, mental arithmetic, competitive resilience, and reading opponents. Perfect for school learners.</div></div>
+    <div class="age-pill"><span class="age-emoji">👨‍🎓</span><div class="age-range">Ages 16–25</div><div class="age-desc">Abstract reasoning, AI concepts, cultural identity, and strategic depth rival chess. University-level cognitive challenge.</div></div>
+    <div class="age-pill"><span class="age-emoji">👨‍👩‍👧</span><div class="age-range">All Ages</div><div class="age-desc">Family bonding, intergenerational knowledge sharing, and pride in African heritage — no age limit on wisdom.</div></div>
+  </div>
+
+  <!-- RESEARCH NOTE -->
+  <div class="research-box">
+    <strong>What does research say?</strong> Psychologists Alexander de Voogt and Jean Retschitzki have extensively studied Mancala's effects on human memory, problem-solving, and development. Over 1,200 students competed in school tournaments in Portugal alone. Schools in Chicago use Mancala variants to support children with dyscalculia. A 2025 study found Mancala-based STEM sessions significantly improved math scores and attention in children with ADHD. <strong>Hundreds of schools</strong> across Andorra, England, France, Germany, Portugal, Spain, and the USA actively use Mancala to teach mathematical skills and intercultural awareness.
+  </div>
+
+  <!-- SKILL CARDS -->
+  <h3 style="font-family:'Cinzel',serif;font-size:.92rem;color:var(--gold);margin-bottom:12px;font-weight:700">🧠 Skills You Build Every Time You Play</h3>
+  <div class="skill-grid">
+
+    <div class="skill-card">
+      <span class="skill-icon">🔢</span>
+      <div class="skill-name">Mathematical Thinking</div>
+      <span class="skill-tag tag-math">Math · STEM</span>
+      <p class="skill-desc">Every move requires counting seeds, calculating trajectories, and predicting numerical outcomes. You practice addition, subtraction, and pattern recognition without even realising it. Research confirms Mancala strengthens number sense, mental arithmetic, and computation skills.</p>
+      <div class="skill-howto">In Mufuvha: Count seeds in each pit, track your score, and calculate how many pits your relay chain will cross before landing.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🗺</span>
+      <div class="skill-name">Strategic Planning</div>
+      <span class="skill-tag tag-cognitive">Cognitive</span>
+      <p class="skill-desc">Good players think 3–5 moves ahead. You must anticipate consequences, plan sequences, and adapt when your opponent disrupts your strategy. This is the same thinking used in business, engineering, and leadership.</p>
+      <div class="skill-howto">In Mufuvha: Plan relay chains that end on empty pits. Ask: "If I pick this pit, where does my last seed land two moves from now?"</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🧩</span>
+      <div class="skill-name">Problem Solving</div>
+      <span class="skill-tag tag-cognitive">Cognitive</span>
+      <p class="skill-desc">Every game position is a new puzzle. You must analyse the board, identify opportunities, and find creative solutions under pressure. This builds the problem-solving mindset that succeeds in science, technology, and everyday challenges.</p>
+      <div class="skill-howto">In Mufuvha: When your inner row is threatened, find moves that defend while also setting up future captures — two problems, one solution.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🧠</span>
+      <div class="skill-name">Working Memory</div>
+      <span class="skill-tag tag-cognitive">Executive Function</span>
+      <p class="skill-desc">You must hold the current board in your mind, remember your opponent's last move, and track seed counts across 32 pits simultaneously. This trains working memory — one of the strongest predictors of academic achievement and life success.</p>
+      <div class="skill-howto">In Mufuvha: Try to sow without stopping to count — build the habit of holding the whole board in your head at once.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">👁</span>
+      <div class="skill-name">Spatial Reasoning</div>
+      <span class="skill-tag tag-cognitive">Cognitive</span>
+      <p class="skill-desc">Mufuvha trains you to visualise how seeds move through a two-dimensional grid, rotating paths in your mind. Spatial reasoning underpins success in mathematics, architecture, engineering, and science (STEM fields).</p>
+      <div class="skill-howto">In Mufuvha: Before clicking, trace your sowing path with your eyes — inner row left to right, then outer row right to left. Picture every stop.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🤝</span>
+      <div class="skill-name">Social Skills & Sportsmanship</div>
+      <span class="skill-tag tag-social">Social-Emotional</span>
+      <p class="skill-desc">Playing against others — whether a friend, sibling, or AI — builds turn-taking, respect, fair play, and the ability to win and lose with grace. These are foundational social skills research links to long-term wellbeing and friendship quality.</p>
+      <div class="skill-howto">In Mufuvha: Congratulate your opponent on a clever capture. Analyse what went wrong after a loss. That reflection is a superpower.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">😤</span>
+      <div class="skill-name">Emotional Regulation & Resilience</div>
+      <span class="skill-tag tag-emotional">Emotional Intelligence</span>
+      <p class="skill-desc">When you lose seeds to a brilliant opponent move, you must manage frustration and keep thinking clearly. This builds emotional self-regulation — the ability to stay calm under pressure — a skill more predictive of life success than IQ.</p>
+      <div class="skill-howto">In Mufuvha: After a capture against you, pause one breath before your next move. That pause is emotional intelligence in action.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">⏳</span>
+      <div class="skill-name">Patience & Delayed Gratification</div>
+      <span class="skill-tag tag-emotional">Emotional Intelligence</span>
+      <p class="skill-desc">The best Mufuvha moves are often not the fastest or most immediately satisfying. Learning to wait — to build up your outer row reserves before striking — trains the delay of gratification linked to better outcomes in health, academics, and relationships.</p>
+      <div class="skill-howto">In Mufuvha: Resist the urge to make the first available capture. Often a better one appears two moves later if you wait and build.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🎭</span>
+      <div class="skill-name">Perspective-Taking & Empathy</div>
+      <span class="skill-tag tag-social">Social-Emotional</span>
+      <p class="skill-desc">To predict your opponent's next move, you must mentally step into their position and think as they think. Research shows this skill — called "theory of mind" — develops empathy and is strongly linked to social success and reduced conflict.</p>
+      <div class="skill-howto">In Mufuvha: After each move, ask: "What does my opponent most want to do now, and how do I prevent it?" That is empathy as strategy.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🏺</span>
+      <div class="skill-name">Cultural Identity & Heritage</div>
+      <span class="skill-tag tag-cultural">Cultural</span>
+      <p class="skill-desc">Mufuvha belongs to the Venda people of Limpopo — one of the oldest documented games in Africa. Playing it connects young South Africans to a 1,000-year-old intellectual tradition. Cultural pride and identity are strong protective factors for youth mental health and self-esteem.</p>
+      <div class="skill-howto">Explore the About panel. Read about the "Story of Sankhambi and the Baboons." This is your heritage — own it.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🤖</span>
+      <div class="skill-name">Computational Thinking & AI Literacy</div>
+      <span class="skill-tag tag-cognitive">STEM · Future Skills</span>
+      <p class="skill-desc">This digital Mufuvha features a real AI agent that learns through Reinforcement Learning — the same technique that powers ChatGPT, AlphaGo, and robotics. Understanding how AI makes decisions is one of the most important skills of the 21st century.</p>
+      <div class="skill-howto">Visit the Train AI panel. Watch the agent's win rate rise as it learns. Then beat it — and understand why you won.</div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">✋</span>
+      <div class="skill-name">Fine Motor Skills & Hand-Eye Coordination</div>
+      <span class="skill-tag tag-motor">Physical</span>
+      <p class="skill-desc">In the physical game, picking up and distributing seeds one by one develops fine motor control and hand-eye coordination — skills linked to handwriting, instrument playing, and precise craftsmanship. The digital version trains visual tracking and decision-speed.</p>
+      <div class="skill-howto">Watch the hand animation carefully. In physical play, mimic the same deliberate, controlled sowing motion — this is mindful movement.</div>
+    </div>
+
+  </div>
+
+  <!-- HOW TO AMPLIFY -->
+  <div class="amplify-section">
+    <h3>⚡ How to Amplify Learning — For Players, Parents & Teachers</h3>
+    <div class="amplify-grid">
+      <div class="amp-item">
+        <h4>🗣 Think Out Loud</h4>
+        <p>Say your strategy as you play: "I'm picking this pit because my last seed will land on an empty pit facing their loaded inner row." Verbalising reasoning deepens understanding — this is metacognition.</p>
+      </div>
+      <div class="amp-item">
+        <h4>📓 Keep a Game Journal</h4>
+        <p>After each game, write one thing you did well and one thing you would change. Reflection converts experience into learning. This habit transfers to school and work performance.</p>
+      </div>
+      <div class="amp-item">
+        <h4>🎓 Teach Someone Else</h4>
+        <p>The fastest way to master Mufuvha is to teach it. When you explain the rules and strategy to a younger sibling or friend, you discover gaps in your own understanding and fill them.</p>
+      </div>
+      <div class="amp-item">
+        <h4>🔢 Count Everything</h4>
+        <p>Before every move, count all seeds in every relevant pit — don't estimate. Make mental arithmetic a game within the game. Time yourself. Speed and accuracy are both skills.</p>
+      </div>
+      <div class="amp-item">
+        <h4>🤖 Analyse the AI</h4>
+        <p>After losing to the AI, replay the game mentally. At what point did the AI gain the advantage? What move did you miss? Analysing AI decisions develops algorithmic thinking.</p>
+      </div>
+      <div class="amp-item">
+        <h4>🏆 Run a Tournament</h4>
+        <p>Teachers: organise classroom Mufuvha tournaments. Competition builds motivation, sportsmanship, and social skills. Design a leaderboard and give certificates for "Best Strategy" not just winning.</p>
+      </div>
+      <div class="amp-item">
+        <h4>🌍 Explore Variants</h4>
+        <p>Change the board settings (Settings → Board Rules). Try 6 columns with 3 seeds each. How does the strategy change? Experimenting with rules builds systems thinking and adaptability.</p>
+      </div>
+      <div class="amp-item">
+        <h4>📐 Connect to School</h4>
+        <p>Maths teachers: use Mufuvha to teach sequences, patterns, and graph theory. Life Orientation: use it to teach decision-making. History: connect it to Venda culture and the 2004 indigenous games festival.</p>
+      </div>
+      <div class="amp-item">
+        <h4>🧘 Mindful Moves</h4>
+        <p>Challenge yourself to make zero impulsive moves. Breathe before each turn. This mindfulness practice improves focus and links Mufuvha to proven stress-reduction techniques.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIFE SKILLS SUMMARY -->
+  <div class="about-card">
+    <h2>🌟 The Full Skill Spectrum — Why Every Young Person Should Play</h2>
+    <p>Modern education research identifies a set of skills that predict success in life far better than grades alone: <strong style="color:var(--tx)">critical thinking, creativity, communication, collaboration, cultural competence, computational thinking, and emotional intelligence</strong> — sometimes called the "7 Cs" of 21st-century learning.</p>
+    <p>Mufuvha develops <strong style="color:var(--tx)">all seven</strong>. It demands critical thinking with every move. It rewards creative relay chains no one expects. It builds communication and collaboration in two-player and tournament play. It embeds cultural competence through its Venda roots. It introduces computational thinking through the AI trainer. And it builds emotional intelligence through every loss, every comeback, and every patient wait for the right moment to strike.</p>
+    <p style="margin-bottom:0">No screen time. No screen damage. Just seeds, pits, a 1,000-year-old board, and a mind that gets stronger every game.</p>
+  </div>
+
+</div>
+<!-- ════════════ END LEARN ════════════ -->
+
+</div><!-- /app -->
+
+<div class="footer">
+  <p><strong style="font-family:'Cinzel',serif;color:var(--tx3)">Mufuvha</strong> — Traditional Game of Limpopo, South Africa &nbsp;·&nbsp;
+  Developed by <strong style="color:var(--tx2)">Tshifhiwa AJ Tshitaka</strong> &nbsp;·&nbsp; For Research Purposes Only &nbsp;·&nbsp;
+  © 2026 All Rights Reserved</p>
+</div>
+
+<!-- WIN OVERLAY -->
+<div class="win-overlay" id="win-overlay">
+  <div class="win-box">
+    <div class="win-emoji" id="win-emoji">🏆</div>
+    <div class="win-title" id="win-title">Victory!</div>
+    <div class="win-sub" id="win-sub"></div>
+    <div class="win-scores" id="win-scores"></div>
+    <div class="win-time" id="win-time"></div>
+    <div class="win-actions">
+      <button class="btn btn-gold" onclick="startGame();closeWin()">▶ Play again</button>
+      <button class="btn btn-wood" onclick="closeWin()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-backdrop" id="settings-backdrop" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-drawer">
+    <div class="settings-hdr">
+      <h2>⚙️ Settings</h2>
+      <button class="close-btn" onclick="closeSettings()">✕</button>
+    </div>
+
+    <!-- PLAYERS -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Players</div>
+      <div class="setting-row">
+        <div><div class="setting-label">Player 1 Name</div></div>
+        <div class="setting-ctrl"><input type="text" id="name1" value="Player 1" maxlength="16" style="background:var(--card2);border:1px solid var(--border2);color:var(--tx);border-radius:7px;padding:5px 9px;font-size:.8rem;font-family:'Inter',sans-serif;outline:none;min-width:130px" oninput="syncPlayerNames()"></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Player 2 Name</div></div>
+        <div class="setting-ctrl"><input type="text" id="name2" value="Opponent" maxlength="16" style="background:var(--card2);border:1px solid var(--border2);color:var(--tx);border-radius:7px;padding:5px 9px;font-size:.8rem;font-family:'Inter',sans-serif;outline:none;min-width:130px" oninput="syncPlayerNames()"></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Player 1 Avatar</div><div class="setting-hint">Upload a photo</div></div>
+        <div class="setting-ctrl">
+          <button class="btn btn-wood" style="font-size:.74rem;padding:5px 10px" onclick="document.getElementById('av1-file').click()">📷 Upload</button>
+          <input type="file" id="av1-file" accept="image/*" style="display:none" onchange="loadAvatar(1,this)">
+        </div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Player 2 Avatar</div></div>
+        <div class="setting-ctrl">
+          <button class="btn btn-wood" style="font-size:.74rem;padding:5px 10px" onclick="document.getElementById('av2-file').click()">📷 Upload</button>
+          <input type="file" id="av2-file" accept="image/*" style="display:none" onchange="loadAvatar(2,this)">
+        </div>
+      </div>
+    </div>
+
+    <!-- BOARD RULES -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Board Rules</div>
+      <div class="setting-row">
+        <div><div class="setting-label">Columns per row</div><div class="setting-hint">Standard is 8 (4–12 supported)</div></div>
+        <div class="setting-ctrl"><input type="number" id="set-cols" value="8" min="4" max="12" onchange="applyBoardSettings()"></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Seeds per pit (start)</div><div class="setting-hint">Standard is 2 (1–4 supported)</div></div>
+        <div class="setting-ctrl"><input type="number" id="set-seeds" value="2" min="1" max="4" onchange="applyBoardSettings()"></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Show pit IDs</div><div class="setting-hint">Debug labels under each pit</div></div>
+        <div class="setting-ctrl">
+          <label class="toggle"><input type="checkbox" id="set-pitids" onchange="renderBoard(new Set(game.legal()),[])"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Show row labels</div></div>
+        <div class="setting-ctrl">
+          <label class="toggle"><input type="checkbox" id="set-rowlbls" checked onchange="renderBoard(new Set(game.legal()),[])"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- MUSIC -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Music</div>
+      <div class="setting-row">
+        <div><div class="setting-label">Background music</div><div class="setting-hint">Load any audio file from your device</div></div>
+        <div class="setting-ctrl" style="display:flex;gap:6px;align-items:center">
+          <button class="btn btn-wood" style="font-size:.74rem;padding:5px 10px" onclick="document.getElementById('music-upload').click()">🎵 Choose</button>
+          <input type="file" id="music-upload" accept="audio/*" style="display:none" onchange="loadMusic(this)">
+          <button class="btn btn-wood btn-icon" id="music-btn" onclick="toggleMusic()" style="font-size:.85rem;width:32px;height:32px">▶</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label" id="music-name">No music loaded</div></div>
+        <div class="setting-ctrl" style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:.7rem;color:var(--tx3)">Vol</span>
+          <input type="range" id="vol" min="0" max="1" step=".05" value=".5" oninput="setVol(this.value)" style="width:80px;accent-color:var(--gold)">
+        </div>
+      </div>
+    </div>
+
+    <!-- THEME -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Theme</div>
+      <div class="setting-row" style="border:none">
+        <div class="setting-label">Colour scheme</div>
+        <div class="theme-swatches">
+          <div class="tswatch ts-earth active" onclick="setTheme('earth',this)" title="Earth"></div>
+          <div class="tswatch ts-night" onclick="setTheme('night',this)" title="Night Sky"></div>
+          <div class="tswatch ts-forest" onclick="setTheme('forest',this)" title="Forest"></div>
+          <div class="tswatch ts-sunset" onclick="setTheme('sunset',this)" title="Sunset"></div>
+          <div class="tswatch ts-sky" onclick="setTheme('sky',this)" title="Ocean Sky"></div>
+          <div class="tswatch ts-jungle" onclick="setTheme('jungle',this)" title="Premium Green ✦"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARACTER PICKER -->
+    <div class="settings-section">
+      <div class="settings-section-hdr">Game Character</div>
+      <div class="setting-row" style="border:none;flex-direction:column;align-items:flex-start;gap:8px">
+        <div class="setting-label">Choose your seed-sower</div>
+        <div class="char-grid" id="char-grid"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-gold" style="width:100%;margin-top:4px;padding:12px" onclick="startGame();closeSettings()">▶ Apply &amp; New Game</button>
+  </div>
+</div>
+
+<audio id="bg-music" loop preload="none"></audio>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   CARTOON CHARACTERS
+   Each is a 40×40 viewBox SVG string. Designed to fit
+   inside a pit bowl without overlapping neighbours.
+═══════════════════════════════════════════════════════ */
+const CHARACTERS={
+  meeple:{
+    name:'Meeple',emoji:'🧍',
+    svg:`<g>
+      <!-- body -->
+      <ellipse cx="20" cy="28" rx="9" ry="10" fill="#e8a030"/>
+      <!-- head -->
+      <circle cx="20" cy="13" r="7" fill="#f0c060"/>
+      <!-- eyes -->
+      <circle cx="17.5" cy="12" r="1.4" fill="#3a2000"/>
+      <circle cx="22.5" cy="12" r="1.4" fill="#3a2000"/>
+      <!-- shine -->
+      <circle cx="18.2" cy="11.2" r=".5" fill="#fff8"/>
+      <circle cx="23.2" cy="11.2" r=".5" fill="#fff8"/>
+      <!-- smile -->
+      <path d="M17 15 Q20 17.5 23 15" stroke="#3a2000" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      <!-- arms -->
+      <line x1="11" y1="24" x2="6" y2="20" stroke="#e8a030" stroke-width="3" stroke-linecap="round"/>
+      <line x1="29" y1="24" x2="34" y2="20" stroke="#e8a030" stroke-width="3" stroke-linecap="round"/>
+      <!-- legs -->
+      <line x1="16" y1="37" x2="13" y2="40" stroke="#c07020" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="24" y1="37" x2="27" y2="40" stroke="#c07020" stroke-width="3.5" stroke-linecap="round"/>
+    </g>`
+  },
+  frog:{
+    name:'Frog',emoji:'🐸',
+    svg:`<g>
+      <!-- body -->
+      <ellipse cx="20" cy="26" rx="12" ry="11" fill="#3ec860"/>
+      <!-- head -->
+      <ellipse cx="20" cy="17" rx="11" ry="9" fill="#50e070"/>
+      <!-- eye bumps -->
+      <circle cx="13" cy="12" r="4.5" fill="#50e070"/>
+      <circle cx="27" cy="12" r="4.5" fill="#50e070"/>
+      <!-- pupils -->
+      <circle cx="13" cy="12" r="2.8" fill="#1a1a00"/>
+      <circle cx="27" cy="12" r="2.8" fill="#1a1a00"/>
+      <!-- shine -->
+      <circle cx="12" cy="10.8" r="1" fill="#fff9"/>
+      <circle cx="26" cy="10.8" r="1" fill="#fff9"/>
+      <!-- belly -->
+      <ellipse cx="20" cy="27" rx="8" ry="7" fill="#a8f0b0"/>
+      <!-- smile -->
+      <path d="M15 21 Q20 25 25 21" stroke="#28a040" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <!-- feet -->
+      <ellipse cx="12" cy="37" rx="5" ry="3" fill="#3ec860" transform="rotate(-15,12,37)"/>
+      <ellipse cx="28" cy="37" rx="5" ry="3" fill="#3ec860" transform="rotate(15,28,37)"/>
+    </g>`
+  },
+  lion:{
+    name:'Lion',emoji:'🦁',
+    svg:`<g>
+      <!-- mane -->
+      <circle cx="20" cy="19" r="14" fill="#c8780a"/>
+      <!-- face -->
+      <circle cx="20" cy="18" r="10" fill="#f0c060"/>
+      <!-- ears -->
+      <ellipse cx="10" cy="9" rx="4" ry="5" fill="#c8780a"/>
+      <ellipse cx="30" cy="9" rx="4" ry="5" fill="#c8780a"/>
+      <ellipse cx="10" cy="9" rx="2" ry="3" fill="#f0a060"/>
+      <ellipse cx="30" cy="9" rx="2" ry="3" fill="#f0a060"/>
+      <!-- eyes -->
+      <circle cx="16.5" cy="16" r="2" fill="#3a2000"/>
+      <circle cx="23.5" cy="16" r="2" fill="#3a2000"/>
+      <circle cx="15.9" cy="15.3" r=".7" fill="#fff9"/>
+      <circle cx="22.9" cy="15.3" r=".7" fill="#fff9"/>
+      <!-- nose -->
+      <ellipse cx="20" cy="21" rx="3" ry="2" fill="#e06050"/>
+      <!-- mouth -->
+      <path d="M17 23 Q20 26 23 23" stroke="#a03020" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      <!-- whisker dots -->
+      <circle cx="13" cy="21" r=".7" fill="#a07030"/><circle cx="11" cy="22.5" r=".7" fill="#a07030"/>
+      <circle cx="27" cy="21" r=".7" fill="#a07030"/><circle cx="29" cy="22.5" r=".7" fill="#a07030"/>
+      <!-- body stub -->
+      <ellipse cx="20" cy="34" rx="7" ry="6" fill="#f0c060"/>
+    </g>`
+  },
+  robot:{
+    name:'Robot',emoji:'🤖',
+    svg:`<g>
+      <!-- antenna -->
+      <line x1="20" y1="2" x2="20" y2="8" stroke="#60c0f0" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="20" cy="2" r="2.2" fill="#60c0f0"/>
+      <!-- head -->
+      <rect x="10" y="8" width="20" height="16" rx="4" fill="#4080c0"/>
+      <!-- visor -->
+      <rect x="12" y="10" width="16" height="8" rx="2" fill="#20d8f8" opacity=".85"/>
+      <!-- eyes on visor -->
+      <circle cx="17" cy="14" r="2.5" fill="#fff" opacity=".9"/>
+      <circle cx="23" cy="14" r="2.5" fill="#fff" opacity=".9"/>
+      <circle cx="17" cy="14" r="1.3" fill="#0040a0"/>
+      <circle cx="23" cy="14" r="1.3" fill="#0040a0"/>
+      <circle cx="16.4" cy="13.4" r=".5" fill="#fff9"/>
+      <circle cx="22.4" cy="13.4" r=".5" fill="#fff9"/>
+      <!-- mouth grill -->
+      <rect x="14" y="21" width="12" height="2" rx="1" fill="#2060a0"/>
+      <line x1="17" y1="21" x2="17" y2="23" stroke="#60a0e0" stroke-width=".8"/>
+      <line x1="20" y1="21" x2="20" y2="23" stroke="#60a0e0" stroke-width=".8"/>
+      <line x1="23" y1="21" x2="23" y2="23" stroke="#60a0e0" stroke-width=".8"/>
+      <!-- body -->
+      <rect x="12" y="25" width="16" height="12" rx="3" fill="#3060a0"/>
+      <!-- chest light -->
+      <circle cx="20" cy="31" r="3" fill="#20f0f0" opacity=".7"/>
+      <!-- arms -->
+      <rect x="5" y="26" width="6" height="9" rx="3" fill="#4080c0"/>
+      <rect x="29" y="26" width="6" height="9" rx="3" fill="#4080c0"/>
+      <!-- legs -->
+      <rect x="13" y="37" width="5" height="4" rx="2" fill="#3060a0"/>
+      <rect x="22" y="37" width="5" height="4" rx="2" fill="#3060a0"/>
+    </g>`
+  },
+  monkey:{
+    name:'Monkey',emoji:'🐒',
+    svg:`<g>
+      <!-- ears -->
+      <circle cx="9" cy="17" r="5.5" fill="#c07840"/>
+      <circle cx="31" cy="17" r="5.5" fill="#c07840"/>
+      <circle cx="9" cy="17" r="3" fill="#f0a060"/>
+      <circle cx="31" cy="17" r="3" fill="#f0a060"/>
+      <!-- head -->
+      <circle cx="20" cy="16" r="12" fill="#c07840"/>
+      <!-- face patch -->
+      <ellipse cx="20" cy="20" rx="8" ry="7" fill="#f0c080"/>
+      <!-- eyes -->
+      <circle cx="15.5" cy="14" r="2.5" fill="#fff"/>
+      <circle cx="24.5" cy="14" r="2.5" fill="#fff"/>
+      <circle cx="15.5" cy="14.5" r="1.4" fill="#1a1000"/>
+      <circle cx="24.5" cy="14.5" r="1.4" fill="#1a1000"/>
+      <circle cx="14.9" cy="13.8" r=".5" fill="#fff9"/>
+      <circle cx="23.9" cy="13.8" r=".5" fill="#fff9"/>
+      <!-- nose -->
+      <ellipse cx="20" cy="19" rx="2.5" ry="1.8" fill="#a06030"/>
+      <circle cx="18.8" cy="19" r=".8" fill="#7a4020"/>
+      <circle cx="21.2" cy="19" r=".8" fill="#7a4020"/>
+      <!-- smile -->
+      <path d="M16 22 Q20 26 24 22" stroke="#7a4020" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- body -->
+      <ellipse cx="20" cy="33" rx="8" ry="7" fill="#c07840"/>
+      <!-- tail curl -->
+      <path d="M28 32 Q36 28 34 36 Q32 42 38 40" stroke="#c07840" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>`
+  },
+  star:{
+    name:'Star Kid',emoji:'⭐',
+    svg:`<g>
+      <!-- body star -->
+      <polygon points="20,2 23.5,13 35,13 25.5,20 29,31 20,24 11,31 14.5,20 5,13 16.5,13" fill="#f0c030"/>
+      <!-- shine inner -->
+      <polygon points="20,7 22.5,14.5 30,14.5 24,19 26.5,27 20,22.5 13.5,27 16,19 10,14.5 17.5,14.5" fill="#fff080" opacity=".5"/>
+      <!-- face -->
+      <circle cx="20" cy="17" r="7" fill="#ffe060"/>
+      <!-- eyes -->
+      <circle cx="17.5" cy="15.5" r="1.6" fill="#3a2800"/>
+      <circle cx="22.5" cy="15.5" r="1.6" fill="#3a2800"/>
+      <circle cx="16.9" cy="14.9" r=".6" fill="#fff9"/>
+      <circle cx="21.9" cy="14.9" r=".6" fill="#fff9"/>
+      <!-- happy mouth -->
+      <path d="M17 19 Q20 22 23 19" stroke="#3a2800" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- rosy cheeks -->
+      <circle cx="15" cy="18" r="2.2" fill="#f08080" opacity=".45"/>
+      <circle cx="25" cy="18" r="2.2" fill="#f08080" opacity=".45"/>
+      <!-- sparkles -->
+      <circle cx="6" cy="6" r="1.5" fill="#fff060" opacity=".8"/>
+      <circle cx="34" cy="6" r="1.5" fill="#fff060" opacity=".8"/>
+      <circle cx="4" cy="28" r="1" fill="#fff060" opacity=".6"/>
+      <circle cx="36" cy="28" r="1" fill="#fff060" opacity=".6"/>
+    </g>`
+  },
+  zebra:{
+    name:'Zebra',emoji:'🦓',
+    svg:`<g>
+      <!-- head -->
+      <ellipse cx="20" cy="16" rx="11" ry="13" fill="#f0f0f0"/>
+      <!-- stripes on head -->
+      <path d="M10 10 Q16 8 22 9" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M9 15 Q15 13 23 15" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M10 20 Q16 19 24 21" stroke="#222" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <!-- snout -->
+      <ellipse cx="20" cy="27" rx="7" ry="5" fill="#e8e8e8"/>
+      <!-- nostrils -->
+      <ellipse cx="17.5" cy="27.5" rx="1.2" ry="1.5" fill="#aaa"/>
+      <ellipse cx="22.5" cy="27.5" rx="1.2" ry="1.5" fill="#aaa"/>
+      <!-- eyes -->
+      <circle cx="15" cy="15" r="2.8" fill="#fff"/>
+      <circle cx="25" cy="15" r="2.8" fill="#fff"/>
+      <circle cx="15" cy="15.5" r="1.6" fill="#1a1a00"/>
+      <circle cx="25" cy="15.5" r="1.6" fill="#1a1a00"/>
+      <circle cx="14.4" cy="14.8" r=".6" fill="#fff9"/>
+      <circle cx="24.4" cy="14.8" r=".6" fill="#fff9"/>
+      <!-- ears -->
+      <ellipse cx="12" cy="6" rx="3.5" ry="5" fill="#f0f0f0" transform="rotate(-10,12,6)"/>
+      <ellipse cx="12" cy="6" rx="1.5" ry="3" fill="#f080a0" transform="rotate(-10,12,6)"/>
+      <ellipse cx="28" cy="6" rx="3.5" ry="5" fill="#f0f0f0" transform="rotate(10,28,6)"/>
+      <ellipse cx="28" cy="6" rx="1.5" ry="3" fill="#f080a0" transform="rotate(10,28,6)"/>
+      <!-- mane stripe -->
+      <path d="M17 3 Q20 1 23 3" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- smile -->
+      <path d="M17 30 Q20 33 23 30" stroke="#888" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+    </g>`
+  },
+  mushroom:{
+    name:'Shroom',emoji:'🍄',
+    svg:`<g>
+      <!-- cap -->
+      <ellipse cx="20" cy="16" rx="15" ry="14" fill="#e03030"/>
+      <!-- cap top highlight -->
+      <ellipse cx="20" cy="10" rx="10" ry="6" fill="#f05050" opacity=".5"/>
+      <!-- spots -->
+      <circle cx="13" cy="12" r="3.5" fill="#fff" opacity=".9"/>
+      <circle cx="24" cy="10" r="3" fill="#fff" opacity=".9"/>
+      <circle cx="27" cy="18" r="2.5" fill="#fff" opacity=".85"/>
+      <circle cx="15" cy="20" r="2" fill="#fff" opacity=".8"/>
+      <!-- stem -->
+      <ellipse cx="20" cy="30" rx="8" ry="10" fill="#f5e8c0"/>
+      <!-- stem shading -->
+      <ellipse cx="20" cy="32" rx="5" ry="7" fill="#e8d8a8" opacity=".5"/>
+      <!-- face -->
+      <circle cx="17" cy="27" r="2" fill="#3a2000"/>
+      <circle cx="23" cy="27" r="2" fill="#3a2000"/>
+      <circle cx="16.4" cy="26.4" r=".7" fill="#fff9"/>
+      <circle cx="22.4" cy="26.4" r=".7" fill="#fff9"/>
+      <!-- mouth -->
+      <path d="M16 31 Q20 34.5 24 31" stroke="#3a2000" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- blush -->
+      <circle cx="14" cy="30" r="2.2" fill="#f08080" opacity=".4"/>
+      <circle cx="26" cy="30" r="2.2" fill="#f08080" opacity=".4"/>
+    </g>`
+  }
+};
+
+let activeChar='meeple';
+
+function buildCharGrid(){
+  const grid=document.getElementById('char-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  Object.entries(CHARACTERS).forEach(([key,ch])=>{
+    const btn=document.createElement('div');
+    btn.className='char-opt'+(key===activeChar?' active':'');
+    btn.title=ch.name;
+    btn.innerHTML=`<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">${ch.svg}</svg>`;
+    btn.onclick=()=>{
+      activeChar=key;
+      document.querySelectorAll('.char-opt').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      applyCharacter();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function applyCharacter(){
+  const svg=document.getElementById('hand-svg');
+  if(svg&&CHARACTERS[activeChar])svg.innerHTML=CHARACTERS[activeChar].svg;
+}
+
+let COLS=8, SEEDS_PER_PIT=2;
+const P1=1, P2=2;
+let P1I,P1O,P2I,P2O,NPITS,LOOP_P1,LOOP_P2;
+
+function rebuildConstants(){
+  const C=COLS;
+  P1I=Array.from({length:C},(_,i)=>i);
+  P1O=Array.from({length:C},(_,i)=>i+C);
+  P2I=Array.from({length:C},(_,i)=>i+2*C);
+  P2O=Array.from({length:C},(_,i)=>i+3*C);
+  NPITS=4*C;
+  LOOP_P1=[...P1I,...[...P1O].reverse()];
+  LOOP_P2=[...[...P2I].reverse(),...P2O];
+}
+rebuildConstants();
+
+const innerOf=p=>p===P1?P1I:P2I;
+const outerOf=p=>p===P1?P1O:P2O;
+const allOf=p=>[...innerOf(p),...outerOf(p)];
+const oppInner=pit=>{
+  if(P1I.includes(pit)){const i=P1I.indexOf(pit);return P2I[COLS-1-i];}
+  if(P2I.includes(pit)){const i=P2I.indexOf(pit);return P1I[COLS-1-i];}
+  return -1;
+};
+const behindOuter=(pit,capturingPlayer)=>{
+  /* When capturingPlayer captures pit (opponent inner),
+     "behind" means the outer row of the OPPONENT behind that inner pit.
+     P1 captures P2I → behind is P2O same column.
+     P2 captures P1I → behind is P1O same column. */
+  if(capturingPlayer===P1&&P2I.includes(pit))return P2O[P2I.indexOf(pit)];
+  if(capturingPlayer===P2&&P1I.includes(pit))return P1O[P1I.indexOf(pit)];
+  return -1;
+};
+
+function initBoard(){
+  const b=new Array(NPITS).fill(SEEDS_PER_PIT);
+  b[P1I[0]]=0; b[P1I[1]]=Math.max(1,SEEDS_PER_PIT-1);
+  b[P2I[COLS-1]]=0; b[P2I[COLS-2]]=Math.max(1,SEEDS_PER_PIT-1);
+  return b;
+}
+
+function sowOrder(player,startPit,n){
+  const loop=player===P1?LOOP_P1:LOOP_P2;
+  const si=loop.indexOf(startPit);
+  if(si<0)return[];
+  const rot=[...loop.slice(si+1),...loop.slice(0,si+1)];
+  const reps=Math.min(12,Math.ceil((n+2)/loop.length)+3);
+  let o=[];for(let r=0;r<reps;r++)o=o.concat(rot);
+  return o;
+}
+
+class MufuvhaGame{
+  constructor(){this.reset()}
+  reset(){
+    this.board=initBoard();
+    this.cap={1:0,2:0};
+    this.cur=P1;this.done=false;this.winner=null;
+    this.lastPit=-1;this.moveCount=0;
+    return this;
+  }
+  legal(){
+    if(this.done)return[];
+    return allOf(this.cur).filter(p=>this.board[p]>0);
+  }
+  step(pit){
+    if(this.done||!this.legal().includes(pit))return null;
+    const pl=this.cur,op=pl===P1?P2:P1;
+    let reward=0,capInfo=null;
+    const sowTrace=[];
+    let seeds=this.board[pit];this.board[pit]=0;
+    let ord=sowOrder(pl,pit,seeds),idx=0,last=pit;
+    let safe=0;
+    while(seeds>0&&idx<ord.length&&safe<2000){
+      safe++;
+      const d=ord[idx++];this.board[d]++;last=d;sowTrace.push(d);seeds--;
+      if(seeds===0&&this.board[last]>1){
+        seeds=this.board[last];this.board[last]=0;
+        ord=sowOrder(pl,last,seeds);idx=0;
+      }
+    }
+    this.lastPit=last;
+    if(innerOf(pl).includes(last)&&this.board[last]===1){
+      const oi=oppInner(last);
+      if(oi>=0&&this.board[oi]>0){
+        let n=1+this.board[oi];
+        const capPits=[last,oi];
+        this.cap[pl]+=n;this.board[last]=0;this.board[oi]=0;reward+=n*.05;
+        const ob=behindOuter(oi,pl);
+        if(ob>=0&&ob<NPITS&&this.board[ob]>0){
+          n+=this.board[ob];capPits.push(ob);
+          this.cap[pl]+=this.board[ob];reward+=this.board[ob]*.05;this.board[ob]=0;
+        }
+        capInfo={seeds:n,pits:capPits};
+      }
+    }
+    const oppOk=allOf(op).some(p=>this.board[p]>0);
+    const ownOk=allOf(pl).some(p=>this.board[p]>0);
+    if(!oppOk||!ownOk){
+      allOf(P1).forEach(p=>{this.cap[P1]+=this.board[p];this.board[p]=0;});
+      allOf(P2).forEach(p=>{this.cap[P2]+=this.board[p];this.board[p]=0;});
+      this.done=true;
+      this.winner=this.cap[P1]>this.cap[P2]?P1:this.cap[P2]>this.cap[P1]?P2:0;
+      reward=this.winner===pl?1:this.winner===op?-1:0;
+    }else{this.cur=op;}
+    this.moveCount++;
+    return{reward,lastPit:last,capInfo,sowTrace};
+  }
+  clone(){
+    const g=new MufuvhaGame();g.board=[...this.board];g.cap={...this.cap};
+    g.cur=this.cur;g.done=this.done;g.winner=this.winner;
+    g.lastPit=this.lastPit;g.moveCount=this.moveCount;
+    return g;
+  }
+  feat(player){
+    player=player||this.cur;const op=player===P1?P2:P1;
+    const T=this.board.reduce((a,v)=>a+v,0)||1;
+    const oi=innerOf(player).map(p=>this.board[p]/T);
+    const oo=outerOf(player).map(p=>this.board[p]/T);
+    const ei=innerOf(op).map(p=>this.board[p]/T);
+    const eo=outerOf(op).map(p=>this.board[p]/T);
+    const boi=innerOf(player).map(p=>this.board[p]>0?1:0);
+    const bei=innerOf(op).map(p=>this.board[p]>0?1:0);
+    return[...oi,...oo,...ei,...eo,this.cap[player]/64,this.cap[op]/64,...boi,...bei];
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   AGENTS
+═══════════════════════════════════════════════════ */
+const dot=(a,b)=>a.reduce((s,v,i)=>s+v*(b[i]||0),0);
+class RandAgent{name='Random';sel(g){const m=g.legal();return m.length?m[0|Math.random()*m.length]:null;}}
+class HeurAgent{name='Heuristic';sel(g){
+  const m=g.legal();if(!m.length)return null;
+  const p=g.cur,op=p===P1?P2:P1;let best=-1e9,bm=m[0];
+  for(const mv of m){const g2=g.clone();g2.step(mv);const sc=(g2.cap[p]-g2.cap[op])*.1+allOf(p).reduce((a,x)=>a+g2.board[x],0)*.003;if(sc>best){best=sc;bm=mv;}}
+  return bm;
+}}
+class LinearQAgent{
+  constructor(cfg={}){
+    this.FEAT=50;this.alpha=cfg.alpha||.01;this.gamma=cfg.gamma||.95;
+    this.eps=cfg.eps||1;this.emin=cfg.emin||.05;this.ed=cfg.ed||.9994;this.training=true;
+    this.w=this._load()||new Array(this.FEAT).fill(0);
+  }
+  _load(){try{const s=localStorage.getItem('mufuvha_w');return s?JSON.parse(s):null;}catch{return null;}}
+  _save(){try{localStorage.setItem('mufuvha_w',JSON.stringify(this.w));}catch{}}
+  reset(){this.w=new Array(this.FEAT).fill(0);this.eps=1;try{localStorage.removeItem('mufuvha_w');}catch{}}
+  af(g,a){const g2=g.clone();g2.step(a);return g2.feat(g.cur);}
+  q(f){return dot(this.w,f);}
+  sel(g){
+    const m=g.legal();if(!m.length)return null;
+    if(this.training&&Math.random()<this.eps)return m[0|Math.random()*m.length];
+    let best=-1e9,bm=m[0];
+    for(const mv of m){const qv=this.q(this.af(g,mv));if(qv>best){best=qv;bm=mv;}}
+    return bm;
+  }
+  upd(snap,action,reward,ga,done){
+    const phi=this.af(snap,action);const qv=this.q(phi);
+    const nm=ga.legal();
+    const tgt=done?reward:nm.length?reward+this.gamma*(-Math.max(...nm.map(m=>this.q(this.af(ga,m))))):reward;
+    const err=tgt-qv;
+    for(let i=0;i<this.w.length;i++)this.w[i]+=this.alpha*err*(phi[i]||0);
+    if(this.training&&this.eps>this.emin)this.eps*=this.ed;
+  }
+  setEval(){this.training=false;this.eps=0;}
+  setTrain(){this.training=true;}
+}
+const randA=new RandAgent(),heurA=new HeurAgent(),qlA=new LinearQAgent();
+
+/* ═══════════════════════════════════════════════════
+   GAME STATE
+═══════════════════════════════════════════════════ */
+let game=new MufuvhaGame(),animating=false,aiTimer=null;
+let snapshots=[],moveLogArr=[];
+let sfxOn=true,activeHint=-1;
+let gameTimerStart=0,gameTimerInterval=null,gameTimerSeconds=0;
+
+function startGameTimer(){
+  stopGameTimer();gameTimerStart=Date.now();gameTimerSeconds=0;
+  gameTimerInterval=setInterval(()=>{
+    if(game.done){stopGameTimer();return;}
+    gameTimerSeconds=Math.floor((Date.now()-gameTimerStart)/1000);
+    const m=Math.floor(gameTimerSeconds/60),s=gameTimerSeconds%60;
+    const el=document.getElementById('game-timer');
+    if(el)el.textContent=m+':'+(s<10?'0':'')+s;
+  },500);
+}
+function stopGameTimer(){if(gameTimerInterval){clearInterval(gameTimerInterval);gameTimerInterval=null;}}
+function resetGameTimer(){
+  stopGameTimer();gameTimerSeconds=0;
+  const el=document.getElementById('game-timer');if(el)el.textContent='0:00';
+}
+
+function stopGame(){
+  /* Stop everything — timer, AI, animation — and reset to idle state */
+  if(aiTimer){clearTimeout(aiTimer);aiTimer=null;}
+  animating=false;
+  _hideHand();
+  document.querySelectorAll('.fall-seed,.float-num').forEach(e=>e.remove());
+  stopGameTimer();
+  stopConfetti();
+  /* Mark game as done but show a "stopped" message rather than win screen */
+  game.done=true;
+  const si=document.getElementById('si'),msg=document.getElementById('status-msg');
+  if(si)si.className='si si-idle';
+  if(msg)msg.textContent='Game stopped. Press ▶ New Game to start again.';
+  const mc=document.getElementById('move-counter');
+  if(mc)mc.textContent='Stopped';
+  renderBoard(new Set(),[]);
+  sndClick();
+}
+
+const getAI=()=>({rand:randA,heur:heurA,ql:qlA})[document.getElementById('sel-diff').value]||qlA;
+const getMode=()=>document.getElementById('sel-mode').value;
+const getSpd=()=>+document.getElementById('sel-spd').value;
+const getName=(p)=>document.getElementById('name'+p).value||'Player '+p;
+function getAvatar(p){
+  const f=document.getElementById('av'+p+'-file');
+  const sb=document.getElementById('sbav'+p);
+  return(sb&&sb.src)?sb.src:'';
+}
+
+function syncPlayerNames(){
+  const n1=getName(1),n2=getName(2);
+  const e1=document.getElementById('sb-name1'),e2=document.getElementById('sb-name2');
+  if(e1)e1.textContent=n1;
+  if(e2)e2.textContent=n2;
+}
+
+function onModeChange(){
+  const m=getMode();
+  document.getElementById('grp-spd').style.display=m!=='hvh'?'flex':'none';
+  document.getElementById('grp-diff').style.display=m==='hva'?'flex':'none';
+}
+
+function loadAvatar(player,inp){
+  if(!inp.files[0])return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const src=e.target.result;
+    const sb=document.getElementById('sbav'+player);
+    if(sb)sb.src=src;
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+
+function applyBoardSettings(){
+  const c=parseInt(document.getElementById('set-cols').value)||8;
+  const s=parseInt(document.getElementById('set-seeds').value)||2;
+  COLS=Math.max(4,Math.min(12,c));
+  SEEDS_PER_PIT=Math.max(1,Math.min(4,s));
+  rebuildConstants();
+}
+
+/* ═══════════════════════════════════════════════════
+   SOUND — rich layered synth palette
+═══════════════════════════════════════════════════ */
+let actx=null;
+const ctx_=()=>{if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;};
+
+function tone(freq,type,dur,vol=.25,delay=0,detune=0){
+  if(!sfxOn)return;
+  try{
+    const c=ctx_(),o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();
+    f.type='lowpass';f.frequency.value=4000;
+    o.connect(f);f.connect(g);g.connect(c.destination);
+    o.type=type;o.frequency.setValueAtTime(freq,c.currentTime+delay);
+    o.detune.setValueAtTime(detune,c.currentTime+delay);
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+.012);
+    g.gain.exponentialRampToValueAtTime(.001,c.currentTime+delay+dur);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+.05);
+  }catch{}
+}
+
+function noise(dur,vol=.12,delay=0,fc=900,q=1.2){
+  if(!sfxOn)return;
+  try{
+    const c=ctx_(),buf=c.createBuffer(1,c.sampleRate*dur,c.sampleRate);
+    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    const src=c.createBufferSource(),g=c.createGain(),fl=c.createBiquadFilter();
+    fl.type='bandpass';fl.frequency.value=fc;fl.Q.value=q;
+    src.buffer=buf;src.connect(fl);fl.connect(g);g.connect(c.destination);
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+.01);
+    g.gain.exponentialRampToValueAtTime(.001,c.currentTime+delay+dur);
+    src.start(c.currentTime+delay);src.stop(c.currentTime+delay+dur+.05);
+  }catch{}
+}
+
+/* Seed picked up from pit — soft woody thud */
+function sndPick(){
+  noise(.09,.28,0,400,2);
+  tone(200,'sine',.12,.14,.01);
+  tone(320,'triangle',.07,.08,.04);
+}
+
+/* One seed dropped into a pit — soft click + pitch */
+function sndStep(pitIdx){
+  /* Slight pitch variation so each drop sounds unique */
+  const pitches=[280,300,320,260,340,290,310,270];
+  const p=pitches[pitIdx%pitches.length];
+  noise(.05,.2,0,800,1.8);
+  tone(p,'triangle',.08,.1,0,Math.random()*20-10);
+}
+
+/* Relay continues — energetic rising chime */
+function sndRelay(){
+  tone(440,'triangle',.15,.2,0);
+  tone(554,'triangle',.13,.18,.06);
+  tone(659,'triangle',.11,.16,.12);
+  noise(.08,.1,.02,1200,2);
+}
+
+/* Relay chain building — mid-chain excitement */
+function sndRelayBuild(step){
+  const base=300+step*18;
+  tone(base,'square',.08,.07,0);
+  noise(.04,.09,0,base*2,1.5);
+}
+
+/* Capture setup — suspenseful low rumble */
+function sndCapturePending(){
+  tone(80,'sawtooth',.35,.18,0);
+  tone(85,'sawtooth',.35,.14,.02);
+  noise(.3,.12,.05,200,0.8);
+}
+
+/* Capture strike — dramatic boom + shimmer */
+function sndCaptureStrike(){
+  /* Deep boom */
+  tone(55,'sawtooth',.4,.4,0);
+  tone(60,'sawtooth',.35,.3,.01);
+  /* Mid crack */
+  noise(.12,.35,.02,2000,3);
+  noise(.18,.25,.04,800,2);
+  /* High shimmer cascade */
+  [880,1100,1320,1540].forEach((f,i)=>{
+    tone(f,'sine',.25,.22,i*.045);
+    tone(f*1.01,'triangle',.2,.12,i*.045+.02);
+  });
+}
+
+/* Win fanfare — celebratory ascending cascade */
+function sndWin(){
+  const notes=[261,329,392,523,659,784,1046,1318];
+  notes.forEach((f,i)=>{
+    tone(f,'sine',.55,.38,i*.07);
+    tone(f*1.5,'triangle',.3,.16,i*.07+.03);
+    tone(f*2,'sine',.18,.08,i*.07+.05);
+  });
+  noise(.2,.15,.35,3000,3);
+  noise(.15,.1,.6,5000,4);
+}
+
+/* Draw — neutral descending tones */
+function sndDraw(){
+  [523,440,370,330].forEach((f,i)=>tone(f,'sine',.35,.25,i*.14));
+  noise(.2,.1,.1,600,1.5);
+}
+
+/* UI click */
+function sndClick(){tone(340,'triangle',.07,.14);}
+
+/* Error buzz */
+function sndError(){
+  tone(140,'sawtooth',.18,.22,0);
+  tone(130,'sawtooth',.15,.18,.04);
+}
+
+/* Capture each individual pit — swoosh */
+function sndGrabPit(){
+  noise(.1,.3,0,1400,2.5);
+  tone(600,'triangle',.1,.18,0);
+  tone(400,'sine',.12,.12,.04);
+}
+
+function toggleSfx(){
+  sfxOn=!sfxOn;
+  const btn=document.getElementById('snd-btn');
+  if(btn)btn.textContent=sfxOn?'🔊':'🔇';
+}
+
+/* ═══════════════════════════════════════════════════
+   MUSIC
+═══════════════════════════════════════════════════ */
+let musicPlaying=false,musicLoaded=false,_musicCtx=null,_musicSource=null,_musicBuffer=null,_musicGain=null,_musicStartTime=0,_musicOffset=0;
+function _getACtx(){if(!_musicCtx)_musicCtx=new(window.AudioContext||window.webkitAudioContext)();return _musicCtx;}
+function loadMusic(inp){
+  if(!inp.files[0])return;
+  const file=inp.files[0];
+  document.getElementById('music-name').textContent='Loading…';
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const ctx=_getACtx();
+    ctx.decodeAudioData(ev.target.result.slice(0),function(buf){
+      _musicBuffer=buf;musicLoaded=true;musicPlaying=false;_musicOffset=0;
+      document.getElementById('music-name').textContent=file.name;
+      document.getElementById('music-btn').textContent='▶';
+      _musicPlay();
+    },function(){document.getElementById('music-name').textContent='Error loading';});
+  };
+  reader.readAsArrayBuffer(file);
+}
+function _musicPlay(){
+  if(!_musicBuffer)return;
+  const ctx=_getACtx();
+  if(_musicSource){try{_musicSource.stop();}catch(e){}_musicSource.disconnect();}
+  _musicGain=_musicGain||ctx.createGain();
+  _musicGain.gain.value=+document.getElementById('vol').value;
+  _musicGain.connect(ctx.destination);
+  _musicSource=ctx.createBufferSource();
+  _musicSource.buffer=_musicBuffer;_musicSource.loop=true;_musicSource.connect(_musicGain);
+  _musicSource.start(0,_musicOffset%_musicBuffer.duration);
+  _musicStartTime=ctx.currentTime;musicPlaying=true;
+  document.getElementById('music-btn').textContent='⏸';
+}
+function toggleMusic(){
+  if(!musicLoaded){document.getElementById('music-name').textContent='Choose a song file first';return;}
+  const ctx=_getACtx();
+  if(musicPlaying){
+    _musicOffset=(_musicOffset+(ctx.currentTime-_musicStartTime))%_musicBuffer.duration;
+    try{_musicSource.stop();}catch(e){}
+    musicPlaying=false;document.getElementById('music-btn').textContent='▶';
+  }else{_musicPlay();}
+}
+function setVol(v){if(_musicGain)_musicGain.gain.value=+v;}
+
+/* ═══════════════════════════════════════════════════
+   SETTINGS OPEN/CLOSE
+═══════════════════════════════════════════════════ */
+function openSettings(){
+  document.getElementById('settings-backdrop').classList.add('open');
+  buildCharGrid();
+  sndClick();
+}
+function closeSettings(){
+  document.getElementById('settings-backdrop').classList.remove('open');
+  syncPlayerNames();
+}
+function setTheme(name,el){
+  const other=[...document.body.classList].filter(c=>!c.startsWith('theme-'));
+  document.body.className=other.join(' ');
+  if(name!=='earth')document.body.classList.add('theme-'+name);
+  document.querySelectorAll('.tswatch').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  sndClick();
+}
+/* ═══════════════════════════════════════════════════
+   BOARD RENDER
+═══════════════════════════════════════════════════ */
+function renderBoard(legalSet,flashCap){
+  const wrap=document.getElementById('board-inner');
+  const legal=legalSet||new Set(game.legal());
+  wrap.innerHTML='';
+  const mode=getMode();
+  const showIds=document.getElementById('set-pitids')&&document.getElementById('set-pitids').checked;
+  const showLbls=!document.getElementById('set-rowlbls')||document.getElementById('set-rowlbls').checked;
+
+  function makeRow(pits,player,reversed){
+    const row=document.createElement('div');
+    row.className='pit-row';
+    row.style.gridTemplateColumns=`repeat(${COLS},1fr)`;
+    const arr=reversed?[...pits].reverse():pits;
+    arr.forEach(idx=>{
+      const cnt=game.board[idx];
+      const isL=legal.has(idx)&&!animating;
+      const isLast=idx===game.lastPit;
+      const isCap=flashCap&&flashCap.includes(idx);
+      const pitEl=document.createElement('div');
+      pitEl.className='pit'+(isL?' legal':'')+(isLast?' last-sow':'')+((!isL&&!isLast&&cnt===0)?' dimmed':'');
+      pitEl.id='pit-'+idx;
+      const bowl=document.createElement('div');bowl.className='pit-bowl';
+      const sd=document.createElement('div');sd.className='pit-seeds';
+      const show=Math.min(cnt,12);
+      for(let s=0;s<show;s++){const d=document.createElement('div');d.className='seed '+(player===P1?'s-p1':'s-p2');sd.appendChild(d);}
+      if(cnt>12)sd.innerHTML=`<span style="font-size:.82rem;font-weight:800;color:rgba(240,200,120,.9)">${cnt}</span>`;
+      bowl.appendChild(sd);
+      if(cnt>0&&cnt<=12){const cn=document.createElement('div');cn.className='pit-count';cn.textContent=cnt;bowl.appendChild(cn);}
+      if(isCap){const b=document.createElement('div');b.className='burst';bowl.appendChild(b);}
+      pitEl.appendChild(bowl);
+      if(showIds){const idL=document.createElement('div');idL.className='pit-id';idL.textContent='P'+idx;pitEl.appendChild(idL);}
+      if(isL)pitEl.addEventListener('click',()=>onPitClick(idx));
+      row.appendChild(pitEl);
+    });
+    return row;
+  }
+
+  const n1=mode==='hvh'?getName(1):(mode==='ava'?'AI (P1)':getName(1));
+  const n2=mode==='hvh'?getName(2):(mode==='ava'?'AI (P2)':'Opponent');
+  const av1=document.getElementById('sbav1')?document.getElementById('sbav1').src:'';
+  const av2=document.getElementById('sbav2')?document.getElementById('sbav2').src:'';
+
+  /* P2 strip */
+  const s2=document.createElement('div');s2.className='player-strip';
+  s2.innerHTML=`<div class="pstrip-info"><img src="${av2}" class="pstrip-avatar a2"><div><div class="pstrip-name">${n2}</div><div class="pstrip-role">Outer ↓ Inner</div></div></div>`;
+  wrap.appendChild(s2);
+
+  if(showLbls){const l2o=document.createElement('div');l2o.className='row-lbl';l2o.textContent='Outer row';wrap.appendChild(l2o);}
+  wrap.appendChild(makeRow(P2O,P2,true));
+  if(showLbls){const l2i=document.createElement('div');l2i.className='row-lbl r-front-p2';l2i.innerHTML='▼ Inner row (front line)';wrap.appendChild(l2i);}
+  wrap.appendChild(makeRow(P2I,P2,true));
+
+  const rail=document.createElement('div');rail.className='centre-rail';rail.innerHTML='<span class="centre-text">MUFUVHA</span>';wrap.appendChild(rail);
+
+  if(showLbls){const l1i=document.createElement('div');l1i.className='row-lbl r-front-p1';l1i.innerHTML='▲ Inner row (front line)';wrap.appendChild(l1i);}
+  wrap.appendChild(makeRow(P1I,P1,false));
+  if(showLbls){const l1o=document.createElement('div');l1o.className='row-lbl';l1o.textContent='Outer row';wrap.appendChild(l1o);}
+  wrap.appendChild(makeRow(P1O,P1,false));
+
+  /* P1 strip */
+  const s1=document.createElement('div');s1.className='player-strip';s1.style.paddingTop='8px';
+  s1.innerHTML=`<div class="pstrip-info"><img src="${av1}" class="pstrip-avatar a1"><div><div class="pstrip-name">${n1}</div><div class="pstrip-role">Inner ↑ Outer</div></div></div>`;
+  wrap.appendChild(s1);
+
+  /* Update score bar */
+  const c1=document.getElementById('sb-cap1'),c2=document.getElementById('sb-cap2');
+  if(c1){const old=c1.textContent;c1.textContent=game.cap[P1];if(old!==String(game.cap[P1])){c1.classList.remove('bump');void c1.offsetWidth;c1.classList.add('bump');}}
+  if(c2){const old=c2.textContent;c2.textContent=game.cap[P2];if(old!==String(game.cap[P2])){c2.classList.remove('bump');void c2.offsetWidth;c2.classList.add('bump');}}
+}
+
+/* ═══════════════════════════════════════════════════
+   CAPTURE BANNER
+═══════════════════════════════════════════════════ */
+function showCaptureBanner(player,seeds){
+  const banner=document.getElementById('cap-banner');
+  const nameEl=document.getElementById('cb-name');
+  const scoreEl=document.getElementById('cb-score');
+  if(!banner)return;
+  banner.className='cap-banner '+(player===P1?'p1-cap':'p2-cap');
+  nameEl.textContent=getName(player).toUpperCase();
+  scoreEl.textContent='+'+seeds+' points';
+  banner.classList.add('show');
+  setTimeout(()=>{banner.className='cap-banner '+(player===P1?'p1-cap':'p2-cap');},1400);
+}
+
+/* ═══════════════════════════════════════════════════
+   CHARACTER ANIMATION ENGINE
+   The cartoon visits every single pit in the sowTrace,
+   pausing briefly at each one to drop a seed — just like
+   a real player moving seeds around the board.
+═══════════════════════════════════════════════════ */
+function pitCenter(idx){
+  const el=document.getElementById('pit-'+idx);if(!el)return null;
+  const r=el.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2};
+}
+
+const HW=()=>document.getElementById('hand-wrap');
+const HS=()=>document.getElementById('hand-seeds');
+
+function _setHandState(state){
+  const hw=HW();if(!hw)return;
+  hw.classList.remove('state-grab','state-move','state-drop','state-grab-opp','state-lift');
+  void hw.offsetWidth;
+  if(state)hw.classList.add('state-'+state);
+}
+
+function _renderSeeds(count,player){
+  const c=HS();if(!c)return;
+  c.innerHTML='';
+  if(count<=0)return;
+  const show=Math.min(count,10);
+  const cls=player===P1?'hs-p1':'hs-p2';
+  if(count>10){
+    c.innerHTML=`<span style="font-size:.6rem;font-weight:900;color:rgba(255,226,100,.95);text-shadow:0 1px 3px rgba(0,0,0,.9)">${count}</span>`;
+    return;
+  }
+  for(let i=0;i<show;i++){
+    const d=document.createElement('div');
+    d.className='hand-seed-dot '+cls;
+    const sz=4+Math.random()*1.5;
+    d.style.width=sz+'px';d.style.height=(sz*1.2)+'px';
+    c.appendChild(d);
+  }
+}
+
+function _placeHand(x,y,instant=false){
+  const hw=HW();if(!hw)return;
+  if(instant){
+    hw.style.transition='none';
+    hw.style.left=x+'px';hw.style.top=y+'px';
+    void hw.offsetWidth;
+  }else{
+    hw.style.left=x+'px';hw.style.top=y+'px';
+  }
+}
+
+/* Move character to a pit with a specific travel duration */
+function _travelTo(pitIdx,durationMs){
+  return new Promise(res=>{
+    const hw=HW();const c=pitCenter(pitIdx);
+    if(!hw||!c){setTimeout(res,durationMs);return;}
+    hw.style.transition=`left ${durationMs}ms linear, top ${durationMs}ms linear`;
+    _setHandState('move');
+    hw.style.left=c.x+'px';hw.style.top=c.y+'px';
+    setTimeout(res,durationMs);
+  });
+}
+
+function _snapTo(pitIdx,seedCount,player){
+  const hw=HW();const c=pitCenter(pitIdx);
+  if(!hw||!c)return;
+  hw.style.transition='none';
+  hw.style.left=c.x+'px';hw.style.top=c.y+'px';
+  hw.style.display='block';
+  void hw.offsetWidth;
+  _renderSeeds(seedCount,player);
+}
+
+function _hideHand(){
+  const hw=HW();if(hw)hw.style.display='none';
+  _setHandState(null);
+  const hs=HS();if(hs)hs.innerHTML='';
+}
+
+/* Drop one seed from character position into a pit — gravity arc */
+function _dropOneSeed(fromX,fromY,toPitIdx,player){
+  return new Promise(res=>{
+    const to=pitCenter(toPitIdx);if(!to){res();return;}
+    const el=document.createElement('div');
+    const cls=player===P1?'hs-p1':'hs-p2';
+    el.className='fall-seed hand-seed-dot '+cls;
+    const ox=(Math.random()-.5)*10,oy=(Math.random()-.5)*6;
+    const sx=fromX+ox,sy=fromY+oy;
+    el.style.cssText=`left:${sx}px;top:${sy}px;width:7px;height:8px;transform:translate(-50%,-50%)`;
+    document.body.appendChild(el);
+    const dx=to.x-sx,dy=to.y-sy;
+    const airMs=Math.min(320,Math.max(120,Math.sqrt(dx*dx+dy*dy)*1.4));
+    const t0=performance.now();
+    const spin=(Math.random()>.5?1:-1)*180;
+    function frame(now){
+      const t=Math.min(1,(now-t0)/airMs);
+      const ease=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      const ex=sx+dx*ease;
+      const ey=sy+dy*t-Math.sin(t*Math.PI)*Math.min(22,Math.abs(dy)*.3);
+      el.style.left=ex+'px';el.style.top=ey+'px';
+      el.style.transform=`translate(-50%,-50%) rotate(${t*spin}deg) scale(${1-t*.1})`;
+      if(t<1)requestAnimationFrame(frame);
+      else{el.remove();res();}
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+/* Seeds fly from a pit up into the character (capture) */
+function _seedsRiseToChar(pitIdx,charX,charY,player,count){
+  return new Promise(res=>{
+    const from=pitCenter(pitIdx);if(!from){res();return;}
+    const n=Math.min(count,6);
+    const proms=[];
+    for(let i=0;i<n;i++){
+      proms.push(new Promise(r=>{
+        setTimeout(()=>{
+          const el=document.createElement('div');
+          const cls=player===P1?'hs-p2':'hs-p1';
+          el.className='fall-seed hand-seed-dot '+cls;
+          const sx=from.x+(Math.random()-.5)*18,sy=from.y+(Math.random()-.5)*12;
+          el.style.cssText=`left:${sx}px;top:${sy}px;width:7px;height:8px;transform:translate(-50%,-50%)`;
+          document.body.appendChild(el);
+          const tx=charX+(Math.random()-.5)*14,ty=charY+(Math.random()-.5)*8;
+          const dx=tx-sx,dy=ty-sy;
+          const dur=200+Math.random()*80;
+          const t0=performance.now();
+          const spin=(Math.random()>.5?1:-1)*200;
+          function frame(now){
+            const t=Math.min(1,(now-t0)/dur);
+            const ease=1-Math.pow(1-t,3);
+            const ex=sx+dx*ease,ey=sy+dy*ease-Math.sin(t*Math.PI)*28;
+            el.style.left=ex+'px';el.style.top=ey+'px';
+            el.style.transform=`translate(-50%,-50%) rotate(${t*spin}deg)`;
+            el.style.opacity=t>.7?String(1-(t-.7)/.3):'1';
+            if(t<1)requestAnimationFrame(frame);
+            else{el.remove();r();}
+          }
+          requestAnimationFrame(frame);
+        },i*45);
+      }));
+    }
+    Promise.all(proms).then(res);
+  });
+}
+
+function showFloatNum(pitIdx,text,color='var(--green3)'){
+  const c=pitCenter(pitIdx);if(!c)return;
+  const el=document.createElement('div');el.className='float-num';
+  el.style.cssText=`left:${c.x}px;top:${c.y-24}px;color:${color};transform:translateX(-50%)`;
+  el.textContent=text;document.body.appendChild(el);setTimeout(()=>el.remove(),1600);
+}
+
+/* Pit flash helper */
+function _flashPit(pitIdx,color,glowColor,dur=300){
+  const el=document.getElementById('pit-'+pitIdx);if(!el)return;
+  const b=el.querySelector('.pit-bowl');if(!b)return;
+  b.style.borderColor=color;
+  b.style.boxShadow=`inset 0 4px 10px rgba(0,0,0,.55),0 0 0 3px ${glowColor},0 0 20px ${glowColor}`;
+  setTimeout(()=>{b.style.borderColor='';b.style.boxShadow='';},dur);
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+/* ═══════════════════════════════════════════════════
+   MAIN MOVE ANIMATION
+   Phases:
+   1. Character appears at source pit, grabs seeds
+   2. Character walks to EACH pit in sowTrace individually,
+      pausing and dropping one seed per pit
+   3. If relay: fanfare flash
+   4. If capture: suspense glow → character swoops opponent pits
+   5. Character lifts triumphantly then exits
+═══════════════════════════════════════════════════ */
+async function animateMove(startPit,sowTrace,capInfo,player){
+  animating=true;
+  renderBoard(new Set(),[]);
+
+  const totalSeeds=sowTrace.length;
+
+  /* ── PHASE 1: Appear at source, bounce-grab ── */
+  _snapTo(startPit,totalSeeds,player);
+  _setHandState('grab');
+  sndPick();
+
+  /* Highlight source pit */
+  _flashPit(startPit,'var(--gold2)','rgba(212,168,50,.5)',400);
+  await sleep(340);
+
+  /* ── PHASE 2: Step pit-by-pit through the sowTrace ──
+     Speed is proportional to chain length but always feels
+     like a real person moving — not a teleport. */
+  const chainLen=sowTrace.length;
+  /* Per-pit travel time: short chain → leisurely, long → brisker but still visible */
+  const stepMs=chainLen<=4?320:chainLen<=8?240:chainLen<=14?180:130;
+  /* Pause at pit after dropping (so player can see each placement) */
+  const pauseMs=chainLen<=4?120:chainLen<=8?80:50;
+
+  let seedsLeft=totalSeeds;
+  let relayCount=0;
+
+  for(let i=0;i<sowTrace.length;i++){
+    const pitIdx=sowTrace[i];
+    seedsLeft=Math.max(0,seedsLeft-1);
+
+    /* Travel to this exact pit */
+    await _travelTo(pitIdx,stepMs);
+
+    const hw=HW();
+    const hx=hw?parseFloat(hw.style.left):0;
+    const hy=hw?parseFloat(hw.style.top):0;
+
+    /* Drop animation: character squash + seed arc */
+    _setHandState('drop');
+    _renderSeeds(seedsLeft,player);
+
+    /* Seed flies from character into pit */
+    _dropOneSeed(hx,hy,pitIdx,player);
+    sndStep(pitIdx);
+
+    /* Pit land flash */
+    const pitEl=document.getElementById('pit-'+pitIdx);
+    if(pitEl){
+      pitEl.classList.add('sow-flash','seed-land');
+      setTimeout(()=>pitEl.classList.remove('sow-flash','seed-land'),280);
+    }
+
+    /* Detect relay boundary — when sowTrace wraps a full loop */
+    if(i>0&&i<sowTrace.length-1){
+      /* Check if this pit is start of a new sub-sow (relay) */
+      const prevPit=sowTrace[i-1];
+      const loop=player===P1?LOOP_P1:LOOP_P2;
+      const prevPos=loop.indexOf(prevPit),curPos=loop.indexOf(pitIdx);
+      if(curPos===0||(curPos<prevPos&&prevPos-curPos>2)){
+        relayCount++;
+        sndRelayBuild(relayCount);
+        showFloatNum(pitIdx,'⚡','var(--amber2)');
+      }
+    }
+
+    await sleep(pauseMs);
+    _setHandState('move');
+  }
+
+  /* ── RELAY fanfare if long chain ── */
+  if(sowTrace.length>COLS*2||relayCount>0){
+    sndRelay();
+    showFloatNum(sowTrace[sowTrace.length-1],'⚡ Relay!','var(--amber)');
+    await sleep(120);
+  }
+
+  /* ── PHASE 3: CAPTURE ── */
+  if(capInfo&&capInfo.pits.length){
+    await sleep(200);
+
+    /* Landing pit green pulse — capture triggered */
+    const landPit=sowTrace[sowTrace.length-1];
+    const landEl=document.getElementById('pit-'+landPit);
+    if(landEl){
+      landEl.classList.add('last-sow');
+      const b=landEl.querySelector('.pit-bowl');
+      if(b)b.style.boxShadow='inset 0 4px 10px rgba(0,0,0,.55),0 0 0 6px rgba(80,184,120,.9),0 0 36px rgba(80,184,120,.7)';
+    }
+
+    /* Suspense sound + rumble */
+    sndCapturePending();
+    await sleep(500);
+
+    /* Flash ALL opponent pits simultaneously */
+    const oppPits=capInfo.pits.slice(1);
+    oppPits.forEach(p=>{
+      const el=document.getElementById('pit-'+p);
+      if(el)el.classList.add('capture-flash');
+    });
+    await sleep(350);
+
+    /* STRIKE SOUND */
+    sndCaptureStrike();
+
+    /* Character swoops to each opponent pit */
+    for(let pi=0;pi<oppPits.length;pi++){
+      const tp=oppPits[pi];
+      await _travelTo(tp,200);
+      const hw=HW();
+      const hx=hw?parseFloat(hw.style.left):0;
+      const hy=hw?parseFloat(hw.style.top):0;
+      _setHandState('grab-opp');
+      sndGrabPit();
+      await sleep(80);
+      await _seedsRiseToChar(tp,hx,hy,player,Math.min(capInfo.seeds,6));
+      _renderSeeds(capInfo.seeds,player);
+      const el=document.getElementById('pit-'+tp);
+      if(el)el.classList.remove('capture-flash');
+      await sleep(80);
+    }
+
+    /* Capture banner + float */
+    showCaptureBanner(player,capInfo.seeds);
+    showFloatNum(capInfo.pits[0],'+'+capInfo.seeds+' 🔥','var(--gold2)');
+
+    /* ── PHASE 4: Triumphant lift ── */
+    _setHandState('lift');
+    await sleep(600);
+
+    renderBoard(new Set(),[]);
+    await sleep(60);
+  }
+
+  _hideHand();
+  renderBoard(new Set(game.legal()),[]);
+  animating=false;
+}
+
+/* ═══════════════════════════════════════════════════
+   CONFETTI
+═══════════════════════════════════════════════════ */
+let _confInterval=null;
+function startConfetti(){
+  const cv=document.getElementById('confetti-canvas');
+  cv.style.display='block';cv.width=window.innerWidth;cv.height=window.innerHeight;
+  const ctx=cv.getContext('2d');
+  const parts=[];
+  const colors=['#d4a832','#f0c860','#50b878','#e07030','#40a8a8','#ff6b6b','#ffe090'];
+  for(let i=0;i<120;i++)parts.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,w:6+Math.random()*8,h:3+Math.random()*5,c:colors[0|Math.random()*colors.length],r:Math.random()*Math.PI*2,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,vr:(Math.random()-.5)*.15});
+  function frame(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.globalAlpha=Math.max(0,1-(p.y/cv.height));
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+    });
+  }
+  if(_confInterval)clearInterval(_confInterval);
+  _confInterval=setInterval(frame,16);
+  setTimeout(stopConfetti,4000);
+}
+function stopConfetti(){
+  if(_confInterval){clearInterval(_confInterval);_confInterval=null;}
+  const cv=document.getElementById('confetti-canvas');
+  const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);cv.style.display='none';
+}
+
+/* ═══════════════════════════════════════════════════
+   GAME FLOW
+═══════════════════════════════════════════════════ */
+function _coreStartGame(){
+  if(aiTimer){clearTimeout(aiTimer);aiTimer=null;}
+  if(animating){animating=false;_hideHand();document.querySelectorAll('.fall-seed,.float-num').forEach(e=>e.remove());}
+  applyBoardSettings();
+  game=new MufuvhaGame();snapshots=[];moveLogArr=[];clearHints();
+  stopConfetti();resetGameTimer();
+  renderBoard(new Set(game.legal()),[]);updateStatus();renderLog();sndClick();
+  const m=getMode();
+  if(m==='ava')schedAI();
+  else if(m==='hva'&&game.cur===P2)schedAI();
+  startGameTimer();
+}
+
+function onPitClick(pit){
+  if(animating)return;
+  if(!game.legal().includes(pit)){sndError();return;}
+  const m=getMode();if(m==='ava')return;if(m==='hva'&&game.cur!==P1)return;
+  clearHints();
+  doMove(pit,()=>{if(!game.done&&m==='hva'&&game.cur===P2)setTimeout(schedAI,420);});
+}
+
+function _coreDoMove(pit,after){
+  const snap=game.clone();snapshots.push(snap);
+  const res=game.step(pit);if(!res)return;
+  addLog(snap.cur,pit,res);
+  const pl=snap.cur;
+  animateMove(pit,res.sowTrace,res.capInfo,pl).then(()=>{
+    renderBoard(new Set(game.legal()),[]);updateStatus();
+    if(game.done){stopGameTimer();setTimeout(()=>{showWin();if(game.winner)sndWin();else sndDraw();},500);}
+    else{if(after)after();}
+  });
+}
+
+function schedAI(){
+  if(animating||game.done)return;
+  const delay=getMode()==='ava'?Math.max(220,getSpd()*.6):380;
+  aiTimer=setTimeout(()=>{
+    if(animating||game.done)return;
+    const ai=getAI();const mv=ai.sel(game);if(mv===null)return;
+    doMove(mv,()=>{if(!game.done){if(getMode()==='ava')schedAI();else if(getMode()==='hva'&&game.cur===P2)schedAI();}});
+  },delay);
+}
+
+function undoMove(){
+  if(!snapshots.length||animating)return;
+  if(aiTimer){clearTimeout(aiTimer);aiTimer=null;}
+  game=snapshots.pop();if(moveLogArr.length)moveLogArr.shift();
+  clearHints();renderBoard(new Set(game.legal()),[]);updateStatus();renderLog();sndClick();
+}
+
+function showHint(){
+  if(animating||game.done)return;clearHints();
+  const best=new HeurAgent().sel(game);if(best===null)return;
+  const el=document.getElementById('pit-'+best);if(el){el.classList.add('hint-pit');activeHint=best;}
+  sndClick();
+}
+function clearHints(){document.querySelectorAll('.hint-pit').forEach(el=>el.classList.remove('hint-pit'));activeHint=-1;}
+
+function addLog(pl,pit,res){
+  moveLogArr.unshift({pl,pit,res,c1:game.cap[P1],c2:game.cap[P2]});renderLog();
+}
+function renderLog(){
+  const el=document.getElementById('move-log');if(!el)return;
+  if(!moveLogArr.length){el.innerHTML='<div style="font-size:.73rem;color:var(--tx4);font-style:italic">Game log will appear here…</div>';return;}
+  el.innerHTML=moveLogArr.slice(0,20).map(e=>`
+    <div class="log-row">
+      <span class="log-badge ${e.pl===1?'lb1':'lb2'}">${getName(e.pl)}</span>
+      pit ${e.pit} → ${e.c1}:${e.c2}
+      ${e.res.capInfo?`<span class="log-cap">+${e.res.capInfo.seeds} captured 🔥</span>`:''}
+    </div>`).join('');
+}
+
+function updateStatus(){
+  const si=document.getElementById('si'),msg=document.getElementById('status-msg');
+  const mc=document.getElementById('move-counter');if(mc)mc.textContent='Move '+game.moveCount;
+  if(!si||!msg)return;
+  if(!game.legal().length&&!game.done&&!animating){si.className='si si-idle';msg.textContent='Press ▶ New Game to begin.';return;}
+  if(animating){si.className='si si-anim';msg.textContent='Sowing seeds…';return;}
+  if(game.done){
+    si.className='si si-win';
+    if(game.winner===0)msg.textContent='Draw! Both players tied.';
+    else{const n=game.winner===1?getName(1):(getMode()==='hvh'?getName(2):'AI');
+      msg.innerHTML=`<strong style="color:${game.winner===1?'var(--p1)':'var(--p2)'}">${n} wins!</strong> — P1: ${game.cap[P1]} · P2: ${game.cap[P2]}`;}
+    return;
+  }
+  si.className=`si si-${game.cur===1?'p1':'p2'}`;
+  const m=getMode(),n=game.cur===1?getName(1):(m==='hvh'?getName(2):'AI');
+  if(m==='hvh')msg.textContent=`${n}'s turn — pick a pit.`;
+  else if(m==='ava')msg.textContent=`AI vs AI — ${n} is choosing…`;
+  else msg.textContent=game.cur===P1?`${getName(1)}, your move — pick a highlighted pit.`:'Opponent is thinking…';
+}
+
+/* ═══════════════════════════════════════════════════
+   WIN OVERLAY
+═══════════════════════════════════════════════════ */
+function showWin(){
+  const n1=getName(1),n2=getMode()==='hvh'?getName(2):'AI';
+  if(game.winner!==0)startConfetti();
+  const emojis=['🏆','🥇','👑','⭐','🎖'];
+  document.getElementById('win-emoji').textContent=emojis[0|Math.random()*emojis.length];
+  if(game.winner===0){
+    document.getElementById('win-title').textContent='Draw!';
+    document.getElementById('win-sub').textContent='An equal match — seeds are perfectly balanced.';
+  }else{
+    const wn=game.winner===1?n1:n2;
+    document.getElementById('win-title').textContent=wn+' Wins!';
+    document.getElementById('win-sub').textContent=game.winner===1?'Outstanding strategy and foresight!':'The AI secured the victory this time!';
+  }
+  const m2=Math.floor(gameTimerSeconds/60),s2=gameTimerSeconds%60;
+  document.getElementById('win-scores').innerHTML=`
+    <div class="win-score-card ${game.winner===1?'winner':''}">
+      <div class="win-score-num" style="color:var(--p1)">${game.cap[P1]}</div>
+      <div class="win-score-name">${n1}</div>
+    </div>
+    <div style="align-self:center;font-size:1.4rem;color:var(--tx3)">vs</div>
+    <div class="win-score-card ${game.winner===2?'winner':''}">
+      <div class="win-score-num" style="color:var(--p2)">${game.cap[P2]}</div>
+      <div class="win-score-name">${n2}</div>
+    </div>`;
+  document.getElementById('win-time').textContent='⏱ Game time: '+m2+':'+(s2<10?'0':'')+s2+' · Moves: '+game.moveCount;
+  document.getElementById('win-overlay').classList.add('show');
+}
+function closeWin(){document.getElementById('win-overlay').classList.remove('show');stopConfetti();}
+
+/* ═══════════════════════════════════════════════════
+   TUTORIAL DATA
+═══════════════════════════════════════════════════ */
+let tutIdx=0;
+const TUTS=[
+  {title:'The Mufuvha board',sub:'Your playing field',html:`<p>Mufuvha is a <strong>four-row Mancala</strong> game — each player controls <strong>two rows of 8 pits</strong>: an inner row (front line) and an outer row (back row).</p><div class="mini-board"><div style="text-align:center;font-size:.68rem;color:var(--p2);margin-bottom:4px">PLAYER 2</div><div class="mini-row">${Array(8).fill(0).map((_,i)=>`<div class="mp" style="border-color:var(--p2);color:var(--p2)">${i===7?0:i===6?1:2}</div>`).join('')}</div><div style="text-align:center;font-size:.6rem;color:var(--tx3);margin:2px 0">outer row</div><div class="mini-row">${Array(8).fill(0).map((_,i)=>`<div class="mp" style="border-color:var(--p2);color:var(--p2)">${i===7?0:i===6?1:2}</div>`).join('')}</div><div style="text-align:center;font-size:.6rem;color:var(--p2);margin:2px 0">inner row</div><div style="border-top:1px solid var(--border);margin:5px 8px"></div><div style="text-align:center;font-size:.6rem;color:var(--p1);margin:2px 0">inner row</div><div class="mini-row">${Array(8).fill(0).map((_,i)=>`<div class="mp" style="border-color:var(--p1);color:var(--p1)">${i===0?0:i===1?1:2}</div>`).join('')}</div><div style="text-align:center;font-size:.6rem;color:var(--tx3);margin:2px 0">outer row</div><div class="mini-row">${Array(8).fill(2).map(v=>`<div class="mp" style="border-color:var(--p1);color:var(--p1)">${v}</div>`).join('')}</div><div style="text-align:center;font-size:.68rem;color:var(--p1);margin-top:4px">PLAYER 1 (YOU)</div></div><div class="tip-box"><span class="tip-ico">💡</span><p>Unlike two-row Mancala, Mufuvha lets you pick from <strong>EITHER of your rows</strong> — inner or outer. This creates far more strategic options.</p></div>`},
+  {title:'Sowing seeds',sub:'How to make a move',html:`<p>Pick any <strong>non-empty pit from either of your rows</strong>. All seeds are picked up and sown <strong>counter-clockwise</strong> around your own 2-row loop.</p><p>For Player 1: sow inner left→right (0–7), then outer right→left (15–8), repeat.</p><div class="tip-box"><span class="tip-ico">💡</span><p>Seeds in the outer row cannot be captured by your opponent. Use it as a strategic reserve.</p></div>`},
+  {title:'Relay sowing',sub:'The chain reaction',html:`<p>The heart of Mufuvha strategy: if your last sown seed lands in a <strong>non-empty pit</strong>, pick up <strong>all seeds there</strong> and continue sowing. These chains can span both rows and many laps.</p><div class="tip-box"><span class="tip-ico">💡</span><p>Plan relay chains that end in an empty inner pit facing a loaded opponent pit — that's a capture!</p></div>`},
+  {title:'Capturing seeds',sub:'The key to winning',html:`<p>A capture occurs when your sowing ends in an <strong>empty pit in your inner row</strong>, AND the <strong>directly opposite opponent inner pit</strong> has seeds. You also take the opponent's outer pit in the same column if it has seeds.</p><div class="tip-box"><span class="tip-ico">💡</span><p>Captured seeds are removed from the board permanently — not placed in a store. This is authentic to four-row Mancala tradition.</p></div>`},
+  {title:'Winning the game',sub:'Victory conditions',html:`<p>The game ends when a player has <strong>no seeds left in either of their rows</strong>. The player with the most <strong>captured seeds</strong> wins.</p><div class="tip-box"><span class="tip-ico">💡</span><p>Protect both rows. If your inner row empties, you still have moves from your outer row — but once both are empty, the game ends.</p></div>`},
+  {title:'Advanced strategy',sub:'Play like an expert',html:`<div class="strat-grid"><div class="sc sc-amber"><h4>Plan relay endings</h4><p>Count your sow path before picking. The landing pit determines capture opportunity.</p></div><div class="sc"><h4>Load the outer row</h4><p>Build large piles in outer pits. A 10-seed outer can fuel a chain that sweeps the board.</p></div><div class="sc" style="border-color:var(--teal)"><h4>Deny captures</h4><p>Keep your inner pits non-empty opposite heavily-loaded opponent inner pits.</p></div><div class="sc" style="border-color:var(--red)"><h4>Count columns</h4><p>Check each column: what would be captured if you land there? High-value columns are prime targets.</p></div></div>`},
+  {title:'Ready to play!',sub:'You know Mufuvha',html:`<p>Quick summary:</p><ul style="color:var(--tx2);font-size:.82rem;padding-left:16px;line-height:2.2"><li>Pick from <strong>either row</strong></li><li>Sow counter-clockwise around your 2-row loop</li><li>Last seed in occupied pit → <strong style="color:var(--amber2)">relay — keep sowing!</strong></li><li>Last seed in empty inner pit, opposite occupied → <strong style="color:var(--green2)">capture!</strong></li><li>Most captured seeds = winner</li></ul><div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-gold" onclick="launchTutGame()">▶ Start playing</button><button class="btn btn-wood" onclick="tutGo(0)">↺ Review</button></div>`},
+];
+
+function tutGo(idx){
+  tutIdx=Math.max(0,Math.min(TUTS.length-1,idx));
+  const step=TUTS[tutIdx];
+  document.getElementById('tut-content').innerHTML=`<div class="tut-card"><div class="tut-hdr"><div class="tut-num">${tutIdx+1}</div><div><h3>${step.title}</h3><p>${step.sub}</p></div></div><div class="tut-body">${step.html}</div></div>`;
+  document.getElementById('tut-lbl').textContent=`Step ${tutIdx+1} of ${TUTS.length}`;
+  for(let i=0;i<TUTS.length;i++){const d=document.getElementById('td'+i);if(d)d.className='tpd'+(i<tutIdx?' done':i===tutIdx?' active':'');}
+  document.getElementById('tprev').style.display=tutIdx>0?'inline-flex':'none';
+  document.getElementById('tnext').style.display=tutIdx<TUTS.length-1?'inline-flex':'none';
+  document.getElementById('trestart').style.display=tutIdx===TUTS.length-1?'inline-flex':'none';
+  if(tutIdx===TUTS.length-1)document.getElementById('tnext').style.display='none';
+}
+function launchTutGame(){goPanel('play');document.getElementById('sel-mode').value='hva';document.getElementById('sel-diff').value='rand';onModeChange();startGame();}
+
+/* ═══════════════════════════════════════════════════
+   TRAINING
+═══════════════════════════════════════════════════ */
+let tm={eps:[],wr:[],wh:[],e:[]},isTrain=false;
+function startTraining(){
+  if(isTrain)return;isTrain=true;
+  const btn=document.getElementById('train-btn');btn.disabled=true;btn.textContent='Training…';
+  document.getElementById('prog-wrap').style.display='block';
+  qlA.reset();tm={eps:[],wr:[],wh:[],e:[]};
+  const N=2000,EV=200;let ep=0;
+  function batch(){
+    for(let b=0;b<50&&ep<N;b++,ep++)selfPlayEp();
+    document.getElementById('prog-fill').style.width=(ep/N*100).toFixed(0)+'%';
+    document.getElementById('m-ep').textContent=ep;
+    document.getElementById('m-eps').textContent=qlA.eps.toFixed(3);
+    if(ep%EV===0&&ep>0){
+      const wr=evalQl(randA,60),wh=evalQl(heurA,60);
+      tm.eps.push(ep);tm.wr.push(wr);tm.wh.push(wh);tm.e.push(qlA.eps);
+      setMet('m-wr',wr,'m-wr-d',tm.wr);setMet('m-wh',wh,'m-wh-d',tm.wh);drawCharts();
+    }
+    if(ep<N)setTimeout(batch,0);
+    else{isTrain=false;btn.disabled=false;btn.textContent='Train again (resets)';document.getElementById('prog-fill').style.width='100%';qlA.setEval();qlA._save();}
+  }
+  setTimeout(batch,0);
+}
+function selfPlayEp(){
+  const g=new MufuvhaGame();
+  for(let s=0;s<500;s++){if(g.done)break;const acting=g.cur,snap=g.clone();const mv=qlA.sel(g);if(mv===null)break;const res=g.step(mv);if(!res)break;if(acting===P1)qlA.upd(snap,mv,res.reward,g,g.done);}
+}
+function evalQl(opp,n){
+  const ot=qlA.training,oe=qlA.eps;qlA.training=false;qlA.eps=0;let wins=0;
+  for(let i=0;i<n;i++){const g=new MufuvhaGame();for(let s=0;s<500;s++){if(g.done)break;const mv=g.cur===P1?qlA.sel(g):opp.sel(g);if(mv===null)break;g.step(mv);}if(g.winner===P1)wins++;}
+  qlA.training=ot;qlA.eps=oe;return wins/n;
+}
+function setMet(vi,val,di,arr){
+  document.getElementById(vi).textContent=(val*100).toFixed(0)+'%';
+  if(arr.length>1){const d=val-arr[arr.length-2];const el=document.getElementById(di);el.textContent=(d>=0?'+':'')+(d*100).toFixed(1)+'%';el.style.color=d>=0?'var(--green2)':'var(--red2)';}
+}
+function drawCharts(){
+  dLine('chart-wr',[{d:tm.wr,c:'#f0c040',l:'vs Random'},{d:tm.wh,c:'#50b878',l:'vs Heuristic'}],tm.eps,0,1,true,180);
+  dLine('chart-eps',[{d:tm.e,c:'#e07820',l:'epsilon'}],tm.eps,0,1,false,120);
+}
+function dLine(id,series,labels,yMin,yMax,bl,h){
+  const cv=document.getElementById(id);if(!cv)return;
+  const dpr=window.devicePixelRatio||1,W=cv.offsetWidth||800;
+  cv.width=W*dpr;cv.height=h*dpr;cv.style.width=W+'px';cv.style.height=h+'px';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);ctx.clearRect(0,0,W,h);
+  const pd={t:10,r:14,b:24,l:40},cW=W-pd.l-pd.r,cH=h-pd.t-pd.b,n=labels.length;
+  if(n<2)return;
+  ctx.strokeStyle='rgba(90,64,40,.5)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const y=pd.t+cH-(i/4)*cH;ctx.beginPath();ctx.moveTo(pd.l,y);ctx.lineTo(pd.l+cW,y);ctx.stroke();ctx.fillStyle='rgba(192,168,120,.5)';ctx.font='10px Inter,system-ui';ctx.textAlign='right';ctx.fillText((yMin+(yMax-yMin)*i/4).toFixed(2),pd.l-4,y+4);}
+  if(bl){const by=pd.t+cH-((0.5-yMin)/(yMax-yMin))*cH;ctx.strokeStyle='rgba(120,90,50,.6)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(pd.l,by);ctx.lineTo(pd.l+cW,by);ctx.stroke();ctx.setLineDash([]);}
+  series.forEach(({d,c})=>{ctx.strokeStyle=c;ctx.lineWidth=2.5;ctx.beginPath();d.forEach((v,i)=>{const x=pd.l+(i/(n-1))*cW,y=pd.t+cH-((v-yMin)/(yMax-yMin))*cH;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();d.forEach((v,i)=>{const x=pd.l+(i/(n-1))*cW,y=pd.t+cH-((v-yMin)/(yMax-yMin))*cH;ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fill();});});
+  ctx.fillStyle='rgba(192,168,120,.4)';ctx.font='10px Inter,system-ui';ctx.textAlign='center';
+  [0,Math.floor(n/2),n-1].forEach(i=>{if(i<n){const x=pd.l+(i/(n-1))*cW;ctx.fillText(labels[i],x,h-4);}});
+}
+
+/* ═══════════════════════════════════════════════════
+   BACKGROUND PARTICLES
+═══════════════════════════════════════════════════ */
+(function(){
+  const cv=document.getElementById('bg-canvas');const ctx=cv.getContext('2d');const parts=[];
+  function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  for(let i=0;i<60;i++)parts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*2+.5,a:Math.random()*Math.PI*2});
+  function frame(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.004;if(p.x<0)p.x=cv.width;if(p.x>cv.width)p.x=0;if(p.y<0)p.y=cv.height;if(p.y>cv.height)p.y=0;const alpha=(.3+Math.sin(p.a)*.2)*.3;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(212,168,50,${alpha})`;ctx.fill();});
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ═══════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════ */
+function goPanel(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  const order=['play','tutorial','train','learn','about'];
+  const idx=order.indexOf(name);
+  if(idx>=0)document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  if(name==='tutorial')tutGo(0);
+  if(name==='train')setTimeout(drawCharts,60);
+  sndClick();
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+onModeChange();
+renderBoard(new Set(),[]);
+updateStatus();
+applyCharacter();
+
+document.addEventListener('contextmenu',e=>{if(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA')e.preventDefault();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U'))e.preventDefault();
+  const tag=document.activeElement&&document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  if(e.key==='n'||e.key==='N'){e.preventDefault();startGame();}
+  if((e.key==='u'||e.key==='U')&&!e.ctrlKey){e.preventDefault();undoMove();}
+  if(e.key==='h'||e.key==='H'){e.preventDefault();showHint();}
+  if(e.key==='Escape'){closeWin();closeSettings();}
+  if(e.key===','||e.key==='s'||e.key==='S'){openSettings();}
+});
+
+/* ═══════════════════════════════════════════════════
+   ACHIEVEMENTS & LEARNING NUDGES
+   Gamified learning system for kids, teens, youth
+═══════════════════════════════════════════════════ */
+const ACHIEVEMENTS=[
+  {id:'first_capture',icon:'🎯',title:'First Capture!',msg:"You grabbed your first seeds. That's strategic thinking in action!"},
+  {id:'relay_master',icon:'⚡',title:'Relay Chain!',msg:'You chained a relay! Multi-step planning = STEM thinking.'},
+  {id:'big_capture',icon:'🔥',title:'Big Haul!',msg:'5+ seeds captured in one move. Spatial reasoning at work!'},
+  {id:'first_win',icon:'🏆',title:'First Victory!',msg:'You beat the AI! Planning + patience = real-world success skills.'},
+  {id:'comeback',icon:'💪',title:'Comeback!',msg:'You were behind but kept going. Resilience is a life skill.'},
+  {id:'ten_moves',icon:'🧠',title:'Deep Thinker',msg:'10 moves in! Your working memory and focus are training right now.'},
+  {id:'double_capture',icon:'🌟',title:'Double Capture!',msg:'You took inner AND outer pits. Advanced spatial reasoning!'},
+];
+const _earned=new Set();
+let _capCountGame=0,_maxCapSingle=0,_lowestScoreSeen=999;
+
+function checkAchievements(capInfo,moveCount){
+  if(capInfo){
+    _capCountGame++;
+    if(capInfo.seeds>_maxCapSingle)_maxCapSingle=capInfo.seeds;
+    if(_capCountGame===1)_grantAchievement('first_capture');
+    if(capInfo.seeds>=5)_grantAchievement('big_capture');
+    if(capInfo.pits&&capInfo.pits.length>=3)_grantAchievement('double_capture');
+  }
+  if(moveCount===10)_grantAchievement('ten_moves');
+}
+function checkRelayAchievement(sowTrace){
+  if(sowTrace&&sowTrace.length>16)_grantAchievement('relay_master');
+}
+function checkWinAchievements(){
+  _grantAchievement('first_win');
+  if(_lowestScoreSeen<game.cap[P1]-2)_grantAchievement('comeback');
+}
+function _grantAchievement(id){
+  if(_earned.has(id))return;
+  _earned.add(id);
+  const a=ACHIEVEMENTS.find(x=>x.id===id);
+  if(!a)return;
+  _showToast(a.icon,a.title,a.msg);
+}
+let _toastTimer=null;
+function _showToast(icon,title,msg){
+  /* Remove existing */
+  const old=document.getElementById('ach-toast');if(old)old.remove();
+  if(_toastTimer){clearTimeout(_toastTimer);_toastTimer=null;}
+  const t=document.createElement('div');
+  t.id='ach-toast';t.className='achievement-toast';
+  t.innerHTML=`<div class="toast-icon">${icon}</div><div><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div>`;
+  document.body.appendChild(t);
+  _toastTimer=setTimeout(()=>{
+    t.classList.add('hiding');
+    setTimeout(()=>t.remove(),300);
+  },4500);
+}
+
+/* Hook achievements into the game */
+function doMove(pit,after){
+  const snap=game.clone();snapshots.push(snap);
+  const res=game.step(pit);if(!res)return;
+  addLog(snap.cur,pit,res);
+  /* Track lowest score seen (for comeback detection) */
+  _lowestScoreSeen=Math.min(_lowestScoreSeen,game.cap[P1]);
+  checkAchievements(res.capInfo,game.moveCount);
+  checkRelayAchievement(res.sowTrace);
+  const pl=snap.cur;
+  animateMove(pit,res.sowTrace,res.capInfo,pl).then(()=>{
+    renderBoard(new Set(game.legal()),[]);updateStatus();
+    if(game.done){
+      stopGameTimer();
+      if(game.winner===P1)checkWinAchievements();
+      setTimeout(()=>{showWin();if(game.winner)sndWin();else sndDraw();},500);
+    }else{if(after)after();}
+  });
+}
+
+/* Reset achievement state on new game */
+function startGame(){
+  _capCountGame=0;_maxCapSingle=0;_lowestScoreSeen=999;
+  /* Don't clear _earned — achievements persist across games */
+  _coreStartGame();
+}
+
+</script>
+</body>
+</html>
