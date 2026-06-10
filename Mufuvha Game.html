@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +37,7 @@ body.theme-sunset{--bg-mid:#3d1818;--bg:#150505;--s1:#200808;--s2:#2c1010;--s3:#
 body.theme-sky{--bg-mid:#0e2440;--bg:#040c18;--s1:#081420;--s2:#0c1c2c;--s3:#102438;--border:#183048;--border2:#204868;--card:#081018;--card2:#0c1820;--pr:#186080;--pr2:#2080a8;--pr3:#30a0d0;--gold:#40c0e0;--gold2:#60d8f8;--tx2:#80b8d0;--tx3:#408090;--pit:#040810;--pit2:#081018;--pit3:#0c1820;}
 
 /* ── LAYOUT ── */
-.app{max-width:980px;margin:0 auto;padding:12px 12px 80px}
+.app{max-width:1400px;margin:0 auto;padding:12px 16px 80px}
 
 /* ── HEADER ── */
 .header{display:flex;align-items:center;justify-content:space-between;padding:14px 0 12px;border-bottom:1px solid var(--border2);margin-bottom:14px;gap:12px}
@@ -44,6 +45,7 @@ body.theme-sky{--bg-mid:#0e2440;--bg:#040c18;--s1:#081420;--s2:#0c1c2c;--s3:#102
 .logo-wrap{display:flex;align-items:center;gap:0;line-height:1}
 .logo-svg{display:block;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(212,168,50,.45))}
 .header-sub{font-size:.7rem;color:var(--tx3);letter-spacing:1px;padding-left:2px}
+.header-dev{font-size:.62rem;color:var(--tx4);letter-spacing:.5px;padding-left:2px;font-style:italic}
 .header-right{display:flex;align-items:center;gap:8px}
 
 /* ── NAV BAR ── */
@@ -427,6 +429,119 @@ canvas.chart{width:100%}
 .research-box{background:rgba(42,136,136,.07);border:1px solid rgba(42,136,136,.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:.76rem;color:var(--tx2);line-height:1.7}
 .research-box strong{color:var(--teal2)}
 @media(max-width:580px){.skill-grid{grid-template-columns:1fr}.age-banner{flex-direction:column}.amplify-grid{grid-template-columns:1fr}}
+
+/* ── WIN OVERLAY v2 ── */
+.win-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:800;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+.win-overlay.show{display:flex}
+.win-box{background:linear-gradient(160deg,var(--card2),var(--card));border:2px solid var(--gold);border-radius:28px;padding:28px 36px;text-align:center;max-width:460px;width:100%;animation:winPop .7s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 80px rgba(212,168,50,.35),0 24px 64px rgba(0,0,0,.9);overflow:hidden}
+.win-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(212,168,50,.1) 0%,transparent 70%);pointer-events:none}
+@keyframes winPop{from{transform:scale(.2) rotate(-12deg);opacity:0}55%{transform:scale(1.06) rotate(2deg)}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes crownFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-10px) rotate(5deg)}}
+.win-emoji{font-size:3.2rem;margin-bottom:8px;animation:winBounce 1.4s ease-in-out infinite;display:block}
+@keyframes winBounce{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.18) rotate(-8deg)}70%{transform:scale(1.14) rotate(8deg)}}
+.win-title{font-family:"Cinzel",serif;font-size:2.6rem;font-weight:900;color:var(--gold);margin-bottom:6px;line-height:1;text-shadow:0 0 40px rgba(212,168,50,.6);animation:titlePulse 2s ease-in-out infinite}
+@keyframes titlePulse{0%,100%{text-shadow:0 0 40px rgba(212,168,50,.6)}50%{text-shadow:0 0 70px rgba(212,168,50,.9),0 0 120px rgba(212,168,50,.4)}}
+.win-sub{font-size:.9rem;color:var(--tx2);margin-bottom:14px;line-height:1.5}
+.win-scores{display:flex;justify-content:center;gap:20px;margin-bottom:14px;flex-wrap:wrap}
+.win-score-card{background:rgba(0,0,0,.3);border-radius:14px;padding:12px 20px;min-width:110px}
+.win-score-card.winner{border:2px solid var(--gold);background:rgba(212,168,50,.1);animation:winnerCard 1.6s ease-in-out infinite}
+@keyframes winnerCard{0%,100%{box-shadow:0 0 0 0 rgba(212,168,50,.3)}50%{box-shadow:0 0 28px 6px rgba(212,168,50,.25)}}
+.win-score-num{font-family:"Cinzel",serif;font-size:3rem;font-weight:900;line-height:1}
+.win-score-name{font-size:.75rem;color:var(--tx2);margin-top:4px}
+.win-time{font-size:.75rem;color:var(--tx3);margin-bottom:12px}
+.win-badge-chip{background:rgba(212,168,50,.1);border:1px solid rgba(212,168,50,.28);border-radius:18px;padding:3px 11px;font-size:.7rem;color:var(--gold);animation:badgePop .4s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes badgePop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.win-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ── BOARD DIM BADGE ── */
+.board-dim-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(212,168,50,.08);border:1px solid rgba(212,168,50,.2);border-radius:7px;padding:3px 9px;font-size:.68rem;color:var(--gold2);margin-bottom:8px}
+
+/* ── TIPS PANEL ── */
+.tip-panel{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 12px;margin-bottom:8px;display:none;align-items:flex-start;gap:9px}
+.tip-panel::before{content:"💡";font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.tip-text{font-size:.77rem;color:var(--tx2);line-height:1.6;flex:1}
+.tip-close{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:.85rem;padding:0;opacity:.7}
+.tip-close:hover{opacity:1}
+.tip-next{background:none;border:none;color:var(--gold);cursor:pointer;font-size:.7rem;font-family:"Inter",sans-serif;padding:0;text-decoration:underline;margin-top:3px}
+
+/* ── NARRATION BAR (injected via JS) ── */
+#narration-bar{transition:opacity .3s}
+
+/* ── STEP MODE BUTTON ── */
+#step-btn{transition:background .2s}
+#step-btn:hover{background:var(--gold2)!important}
+
+
+/* ━━ PLAY PANEL 3-COLUMN LAYOUT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.play-layout{display:grid;grid-template-columns:220px 1fr 260px;gap:14px;align-items:start}
+.play-centre{min-width:0}
+.ai-side-panel{display:flex;flex-direction:column;gap:10px;position:sticky;top:12px}
+
+/* ── Side panel card ── */
+.ai-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;overflow:hidden}
+.ai-card-title{font-size:.7rem;font-weight:700;color:var(--gold);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);padding-bottom:6px}
+
+/* ── TEP Live panel ── */
+.tep-live-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.72rem}
+.tep-live-label{color:var(--tx3);flex:1}
+.tep-live-val{font-weight:700;font-size:.8rem;color:var(--gold2);font-family:'Courier New',monospace;min-width:60px;text-align:right}
+.tep-live-val.good{color:var(--green2)}
+.tep-live-val.bad{color:var(--red2)}
+.tep-live-val.neutral{color:var(--tx2)}
+
+/* ── Q-value mini bar ── */
+.q-bar-wrap{margin:6px 0 2px}
+.q-bar-label{font-size:.65rem;color:var(--tx3);margin-bottom:3px}
+.q-bar-track{background:rgba(255,255,255,.07);border-radius:4px;height:7px;overflow:hidden;position:relative}
+.q-bar-fill{height:100%;border-radius:4px;transition:width .4s ease,background .4s ease}
+
+/* ── Weight heatmap ── */
+.weight-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin-top:4px}
+.w-cell{height:12px;border-radius:2px;transition:background .5s}
+
+/* ── Episode chart ── */
+#side-chart-canvas{width:100%;border-radius:6px;display:block}
+/* Per-game performance panel */
+.perf-stat-cell{background:rgba(255,255,255,.04);border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;gap:2px}
+.psc-label{font-size:.6rem;color:var(--tx4)}
+.psc-val{font-size:.82rem;font-weight:700;color:var(--gold2);font-family:'Courier New',monospace}
+.streak-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.story-highlight{color:var(--gold2);font-weight:600}
+.story-good{color:var(--green2);font-weight:600}
+.story-bad{color:var(--red2);font-weight:600}
+.method-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.63rem;font-weight:700;margin-right:3px}
+.method-explore{background:rgba(224,120,32,.15);color:var(--amber2);border:1px solid rgba(224,120,32,.3)}
+.method-exploit{background:rgba(80,184,120,.15);color:var(--green2);border:1px solid rgba(80,184,120,.3)}
+.method-update{background:rgba(64,168,168,.15);color:var(--teal2);border:1px solid rgba(64,168,168,.3)}
+
+/* ── Delta indicator ── */
+.delta-badge{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:3px 8px;font-size:.75rem;font-weight:700;font-family:'Courier New',monospace;transition:background .4s,color .4s}
+.delta-badge.pos{background:rgba(80,184,120,.15);color:var(--green2);border:1px solid rgba(80,184,120,.3)}
+.delta-badge.neg{background:rgba(176,56,32,.15);color:var(--red2);border:1px solid rgba(176,56,32,.3)}
+.delta-badge.zero{background:rgba(255,255,255,.05);color:var(--tx3);border:1px solid var(--border)}
+
+/* ── Reward flash ── */
+@keyframes rewardFlash{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-22px) scale(1.3)}}
+.reward-float{position:absolute;right:10px;top:8px;font-size:.85rem;font-weight:800;pointer-events:none;animation:rewardFlash 1.2s ease-out forwards}
+
+/* ── Formula box ── */
+.formula-box{background:rgba(255,255,255,.04);border-radius:8px;padding:7px 10px;font-family:'Courier New',monospace;font-size:.7rem;color:var(--gold);border-left:3px solid var(--gold);margin:6px 0;line-height:1.8}
+.formula-box .fvar{color:var(--amber2)}
+.formula-box .fop{color:var(--tx3)}
+.formula-box .fval{color:var(--green2)}
+
+/* ── Responsive: collapse side panels on small screens ── */
+@media(max-width:900px){
+  .play-layout{grid-template-columns:1fr}
+  .ai-side-panel{display:none}
+}
+@media(max-width:1200px){
+  .play-layout{grid-template-columns:200px 1fr 240px}
+}
+@media(max-width:1050px){
+  .play-layout{grid-template-columns:180px 1fr 220px}
+}
+
 </style>
 </head>
 <body>
@@ -562,6 +677,7 @@ canvas.chart{width:100%}
       </svg>
     </div>
     <div class="header-sub">Traditional Strategy Game of Limpopo</div>
+    <div class="header-dev">Developed by Tshifhiwa AJ Tshitaka · ITRI 616 · UNIVEN · 2026</div>
   </div>
   <div class="header-right">
     <button class="btn btn-settings btn-icon" onclick="openSettings()" title="Settings">⚙️</button>
@@ -573,12 +689,106 @@ canvas.chart{width:100%}
   <button class="nav-btn active" onclick="goPanel('play')"><span class="nav-icon">♟</span> Play</button>
   <button class="nav-btn" onclick="goPanel('tutorial')"><span class="nav-icon">📖</span> Tutorial</button>
   <button class="nav-btn" onclick="goPanel('train')"><span class="nav-icon">🧠</span> Train AI</button>
+  <button class="nav-btn" onclick="goPanel('formulas')"><span class="nav-icon">📐</span> AI Formulas</button>
   <button class="nav-btn" onclick="goPanel('learn')"><span class="nav-icon">🌱</span> Learn</button>
   <button class="nav-btn" onclick="goPanel('about')"><span class="nav-icon">ℹ</span> About</button>
 </div>
 
 <!-- ════════════ PLAY PANEL ════════════ -->
 <div class="panel active" id="panel-play">
+<div class="play-layout">
+  <!-- ══ LEFT PANEL: TEP LIVE MONITOR ══ -->
+  <div class="ai-side-panel" id="tep-side-panel">
+
+    <!-- TEP Framework live values -->
+    <div class="ai-card">
+      <div class="ai-card-title">🎯 TEP Framework Live</div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">T — Move #</span>
+        <span class="tep-live-val neutral" id="tep-move-num">—</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">T — Legal moves</span>
+        <span class="tep-live-val neutral" id="tep-legal-count">—</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">T — Chosen pit</span>
+        <span class="tep-live-val neutral" id="tep-chosen-pit">—</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">E — ε (explore rate)</span>
+        <span class="tep-live-val" id="tep-epsilon">1.000</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">E — Mode</span>
+        <span class="tep-live-val neutral" id="tep-mode">Exploring</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">E — Episodes trained</span>
+        <span class="tep-live-val neutral" id="tep-episodes">0</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">P — Win rate (Random)</span>
+        <span class="tep-live-val" id="tep-wr-rand">—</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">P — Win rate (Heuristic)</span>
+        <span class="tep-live-val" id="tep-wr-heur">—</span>
+      </div>
+    </div>
+
+    <!-- Last move analysis -->
+    <div class="ai-card">
+      <div class="ai-card-title">📊 Last Move Analysis</div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">Q(s,a) chosen</span>
+        <span class="tep-live-val" id="ai-q-chosen">—</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">Q(s,a) best</span>
+        <span class="tep-live-val" id="ai-q-best">—</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">Reward r</span>
+        <span class="tep-live-val" id="ai-reward">—</span>
+      </div>
+      <div class="tep-live-row">
+        <span class="tep-live-label">TD error δ</span>
+        <span class="tep-live-val" id="ai-delta">—</span>
+      </div>
+      <div class="tep-live-row" style="padding-top:6px">
+        <span class="tep-live-label" style="color:var(--tx2)">Action type</span>
+        <span class="delta-badge zero" id="ai-action-type">—</span>
+      </div>
+    </div>
+
+    <!-- Formula reminder -->
+    <div class="ai-card">
+      <div class="ai-card-title">📐 Active Formulae</div>
+      <div class="formula-box">
+        Q(s,a) <span class="fop">≈</span> <span class="fvar">w</span> · <span class="fvar">φ</span>(s')
+        <br><span style="color:var(--tx4);font-size:.62rem">Q-value = weights · features</span>
+        <br><span class="fval" id="formula-q-val" style="font-size:.65rem">—</span>
+      </div>
+      <div class="formula-box">
+        <span class="fvar">δ</span> <span class="fop">=</span> r <span class="fop">+</span> γ·maxQ'' <span class="fop">−</span> Q(s,a)
+        <br><span style="color:var(--tx4);font-size:.62rem">TD error (the "surprise")</span>
+        <br><span class="fval" id="formula-delta-val" style="font-size:.65rem">—</span>
+      </div>
+      <div class="formula-box">
+        <span class="fvar">w</span> <span class="fop">←</span> w <span class="fop">+</span> α·<span class="fvar">δ</span>·<span class="fvar">φ</span>(s')
+        <br><span style="color:var(--tx4);font-size:.62rem">Weight update (learning step)</span>
+        <br><span class="fval" id="formula-update-val" style="font-size:.65rem">—</span>
+      </div>
+      <div style="font-size:.62rem;color:var(--tx4);line-height:1.6;margin-top:6px">
+        α=0.01 · γ=0.95 · φ=50-dim features
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ CENTRE: BOARD ══ -->
+  <div class="play-centre">
 
   <!-- SCORE BAR -->
   <div class="score-bar" id="score-bar">
@@ -623,13 +833,15 @@ canvas.chart{width:100%}
         <option value="ql" selected>Hard</option>
       </select>
     </div>
-    <div class="cg" id="grp-spd" style="display:none">
+    <div class="cg" id="grp-spd">
       <label>Speed</label>
-      <select id="sel-spd">
-        <option value="1400">Slow</option>
-        <option value="800" selected>Normal</option>
-        <option value="300">Fast</option>
-        <option value="80">Turbo</option>
+      <select id="sel-spd" onchange="onSpeedChange()">
+        <option value="step">Step-by-step ⏸</option>
+        <option value="3200">Very Slow 🐢</option>
+        <option value="2000" selected>Slow ⏳</option>
+        <option value="900">Normal ▶</option>
+        <option value="350">Fast ⚡</option>
+        <option value="80">Turbo 🚀</option>
       </select>
     </div>
     <button class="btn btn-gold" onclick="startGame()">▶ New Game</button>
@@ -646,6 +858,18 @@ canvas.chart{width:100%}
     <span class="status-text" id="status-msg">Press ▶ New Game to begin.</span>
   </div>
 
+  <!-- TIPS PANEL -->
+  <div class="tip-panel" id="tip-panel">
+    <span class="tip-text" id="tip-text">Loading tips…</span>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+      <button class="tip-close" onclick="dismissTip()" title="Dismiss">✕</button>
+      <button class="tip-next" onclick="nextTip()">next tip →</button>
+    </div>
+  </div>
+  <!-- BOARD DIM BADGE -->
+  <div class="board-dim-badge" id="board-dim-badge">
+    <span>📐</span><span id="dim-text">4 rows × 8 cols = 32 pits · 2 seeds/pit · 64 total seeds</span>
+  </div>
   <!-- BOARD -->
   <div class="board-scene" id="board-scene"><div id="board-inner"></div></div>
 
@@ -653,6 +877,401 @@ canvas.chart{width:100%}
   <div class="move-log" id="move-log"><div style="font-size:.73rem;color:var(--tx4);font-style:italic">Game log will appear here…</div></div>
 
 </div>
+
+  </div><!-- /play-centre -->
+
+  <!-- ══ RIGHT PANEL: Q-LEARNING LIVE VISUAL ══ -->
+  <div class="ai-side-panel" id="ql-side-panel">
+
+    <!-- Live board advantage meter -->
+    <div class="ai-card">
+      <div class="ai-card-title">📊 Board Advantage</div>
+      <div style="font-size:.62rem;color:var(--tx4);margin-bottom:5px">Seed balance · Capture lead · AI confidence</div>
+      <!-- Seed bar -->
+      <div style="font-size:.63rem;color:var(--tx3);margin-bottom:2px">Seeds on board (You vs AI)</div>
+      <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:6px;background:rgba(255,255,255,.05)">
+        <div id="adv-seeds-p1" style="background:var(--p1);height:100%;transition:width .4s ease;width:50%"></div>
+        <div id="adv-seeds-p2" style="background:var(--p2);height:100%;transition:width .4s ease;width:50%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--tx4);margin-bottom:8px">
+        <span id="adv-seeds-p1-txt" style="color:var(--p1)">—</span>
+        <span style="color:var(--tx4)">seeds</span>
+        <span id="adv-seeds-p2-txt" style="color:var(--p2)">—</span>
+      </div>
+      <!-- Capture bar -->
+      <div style="font-size:.63rem;color:var(--tx3);margin-bottom:2px">Captures (You vs AI)</div>
+      <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:6px;background:rgba(255,255,255,.05)">
+        <div id="adv-cap-p1" style="background:var(--p1);height:100%;transition:width .4s ease;width:50%"></div>
+        <div id="adv-cap-p2" style="background:var(--p2);height:100%;transition:width .4s ease;width:50%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--tx4);margin-bottom:4px">
+        <span id="adv-cap-p1-txt" style="color:var(--p1)">0</span>
+        <span style="color:var(--tx4)">captured</span>
+        <span id="adv-cap-p2-txt" style="color:var(--p2)">0</span>
+      </div>
+      <!-- Advantage label -->
+      <div id="adv-label" style="text-align:center;font-size:.72rem;font-weight:700;color:var(--tx3);padding:3px 0;background:rgba(255,255,255,.03);border-radius:5px">—</div>
+    </div>
+
+    <!-- Q-value bar chart for current legal moves -->
+    <div class="ai-card" style="position:relative">
+      <div class="ai-card-title">🧠 Q-Values This Turn</div>
+      <div id="q-bars-container" style="display:flex;flex-direction:column;gap:4px;min-height:80px">
+        <div style="font-size:.68rem;color:var(--tx4);font-style:italic">Start a game to see live Q-values…</div>
+      </div>
+      <div id="reward-float-anchor" style="position:relative;height:0"></div>
+    </div>
+
+    <!-- Weight heatmap: top 50 weights visualised as colour cells -->
+    <div class="ai-card">
+      <div class="ai-card-title">⚖️ Weight Vector w (50-dim)</div>
+      <div style="font-size:.63rem;color:var(--tx4);margin-bottom:5px">Each cell = one learned weight. Green=positive, Red=negative, Dark=near zero.</div>
+      <div class="weight-grid" id="weight-heatmap"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px">
+        <span style="font-size:.6rem;color:var(--red2)">■ Negative</span>
+        <span style="font-size:.6rem;color:var(--tx4)">■ Zero</span>
+        <span style="font-size:.6rem;color:var(--green2)">■ Positive</span>
+      </div>
+    </div>
+
+    <!-- ══ PERFORMANCE OVER TIME — per-game learning story ══ -->
+    <div class="ai-card" id="perf-card">
+      <div class="ai-card-title">📈 P — Performance Over Time</div>
+
+      <!-- Game counter strip -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:.65rem;color:var(--tx3)">Games played</span>
+        <span class="tep-live-val neutral" id="perf-game-count">0</span>
+      </div>
+
+      <!-- Win/Loss/Draw streaks bar -->
+      <div style="font-size:.6rem;color:var(--tx4);margin-bottom:3px">Recent results (newest → left)</div>
+      <div id="perf-streak-bar" style="display:flex;gap:2px;flex-wrap:wrap;min-height:14px;margin-bottom:8px"></div>
+
+      <!-- Per-game canvas chart — win rate trend across games -->
+      <div style="font-size:.6rem;color:var(--tx4);margin-bottom:3px">AI win rate trend across games</div>
+      <canvas id="perf-game-canvas" height="70" style="width:100%;border-radius:6px;display:block;margin-bottom:6px"></canvas>
+      <div style="display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+        <span style="font-size:.6rem;color:var(--gold)">▬ vs You / Human</span>
+        <span style="font-size:.6rem;color:var(--green2)">▬ vs Heuristic</span>
+        <span style="font-size:.6rem;color:var(--teal2)">▬ explore rate ε</span>
+      </div>
+
+      <!-- Plain-English learning summary — updated after every game -->
+      <div id="perf-story" style="background:rgba(255,255,255,.04);border-radius:8px;padding:9px 11px;font-size:.7rem;color:var(--tx2);line-height:1.7;border-left:3px solid var(--gold)">
+        <span style="color:var(--tx4);font-style:italic">Play a game to see the AI's learning story…</span>
+      </div>
+
+      <!-- Method explainer — updates based on current ε -->
+      <div id="perf-method-box" style="margin-top:8px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:.68rem;color:var(--tx3);line-height:1.65;display:none">
+      </div>
+
+      <!-- Key stats row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px" id="perf-stats-grid">
+        <div class="perf-stat-cell" id="psc-captures"><span class="psc-label">Total captures</span><span class="psc-val" id="psc-captures-val">—</span></div>
+        <div class="perf-stat-cell" id="psc-exploits"><span class="psc-label">Exploit moves</span><span class="psc-val" id="psc-exploits-val">—</span></div>
+        <div class="perf-stat-cell"><span class="psc-label">Avg δ (last game)</span><span class="psc-val" id="psc-delta-val">—</span></div>
+        <div class="perf-stat-cell"><span class="psc-label">Weight change</span><span class="psc-val" id="psc-wchange-val">—</span></div>
+        <div class="perf-stat-cell"><span class="psc-label">Games played</span><span class="psc-val" id="psc-games-val">—</span></div>
+        <div class="perf-stat-cell"><span class="psc-label">AI win rate</span><span class="psc-val" id="psc-winrate-val">—</span></div>
+        <div class="perf-stat-cell" style="grid-column:1/-1"><span class="psc-label">Explore → Exploit shift</span>
+          <div style="height:6px;background:rgba(255,255,255,.06);border-radius:3px;margin-top:4px;overflow:hidden">
+            <div id="psc-exploit-bar" style="height:100%;background:linear-gradient(90deg,var(--amber2),var(--green2));border-radius:3px;width:0%;transition:width .5s ease"></div>
+          </div>
+          <span class="psc-val" id="psc-exploit-pct" style="font-size:.68rem">—% exploit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AI LEARNING LOG — plain English per-move ══ -->
+    <div class="ai-card">
+      <div class="ai-card-title">📝 What the AI just did</div>
+      <div id="ai-learn-log" style="font-size:.69rem;color:var(--tx3);line-height:1.75;max-height:160px;overflow-y:auto;scrollbar-width:thin">
+        <span style="color:var(--tx4);font-style:italic">Move-by-move plain-English decisions appear here…</span>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /play-layout -->
+
+<!-- ════════════ AI FORMULAS PANEL ════════════ -->
+<div class="panel" id="panel-formulas">
+<div style="max-width:860px;margin:0 auto">
+
+  <div style="margin-bottom:18px">
+    <h2 style="font-family:'Cinzel',serif;font-size:1.15rem;font-weight:900;color:var(--gold);margin-bottom:6px">📐 How the AI Thinks — Plain English Guide</h2>
+    <p style="font-size:.8rem;color:var(--tx2);line-height:1.7">The Mufuvha AI uses a technique called <strong style="color:var(--tx)">Reinforcement Learning (RL)</strong> — the same family of methods that powers AlphaGo, chess engines, and robots. This page explains every formula and component in simple, everyday language. No maths degree needed.</p>
+  </div>
+
+  <!-- CONCEPT 1: What is Q? -->
+  <div class="about-card" style="border-left:4px solid var(--gold);margin-bottom:14px">
+    <h2 style="color:var(--gold)">🎯 The Big Idea: Q-Values</h2>
+    <p><strong style="color:var(--tx)">Q(s, a)</strong> is the AI's <em>score estimate</em> for a move. The letter Q stands for "quality." Before every move, the AI asks: <em>"If I pick pit <strong>a</strong> when the board looks like <strong>s</strong>, how good is that choice in the long run?"</em></p>
+    <p>The answer — the Q-value — is just a single number. A high Q-value means "this looks like a great move." A low or negative Q-value means "this is probably bad." The AI always picks the move with the highest Q-value (unless it's still exploring — more on that below).</p>
+    <div class="highlight">
+      <strong style="color:var(--gold)">Everyday analogy:</strong> Imagine rating each pit on a scale of −10 to +10 based on how much you expect to win by picking it. Q-learning is the AI constantly updating those ratings as it plays more games.
+    </div>
+  </div>
+
+  <!-- CONCEPT 2: Feature Vector -->
+  <div class="about-card" style="border-left:4px solid var(--amber);margin-bottom:14px">
+    <h2 style="color:var(--amber2)">🔢 What is φ (phi) — The Feature Vector?</h2>
+    <p><strong style="color:var(--tx)">φ(s')</strong> is a list of 50 numbers that describe the board after a move. Think of it as the AI's <em>checklist of board facts</em>. Each number (feature) captures one aspect of the position.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
+      <div style="background:rgba(212,168,50,.07);border:1px solid rgba(212,168,50,.2);border-radius:8px;padding:10px 14px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--gold);margin-bottom:6px">Features 1–8: Your inner row</div>
+        <div style="font-size:.76rem;color:var(--tx2);line-height:1.6">How many seeds are in each of your 8 front pits, divided by total seeds on board (normalised). High = good coverage.</div>
+      </div>
+      <div style="background:rgba(212,168,50,.07);border:1px solid rgba(212,168,50,.2);border-radius:8px;padding:10px 14px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--gold);margin-bottom:6px">Features 9–16: Your outer row</div>
+        <div style="font-size:.76rem;color:var(--tx2);line-height:1.6">How many seeds are in your 8 back pits. Outer seeds are safe from capture — these are your reserves.</div>
+      </div>
+      <div style="background:rgba(224,112,48,.07);border:1px solid rgba(224,112,48,.2);border-radius:8px;padding:10px 14px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--amber2);margin-bottom:6px">Features 17–24: Opponent's inner row</div>
+        <div style="font-size:.76rem;color:var(--tx2);line-height:1.6">How loaded the opponent's front pits are. Highly loaded opposite pits are capture opportunities.</div>
+      </div>
+      <div style="background:rgba(224,112,48,.07);border:1px solid rgba(224,112,48,.2);border-radius:8px;padding:10px 14px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--amber2);margin-bottom:6px">Features 25–32: Opponent's outer row</div>
+        <div style="font-size:.76rem;color:var(--tx2);line-height:1.6">Opponent's reserves — capturing both inner and outer in a column is a "double capture."</div>
+      </div>
+      <div style="background:rgba(80,184,120,.07);border:1px solid rgba(80,184,120,.2);border-radius:8px;padding:10px 14px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--green2);margin-bottom:6px">Features 33–34: Capture scores</div>
+        <div style="font-size:.76rem;color:var(--tx2);line-height:1.6">Your captures ÷ 64 and opponent's captures ÷ 64. Tells the AI who is winning.</div>
+      </div>
+      <div style="background:rgba(64,168,168,.07);border:1px solid rgba(64,168,168,.2);border-radius:8px;padding:10px 14px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--teal2);margin-bottom:6px">Features 35–50: Occupied flags</div>
+        <div style="font-size:.76rem;color:var(--tx2);line-height:1.6">Binary 1/0 — is each inner pit occupied? Lets the AI reason about capture opportunities directly.</div>
+      </div>
+    </div>
+    <div class="highlight">
+      <strong style="color:var(--amber2)">Why 50 features?</strong> There are 2<sup>64</sup> possible board states — more than the number of atoms in your body. You can't store a Q-value for every one. Instead, 50 numbers summarise the board well enough to make smart decisions in any situation.
+    </div>
+  </div>
+
+  <!-- CONCEPT 3: Weight Vector -->
+  <div class="about-card" style="border-left:4px solid var(--teal2);margin-bottom:14px">
+    <h2 style="color:var(--teal2)">⚖️ What is w — The Weight Vector?</h2>
+    <p><strong style="color:var(--tx)">w</strong> is a list of 50 numbers — the AI's <em>learned importance scores</em>. Each weight corresponds to one feature in φ. A large positive weight means "this feature strongly predicts winning." A negative weight means "this feature predicts trouble."</p>
+    <p>At the start, all weights are zero — the AI knows nothing. As it plays, weights are nudged up or down after every move based on how well things went. After thousands of games, the weights encode a complete strategy.</p>
+    <div class="highlight">
+      <strong style="color:var(--teal2)">Everyday analogy:</strong> Think of w as a recipe. Each ingredient (feature) has an amount (weight). Too much of a particular ingredient ruins the dish. Q-learning adjusts the recipe after every meal until the dish consistently tastes good.
+    </div>
+  </div>
+
+  <!-- FORMULA 1: Q = w · φ -->
+  <div class="about-card" style="border-left:4px solid var(--gold);margin-bottom:14px">
+    <h2 style="color:var(--gold)">📊 Formula 1: Q(s, a) ≈ w · φ(s')</h2>
+    <div class="formula-box" style="font-size:.85rem;line-height:2.2;margin:10px 0">
+      <span class="fvar">Q(s, a)</span> <span class="fop">≈</span> <span class="fvar">w</span> <span class="fop">·</span> <span class="fvar">φ(s')</span>
+    </div>
+    <p><strong style="color:var(--tx)">What this means in plain English:</strong></p>
+    <p>To score a move, the AI takes each of the 50 features, multiplies it by its corresponding weight, and adds them all up. That sum is the Q-value — the AI's prediction of how good this move is.</p>
+    <div style="background:rgba(212,168,50,.06);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:.78rem;color:var(--tx2);line-height:1.8">
+      <strong style="color:var(--gold)">Step by step:</strong><br>
+      1. The AI imagines making move <strong>a</strong> on the current board <strong>s</strong><br>
+      2. It reads off the 50 features of the resulting position → that's φ(s')<br>
+      3. It multiplies feature[1] × weight[1], feature[2] × weight[2] … all 50 pairs<br>
+      4. It adds them all together → that sum is Q(s, a)<br>
+      5. It repeats for every legal pit, then picks the pit with the highest Q
+    </div>
+    <div class="highlight">
+      <strong style="color:var(--gold)">Why a dot product?</strong> A dot product (w · φ) is simply multiply-then-add for two lists. It's the fastest possible way to turn 50 board facts into one decision number. This is called <em>linear function approximation</em>.
+    </div>
+  </div>
+
+  <!-- FORMULA 2: Reward -->
+  <div class="about-card" style="border-left:4px solid var(--green2);margin-bottom:14px">
+    <h2 style="color:var(--green2)">🏅 What is r — The Reward?</h2>
+    <p><strong style="color:var(--tx)">r</strong> is the immediate score the AI receives after making a move. Think of it as points:</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0">
+      <div style="background:rgba(80,184,120,.08);border:1px solid rgba(80,184,120,.25);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-size:1.6rem;margin-bottom:4px">🌱</div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--green2)">Capture move</div>
+        <div style="font-size:.78rem;color:var(--tx2);margin-top:4px">+0.05 × number of seeds captured</div>
+      </div>
+      <div style="background:rgba(80,184,120,.08);border:1px solid rgba(80,184,120,.25);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-size:1.6rem;margin-bottom:4px">🏆</div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--green2)">Win the game</div>
+        <div style="font-size:.78rem;color:var(--tx2);margin-top:4px">+1.0 (a big bonus)</div>
+      </div>
+      <div style="background:rgba(176,56,32,.08);border:1px solid rgba(176,56,32,.25);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-size:1.6rem;margin-bottom:4px">❌</div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--red2)">Lose the game</div>
+        <div style="font-size:.78rem;color:var(--tx2);margin-top:4px">−1.0 (a penalty)</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center">
+        <div style="font-size:1.6rem;margin-bottom:4px">➡️</div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--tx2)">Normal move</div>
+        <div style="font-size:.78rem;color:var(--tx2);margin-top:4px">0 (no immediate score)</div>
+      </div>
+    </div>
+    <div class="highlight">
+      <strong style="color:var(--green2)">Why are non-capture moves worth 0?</strong> The AI learns the value of strategic positioning through future rewards, not just immediate captures. The γ (gamma) factor below handles this.
+    </div>
+  </div>
+
+  <!-- FORMULA 3: TD Error -->
+  <div class="about-card" style="border-left:4px solid var(--amber);margin-bottom:14px">
+    <h2 style="color:var(--amber2)">⚡ Formula 2: δ = r + γ·maxQ' − Q(s,a) — The "Surprise" (TD Error)</h2>
+    <div class="formula-box" style="font-size:.85rem;line-height:2.2;margin:10px 0">
+      <span class="fvar">δ</span> <span class="fop">=</span> <span class="fvar">r</span> <span class="fop">+</span> <span class="fvar">γ</span> <span class="fop">·</span> <span class="fvar">maxQ'</span> <span class="fop">−</span> <span class="fvar">Q(s,a)</span>
+    </div>
+    <p><strong style="color:var(--tx)">What this means in plain English:</strong></p>
+    <p>δ (delta) measures <em>how surprised the AI was</em> by what actually happened. It compares what the AI expected to happen with what actually happened — and the difference is the learning signal.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;font-size:.75rem">
+      <div style="background:rgba(224,120,32,.08);border:1px solid rgba(224,120,32,.25);border-radius:8px;padding:10px 12px">
+        <div style="font-weight:700;color:var(--amber2);margin-bottom:4px">r — Immediate reward</div>
+        <div style="color:var(--tx2);line-height:1.6">What you earned right now. Seeds captured this move, or win/loss signal at game end.</div>
+      </div>
+      <div style="background:rgba(212,168,50,.06);border:1px solid rgba(212,168,50,.2);border-radius:8px;padding:10px 12px">
+        <div style="font-weight:700;color:var(--gold);margin-bottom:4px">γ · maxQ' — Future value</div>
+        <div style="color:var(--tx2);line-height:1.6">γ (gamma = 0.95) discounts future rewards. maxQ' is the best Q-value in the new position. Together they ask: "how good is the situation I've arrived in?"</div>
+      </div>
+      <div style="background:rgba(80,184,120,.06);border:1px solid rgba(80,184,120,.2);border-radius:8px;padding:10px 12px">
+        <div style="font-weight:700;color:var(--green2);margin-bottom:4px">−Q(s,a) — What was expected</div>
+        <div style="color:var(--tx2);line-height:1.6">The AI's original prediction before making the move. Subtracting it tells us: was reality better or worse than expected?</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;font-size:.76rem">
+      <div style="background:rgba(80,184,120,.1);border:1px solid rgba(80,184,120,.3);border-radius:8px;padding:8px 12px;text-align:center">
+        <div style="font-weight:700;color:var(--green2);font-size:.9rem">δ > 0</div>
+        <div style="color:var(--tx2);margin-top:3px;line-height:1.5">Positive surprise! Reality was better than expected. The AI should do this more.</div>
+      </div>
+      <div style="background:rgba(176,56,32,.1);border:1px solid rgba(176,56,32,.3);border-radius:8px;padding:8px 12px;text-align:center">
+        <div style="font-weight:700;color:var(--red2);font-size:.9rem">δ &lt; 0</div>
+        <div style="color:var(--tx2);margin-top:3px;line-height:1.5">Negative surprise. Reality was worse than expected. The AI should avoid this.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 12px;text-align:center">
+        <div style="font-weight:700;color:var(--tx2);font-size:.9rem">δ ≈ 0</div>
+        <div style="color:var(--tx2);margin-top:3px;line-height:1.5">No surprise. The AI predicted correctly. Weights stay almost unchanged.</div>
+      </div>
+    </div>
+    <div class="highlight">
+      <strong style="color:var(--amber2)">γ = 0.95 explained:</strong> The AI values a reward one step in the future at 95% of its face value, two steps away at 95%² = 90.25%, and so on. This makes it care about the near future more than the far future — exactly like a real player who plans a few moves ahead.
+    </div>
+  </div>
+
+  <!-- FORMULA 4: Weight Update -->
+  <div class="about-card" style="border-left:4px solid var(--green2);margin-bottom:14px">
+    <h2 style="color:var(--green2)">🔄 Formula 3: w ← w + α·δ·φ(s') — The Learning Step</h2>
+    <div class="formula-box" style="font-size:.85rem;line-height:2.2;margin:10px 0">
+      <span class="fvar">w</span> <span class="fop">←</span> <span class="fvar">w</span> <span class="fop">+</span> <span class="fvar">α</span> <span class="fop">·</span> <span class="fvar">δ</span> <span class="fop">·</span> <span class="fvar">φ(s')</span>
+    </div>
+    <p><strong style="color:var(--tx)">What this means in plain English:</strong></p>
+    <p>This is the line where actual learning happens. After every AI move, we <em>update all 50 weights</em> simultaneously based on the surprise signal δ. Weights that were responsible for the move get nudged in the direction of the surprise.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:10px 0;font-size:.76rem">
+      <div style="background:rgba(64,168,168,.07);border:1px solid rgba(64,168,168,.2);border-radius:8px;padding:10px 12px">
+        <div style="font-weight:700;color:var(--teal2);margin-bottom:4px">α (alpha) = 0.01</div>
+        <div style="color:var(--tx2);line-height:1.6">The learning rate. Only 1% of the error signal is applied each step. Too large → AI overshoots and forgets what it learned. Too small → learning is painfully slow.</div>
+      </div>
+      <div style="background:rgba(224,120,32,.06);border:1px solid rgba(224,120,32,.2);border-radius:8px;padding:10px 12px">
+        <div style="font-weight:700;color:var(--amber2);margin-bottom:4px">δ (delta)</div>
+        <div style="color:var(--tx2);line-height:1.6">The surprise from Formula 2. If δ is large and positive, weights get a big boost. If δ is large and negative, weights get reduced.</div>
+      </div>
+      <div style="background:rgba(212,168,50,.06);border:1px solid rgba(212,168,50,.2);border-radius:8px;padding:10px 12px">
+        <div style="font-weight:700;color:var(--gold);margin-bottom:4px">φ(s') — features</div>
+        <div style="color:var(--tx2);line-height:1.6">Only features that were non-zero (i.e. relevant to the move) get updated. If a feature wasn't a factor in the decision, its weight doesn't change.</div>
+      </div>
+    </div>
+    <div class="highlight">
+      <strong style="color:var(--green2)">Everyday analogy:</strong> Imagine coaching a student after a test. The mistake (δ) tells you what to fix. The revision effort (α) is how hard you drill each concept. The relevant topics (φ) are what you focus on. You only revise concepts that appeared on that test — not everything.
+    </div>
+  </div>
+
+  <!-- CONCEPT: Epsilon Greedy -->
+  <div class="about-card" style="border-left:4px solid var(--p2);margin-bottom:14px">
+    <h2 style="color:var(--p2)">🎲 ε-Greedy Exploration: How the AI Decides Whether to Try Something New</h2>
+    <p>The AI faces a dilemma every move: <em>try something new and possibly discover a better strategy</em> (explore), or <em>use the best strategy it already knows</em> (exploit). ε (epsilon) is the probability of exploring.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;font-size:.78rem">
+      <div style="background:rgba(224,112,48,.08);border:1px solid rgba(224,112,48,.25);border-radius:8px;padding:12px 14px">
+        <div style="font-weight:700;color:var(--p2);margin-bottom:6px;font-size:.85rem">🎲 Explore (random move)</div>
+        <div style="color:var(--tx2);line-height:1.65">Happens with probability ε. The AI picks a random legal pit. This discovers new strategies it might never find otherwise. Essential early in training when ε = 1.0 (always exploring).</div>
+      </div>
+      <div style="background:rgba(80,184,120,.08);border:1px solid rgba(80,184,120,.25);border-radius:8px;padding:12px 14px">
+        <div style="font-weight:700;color:var(--green2);margin-bottom:6px;font-size:.85rem">🧠 Exploit (best known move)</div>
+        <div style="color:var(--tx2);line-height:1.65">Happens with probability 1−ε. The AI picks the pit with the highest Q-value — its current best answer. As ε shrinks toward 0.05, the AI plays more confidently using what it has learned.</div>
+      </div>
+    </div>
+    <p>Every time the AI makes a move, ε is multiplied by 0.9994. Starting at 1.0 and decaying slowly, ε eventually levels off at 0.05 (5% random). The AI gradually shifts from full exploration to confident exploitation.</p>
+    <div class="highlight">
+      <strong style="color:var(--p2)">Everyday analogy:</strong> You're learning to cook. At first you try random recipes (high ε). Over time you make the recipes you've found taste best (low ε). But you always keep a 5% chance of trying something new — just in case there's a better dish you haven't discovered yet.
+    </div>
+  </div>
+
+  <!-- CONCEPT: The full loop -->
+  <div class="about-card" style="border-left:4px solid var(--gold);margin-bottom:14px">
+    <h2 style="color:var(--gold)">🔁 The Complete 4-Step Learning Loop</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0">
+      <div style="background:rgba(212,168,50,.06);border:1px solid rgba(212,168,50,.2);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:6px">1️⃣</div>
+        <div style="font-weight:700;color:var(--gold);margin-bottom:6px">Observe the board</div>
+        <div style="font-size:.75rem;color:var(--tx2);line-height:1.6">Read all 50 features → this is the state s. This is the AI "seeing" the board.</div>
+      </div>
+      <div style="background:rgba(224,120,32,.06);border:1px solid rgba(224,120,32,.2);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:6px">2️⃣</div>
+        <div style="font-weight:700;color:var(--amber2);margin-bottom:6px">Choose a move</div>
+        <div style="font-size:.75rem;color:var(--tx2);line-height:1.6">ε-greedy: explore (random) or exploit (highest Q). The AI picks pit a.</div>
+      </div>
+      <div style="background:rgba(80,184,120,.06);border:1px solid rgba(80,184,120,.2);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:6px">3️⃣</div>
+        <div style="font-weight:700;color:var(--green2);margin-bottom:6px">Get feedback</div>
+        <div style="font-size:.75rem;color:var(--tx2);line-height:1.6">Execute the move. Collect reward r. Observe new state s'. Compute δ (the surprise).</div>
+      </div>
+      <div style="background:rgba(64,168,168,.06);border:1px solid rgba(64,168,168,.2);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:6px">4️⃣</div>
+        <div style="font-weight:700;color:var(--teal2);margin-bottom:6px">Update weights</div>
+        <div style="font-size:.75rem;color:var(--tx2);line-height:1.6">Apply w ← w + α·δ·φ. Decay ε. The AI is now slightly smarter. Repeat from step 1.</div>
+      </div>
+    </div>
+    <p style="font-size:.8rem;color:var(--tx2);line-height:1.7">This loop runs for every single move of every game — potentially tens of thousands of times during training. After 2,000 training episodes, the AI has seen enough situations to play strategically.</p>
+  </div>
+
+  <!-- TEP Framework -->
+  <div class="about-card" style="border-left:4px solid var(--teal2);margin-bottom:14px">
+    <h2 style="color:var(--teal2)">🏗️ The TEP Framework (Mitchell, 1997) — How We Measure Learning</h2>
+    <p>Mitchell's framework defines a machine learning problem with three components. The left side panel (TEP Live Monitor) shows these in real time during play.</p>
+    <div class="tep-grid">
+      <div class="tep-c">
+        <h4>T — Task</h4>
+        <p>What is the AI trying to do? <strong style="color:var(--tx)">Win at Mufuvha</strong> by selecting moves that maximise captured seeds. Each legal move is an action in the task.</p>
+      </div>
+      <div class="tep-c" style="border-color:var(--amber)">
+        <h4>E — Experience</h4>
+        <p>How does it learn? Through <strong style="color:var(--tx)">self-play</strong> — it plays thousands of games against itself, observing which moves lead to wins and losses. Every move is a data point.</p>
+      </div>
+      <div class="tep-c" style="border-color:var(--green)">
+        <h4>P — Performance</h4>
+        <p>How do we measure improvement? <strong style="color:var(--tx)">Win rate</strong> against a random player (Easy AI) and a heuristic player (Medium AI), measured every 200 training episodes.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reference summary -->
+  <div style="background:rgba(212,168,50,.04);border:1px solid rgba(212,168,50,.15);border-radius:12px;padding:16px 18px;margin-bottom:20px">
+    <h3 style="font-family:'Cinzel',serif;font-size:.88rem;color:var(--gold);margin-bottom:10px">📋 Quick Reference — All Symbols</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;font-size:.76rem">
+      <div style="color:var(--tx2)"><strong style="color:var(--gold)">Q(s, a)</strong> — quality score for move a in state s</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--gold)">s</strong> — current board state</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--gold)">a</strong> — action (pit chosen)</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--gold)">s'</strong> — board state after the move</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--amber2)">φ(s')</strong> — 50-dim feature vector of s'</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--teal2)">w</strong> — 50-dim weight vector (the AI's strategy)</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--green2)">r</strong> — immediate reward (+1 win, −1 loss, +0.05×seeds)</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--amber2)">δ</strong> — TD error / surprise signal</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--gold)">γ = 0.95</strong> — discount factor (how much future matters)</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--teal2)">α = 0.01</strong> — learning rate (how fast weights change)</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--p2)">ε</strong> — exploration rate (starts 1.0, decays to 0.05)</div>
+      <div style="color:var(--tx2)"><strong style="color:var(--p2)">maxQ'</strong> — best Q-value in next state (best future move)</div>
+    </div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:.74rem;color:var(--tx3)">
+      Visit the <strong style="color:var(--gold)">Play tab</strong> and start a game (Human vs AI → Hard). Watch the left and right panels update live after every AI move to see all these values in action.
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- ════════════ END FORMULAS ════════════ -->
 
 <!-- ════════════ TUTORIAL PANEL ════════════ -->
 <div class="panel" id="panel-tutorial">
@@ -920,17 +1539,20 @@ canvas.chart{width:100%}
   © 2026 All Rights Reserved</p>
 </div>
 
-<!-- WIN OVERLAY -->
+<!-- WIN OVERLAY — enhanced v2 -->
 <div class="win-overlay" id="win-overlay">
-  <div class="win-box">
+  <canvas id="fireworks-canvas" style="position:absolute;inset:0;pointer-events:none;z-index:1"></canvas>
+  <div class="win-box" style="position:relative;z-index:2">
+    <div id="win-crown" style="font-size:2.2rem;animation:crownFloat 2s ease-in-out infinite;display:none;margin-bottom:-6px">👑</div>
     <div class="win-emoji" id="win-emoji">🏆</div>
     <div class="win-title" id="win-title">Victory!</div>
     <div class="win-sub" id="win-sub"></div>
     <div class="win-scores" id="win-scores"></div>
     <div class="win-time" id="win-time"></div>
+    <div id="win-badges" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px"></div>
     <div class="win-actions">
-      <button class="btn btn-gold" onclick="startGame();closeWin()">▶ Play again</button>
-      <button class="btn btn-wood" onclick="closeWin()">Close</button>
+      <button class="btn btn-gold" onclick="startGame();closeWin()">▶ Play Again</button>
+      <button class="btn btn-wood" onclick="closeWin()">✕ Close</button>
     </div>
   </div>
 </div>
@@ -1047,6 +1669,48 @@ canvas.chart{width:100%}
 <audio id="bg-music" loop preload="none"></audio>
 
 <script>
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+ * ║  MUFUVHA — Traditional Four-Row Mancala of Limpopo, South Africa        ║
+ * ║  Complete Commented Source — ITRI 616 Academic Submission v2.0          ║
+ * ║  Developer : Tshifhiwa AJ Tshitaka  |  UNIVEN  |  2026                 ║
+ * ║  Algorithm : Q-Learning, Linear Function Approximation (50-dim φ)       ║
+ * ╠══════════════════════════════════════════════════════════════════════════╣
+ * ║  BOARD DIMENSIONS (configurable in Settings)                            ║
+ * ║  Standard : 4 rows × 8 cols = 32 pits · 2 seeds/pit = 64 total         ║
+ * ║  Maximum  : 4 rows × 12 cols = 48 pits · 4 seeds/pit = 192 total       ║
+ * ║  Minimum  : 4 rows × 4 cols  = 16 pits · 1 seed/pit  = 16 total        ║
+ * ╠══════════════════════════════════════════════════════════════════════════╣
+ * ║  ANIMATION SPEED SETTINGS                                               ║
+ * ║  Step-by-step : manual tap/click per seed drop (learning mode)          ║
+ * ║  Very Slow    : 3200ms/pit — every action clearly visible               ║
+ * ║  Slow         : 2000ms/pit — default, comfortable for new players       ║
+ * ║  Normal       : 900ms/pit                                               ║
+ * ║  Fast         : 350ms/pit                                               ║
+ * ║  Turbo        : 80ms/pit  — for training & AI vs AI                     ║
+ * ╠══════════════════════════════════════════════════════════════════════════╣
+ * ║  MODULE MAP                                                             ║
+ * ║  1  CHARACTERS       SVG cartoon sprites                                ║
+ * ║  2  BOARD CONSTANTS  Pit index arrays; sow loops; capture helpers       ║
+ * ║  3  GAME ENGINE      MufuvhaGame class (pure state machine)             ║
+ * ║  4  AGENTS           RandAgent / HeurAgent / LinearQAgent               ║
+ * ║  5  GAME STATE       Globals, timer, undo, snapshot stack               ║
+ * ║  6  SOUND ENGINE     Web Audio API synth palette (12 sounds)            ║
+ * ║  7  MUSIC            File loader and looped background player           ║
+ * ║  8  SETTINGS         Modal; theme; board config (4–12 cols, 1–4 seeds)  ║
+ * ║  9  BOARD RENDER     Reactive pit-grid builder                          ║
+ * ║  10 CAPTURE BANNER   Fullscreen capture notification overlay            ║
+ * ║  11 ANIMATION        animateMove() — narrated, speed-respecting         ║
+ * ║  12 CONFETTI         Win-celebration canvas particle system             ║
+ * ║  13 GAME FLOW        startGame, doMove, schedAI, undoMove, showHint     ║
+ * ║  14 WIN OVERLAY      Fireworks + confetti + badges end-game screen      ║
+ * ║  15 TUTORIAL         7-step interactive guide                           ║
+ * ║  16 TRAINING         Self-play Q-learning loop; live chart rendering    ║
+ * ║  17 BACKGROUND       Ambient floating particle canvas                   ║
+ * ║  18 NAV & INIT       Panel routing; keyboard shortcuts (N/U/H)         ║
+ * ║  19 ACHIEVEMENTS     Gamified educational reward toast system           ║
+ * ╚══════════════════════════════════════════════════════════════════════════╝
+ */
 /* ═══════════════════════════════════════════════════════
    CARTOON CHARACTERS
    Each is a 40×40 viewBox SVG string. Designed to fit
@@ -1297,7 +1961,7 @@ function buildCharGrid(){
       activeChar=key;
       document.querySelectorAll('.char-opt').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      applyCharacter();
+      applyCharacter();updateDimBadge();setTimeout(()=>showTip(0),1500);setTimeout(()=>{updateWeightHeatmap();updateSideChart();},500);
     };
     grid.appendChild(btn);
   });
@@ -1308,6 +1972,16 @@ function applyCharacter(){
   if(svg&&CHARACTERS[activeChar])svg.innerHTML=CHARACTERS[activeChar].svg;
 }
 
+
+/* ══ MODULE 2: BOARD CONSTANTS ══════════════════════════════════════════
+ * COLS (4–12) and SEEDS_PER_PIT (1–4) are set from Settings.
+ * rebuildConstants() recomputes all derived arrays when they change.
+ * Standard board: 4×8=32 pits, 64 seeds.  Max: 4×12=48 pits, 192 seeds.
+ * Pit layout (8-col):  P2-Outer[24-31] / P2-Inner[16-23]
+ *                      ──────── centre ────────
+ *                      P1-Inner[0-7]   / P1-Outer[8-15]
+ * Sowing: P1 counter-clockwise → inner L→R then outer R→L.
+ * ════════════════════════════════════════════════════════════════════ */
 let COLS=8, SEEDS_PER_PIT=2;
 const P1=1, P2=2;
 let P1I,P1O,P2I,P2O,NPITS,LOOP_P1,LOOP_P2;
@@ -1359,6 +2033,12 @@ function sowOrder(player,startPit,n){
   return o;
 }
 
+
+/* ══ MODULE 3: GAME ENGINE ══════════════════════════════════════════════
+ * Pure state machine — no UI. Safe to clone() for AI search.
+ * Interface: reset() · legal() · step(pit)→{reward,sowTrace,capInfo} · clone() · feat(player)
+ * step() algorithm: 1-pick-up → 2-relay-sow → 3-capture-check → 4-terminal
+ * ════════════════════════════════════════════════════════════════════ */
 class MufuvhaGame{
   constructor(){this.reset()}
   reset(){
@@ -1434,6 +2114,14 @@ class MufuvhaGame{
   }
 }
 
+
+/* ══ MODULE 4: AGENTS ═══════════════════════════════════════════════════
+ * All share interface: sel(game)→pit|null
+ * RandAgent  — random legal move (Easy; baseline 1)
+ * HeurAgent  — greedy one-ply max(own_caps−opp_caps)+.003×seeds (Medium; baseline 2)
+ * LinearQAgent — Q-learning: Q(s,a)≈w·φ(s') · δ=r+γmaxQ′−Q · w←w+αδφ
+ *   α=0.01, γ=0.95, ε: 1.0→0.05. Weights persist to localStorage.
+ * ════════════════════════════════════════════════════════════════════ */
 /* ═══════════════════════════════════════════════════
    AGENTS
 ═══════════════════════════════════════════════════ */
@@ -1521,7 +2209,8 @@ function stopGame(){
 
 const getAI=()=>({rand:randA,heur:heurA,ql:qlA})[document.getElementById('sel-diff').value]||qlA;
 const getMode=()=>document.getElementById('sel-mode').value;
-const getSpd=()=>+document.getElementById('sel-spd').value;
+const getSpd=()=>{const v=document.getElementById('sel-spd').value;return v==='step'?0:+v;};
+const isStepMode=()=>document.getElementById('sel-spd').value==='step';
 const getName=(p)=>document.getElementById('name'+p).value||'Player '+p;
 function getAvatar(p){
   const f=document.getElementById('av'+p+'-file');
@@ -1558,7 +2247,7 @@ function applyBoardSettings(){
   const s=parseInt(document.getElementById('set-seeds').value)||2;
   COLS=Math.max(4,Math.min(12,c));
   SEEDS_PER_PIT=Math.max(1,Math.min(4,s));
-  rebuildConstants();
+  rebuildConstants();updateDimBadge();
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1826,6 +2515,8 @@ function renderBoard(legalSet,flashCap){
   const c1=document.getElementById('sb-cap1'),c2=document.getElementById('sb-cap2');
   if(c1){const old=c1.textContent;c1.textContent=game.cap[P1];if(old!==String(game.cap[P1])){c1.classList.remove('bump');void c1.offsetWidth;c1.classList.add('bump');}}
   if(c2){const old=c2.textContent;c2.textContent=game.cap[P2];if(old!==String(game.cap[P2])){c2.classList.remove('bump');void c2.offsetWidth;c2.classList.add('bump');}}
+  /* Update live advantage meter */
+  updateAdvantage();
 }
 
 /* ═══════════════════════════════════════════════════
@@ -2008,71 +2699,148 @@ function _flashPit(pitIdx,color,glowColor,dur=300){
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
 /* ═══════════════════════════════════════════════════
-   MAIN MOVE ANIMATION
-   Phases:
-   1. Character appears at source pit, grabs seeds
-   2. Character walks to EACH pit in sowTrace individually,
-      pausing and dropping one seed per pit
-   3. If relay: fanfare flash
-   4. If capture: suspense glow → character swoops opponent pits
-   5. Character lifts triumphantly then exits
+   MAIN MOVE ANIMATION  (v2 — speed-respecting, narrated)
+   Speed is fully controlled by the sel-spd dropdown.
+   Step-by-step mode waits for player tap between pits.
+   A narration bar explains each phase in plain English.
 ═══════════════════════════════════════════════════ */
+
+/* ── NARRATION BAR ─────────────────────────────── */
+function _narrate(msg,color){
+  let nb=document.getElementById('narration-bar');
+  if(!nb){
+    nb=document.createElement('div');nb.id='narration-bar';
+    nb.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);'+
+      'background:rgba(15,10,5,.92);border:1.5px solid var(--gold);border-radius:12px;'+
+      'padding:9px 20px;font-size:.82rem;font-weight:600;color:var(--gold);'+
+      'z-index:700;max-width:90vw;text-align:center;pointer-events:none;'+
+      'box-shadow:0 4px 24px rgba(0,0,0,.7);transition:opacity .25s;';
+    document.body.appendChild(nb);
+  }
+  nb.style.opacity='1';
+  nb.style.color=color||'var(--gold)';
+  nb.textContent=msg;
+}
+function _clearNarrate(){
+  const nb=document.getElementById('narration-bar');
+  if(nb){nb.style.opacity='0';}
+}
+
+/* ── STEP-BY-STEP CONTROL ──────────────────────── */
+let _stepResolve=null;
+function _waitForStep(){
+  return new Promise(res=>{
+    _stepResolve=res;
+    /* Show "Next Step" button */
+    let btn=document.getElementById('step-btn');
+    if(!btn){
+      btn=document.createElement('button');btn.id='step-btn';
+      btn.textContent='▶ Next Step';
+      btn.style.cssText='position:fixed;bottom:26px;left:50%;transform:translateX(-50%);'+
+        'background:var(--gold);color:#1a0800;border:none;border-radius:10px;'+
+        'padding:10px 28px;font-size:.9rem;font-weight:800;cursor:pointer;'+
+        'z-index:701;box-shadow:0 4px 16px rgba(0,0,0,.5);font-family:"Inter",sans-serif;'+
+        'animation:stepBtnPulse 1s ease-in-out infinite;';
+      document.body.appendChild(btn);
+      /* inject keyframe if not present */
+      if(!document.getElementById('step-anim-style')){
+        const st=document.createElement('style');st.id='step-anim-style';
+        st.textContent='@keyframes stepBtnPulse{0%,100%{box-shadow:0 4px 16px rgba(0,0,0,.5)}50%{box-shadow:0 4px 28px rgba(212,168,50,.6),0 0 0 4px rgba(212,168,50,.2)}}';
+        document.head.appendChild(st);
+      }
+    }
+    btn.style.display='block';
+    btn.onclick=()=>{ if(_stepResolve){_stepResolve();_stepResolve=null;} };
+  });
+}
+function _hideStepBtn(){
+  const btn=document.getElementById('step-btn');
+  if(btn)btn.style.display='none';
+}
+
+/* ── SPEED-AWARE SLEEP ─────────────────────────── */
+async function _phaseSleep(ms){
+  if(isStepMode()) return; /* step mode: don't auto-advance between steps */
+  return sleep(ms);
+}
+
+/* ── onSpeedChange: show/hide step button ── */
+function onSpeedChange(){
+  if(!isStepMode()) _hideStepBtn();
+}
+
 async function animateMove(startPit,sowTrace,capInfo,player){
   animating=true;
   renderBoard(new Set(),[]);
 
-  const totalSeeds=sowTrace.length;
+  /* ── Derive timing from the speed selector ──
+     getSpd() returns the per-pit travel time in ms.
+     For very slow / slow we use the full value.
+     pauseMs is the "dwell" at each pit after dropping the seed. */
+  const spd=getSpd(); /* 0=step, 3200/2000/900/350/80 */
+  const isStep=spd===0;
+  const travelMs = isStep ? 600  : spd;           /* time to move to next pit */
+  const pauseMs  = isStep ? 0    : Math.round(spd * 0.45); /* pause after drop */
+  const grabMs   = isStep ? 0    : Math.max(380, Math.round(spd * 0.55));
+  const relayMs  = isStep ? 0    : Math.max(500, Math.round(spd * 0.7));
+  const capWaitMs= isStep ? 0    : Math.max(600, Math.round(spd * 0.8));
+  const liftMs   = isStep ? 0    : Math.max(500, Math.round(spd * 0.55));
 
-  /* ── PHASE 1: Appear at source, bounce-grab ── */
+  const totalSeeds=sowTrace.length;
+  const pName=getName(player);
+  const rowLabel=player===P1?'your inner row':'opponent inner row';
+
+  /* ═══════════════════════════════
+     PHASE 1 — GRAB (source pit)
+  ═══════════════════════════════ */
+  _narrate(`${pName} picks up ${totalSeeds} seed${totalSeeds!==1?'s':''} from pit ${startPit} 🤲`);
   _snapTo(startPit,totalSeeds,player);
   _setHandState('grab');
   sndPick();
+  _flashPit(startPit,'var(--gold2)','rgba(212,168,50,.5)', Math.max(400, grabMs));
 
-  /* Highlight source pit */
-  _flashPit(startPit,'var(--gold2)','rgba(212,168,50,.5)',400);
-  await sleep(340);
+  if(isStep){
+    _narrate(`📌 Picked up ${totalSeeds} seeds from pit ${startPit}. Click ▶ Next Step to start sowing.`);
+    await _waitForStep();
+  } else {
+    await sleep(grabMs);
+  }
 
-  /* ── PHASE 2: Step pit-by-pit through the sowTrace ──
-     Speed is proportional to chain length but always feels
-     like a real person moving — not a teleport. */
+  /* ═══════════════════════════════
+     PHASE 2 — SOW pit by pit
+  ═══════════════════════════════ */
   const chainLen=sowTrace.length;
-  /* Per-pit travel time: short chain → leisurely, long → brisker but still visible */
-  const stepMs=chainLen<=4?320:chainLen<=8?240:chainLen<=14?180:130;
-  /* Pause at pit after dropping (so player can see each placement) */
-  const pauseMs=chainLen<=4?120:chainLen<=8?80:50;
-
   let seedsLeft=totalSeeds;
   let relayCount=0;
+  let stepNum=0;
 
   for(let i=0;i<sowTrace.length;i++){
     const pitIdx=sowTrace[i];
+    stepNum++;
     seedsLeft=Math.max(0,seedsLeft-1);
 
-    /* Travel to this exact pit */
-    await _travelTo(pitIdx,stepMs);
+    /* Travel to pit */
+    await _travelTo(pitIdx, travelMs);
 
     const hw=HW();
     const hx=hw?parseFloat(hw.style.left):0;
     const hy=hw?parseFloat(hw.style.top):0;
 
-    /* Drop animation: character squash + seed arc */
+    /* Drop animation */
     _setHandState('drop');
     _renderSeeds(seedsLeft,player);
-
-    /* Seed flies from character into pit */
     _dropOneSeed(hx,hy,pitIdx,player);
     sndStep(pitIdx);
 
-    /* Pit land flash */
+    /* Pit flash */
     const pitEl=document.getElementById('pit-'+pitIdx);
     if(pitEl){
       pitEl.classList.add('sow-flash','seed-land');
-      setTimeout(()=>pitEl.classList.remove('sow-flash','seed-land'),280);
+      setTimeout(()=>pitEl.classList.remove('sow-flash','seed-land'), Math.max(280, travelMs*0.4));
     }
 
-    /* Detect relay boundary — when sowTrace wraps a full loop */
-    if(i>0&&i<sowTrace.length-1){
-      /* Check if this pit is start of a new sub-sow (relay) */
+    /* Relay boundary detection */
+    if(i>0 && i<sowTrace.length-1){
       const prevPit=sowTrace[i-1];
       const loop=player===P1?LOOP_P1:LOOP_P2;
       const prevPos=loop.indexOf(prevPit),curPos=loop.indexOf(pitIdx);
@@ -2080,25 +2848,59 @@ async function animateMove(startPit,sowTrace,capInfo,player){
         relayCount++;
         sndRelayBuild(relayCount);
         showFloatNum(pitIdx,'⚡','var(--amber2)');
+        if(!isStep){
+          _narrate(`⚡ Relay chain! Looping again — ${seedsLeft} seed${seedsLeft!==1?'s':''} remaining`,'var(--amber)');
+        }
       }
     }
 
-    await sleep(pauseMs);
-    _setHandState('move');
+    /* Per-pit narration */
+    const remaining=seedsLeft;
+    if(isStep){
+      const isLast=(i===sowTrace.length-1);
+      const pitOwner=P1I.includes(pitIdx)||P1O.includes(pitIdx)?getName(1):getName(2);
+      const rowType=P1I.includes(pitIdx)||P2I.includes(pitIdx)?'inner row':'outer row';
+      if(isLast && remaining===0){
+        _narrate(`Step ${stepNum}/${chainLen}: Last seed → pit ${pitIdx} (${pitOwner}'s ${rowType}). Sowing complete. Click ▶ to see result.`);
+      } else {
+        _narrate(`Step ${stepNum}/${chainLen}: Dropped seed in pit ${pitIdx} (${pitOwner}'s ${rowType}). ${remaining} seed${remaining!==1?'s':''} left. Click ▶ Next Step.`);
+      }
+      await _waitForStep();
+    } else {
+      /* Show narration only at key moments to avoid flicker */
+      if(i===0){
+        _narrate(`Sowing ${chainLen} seeds starting from pit ${startPit}…`);
+      } else if(i===sowTrace.length-1){
+        _narrate(`Last seed lands in pit ${pitIdx} 🌱`);
+      }
+      await sleep(pauseMs);
+      _setHandState('move');
+    }
   }
 
-  /* ── RELAY fanfare if long chain ── */
+  /* ═══════════════════════════════
+     RELAY fanfare for long chains
+  ═══════════════════════════════ */
   if(sowTrace.length>COLS*2||relayCount>0){
     sndRelay();
     showFloatNum(sowTrace[sowTrace.length-1],'⚡ Relay!','var(--amber)');
-    await sleep(120);
+    if(!isStep){
+      _narrate(`⚡ Relay chain complete! ${relayCount>0?relayCount+' loop'+(relayCount>1?'s':''):'Long chain'} — checking for capture…`,'var(--amber)');
+      await sleep(relayMs);
+    }
   }
 
-  /* ── PHASE 3: CAPTURE ── */
+  /* ═══════════════════════════════
+     PHASE 3 — CAPTURE
+  ═══════════════════════════════ */
   if(capInfo&&capInfo.pits.length){
-    await sleep(200);
+    if(isStep){
+      _narrate(`🔥 CAPTURE triggered! Last seed in empty pit ${capInfo.pits[0]} — opponent pit ${capInfo.pits[1]} has seeds across. Click ▶ to capture.`,'var(--green2)');
+      await _waitForStep();
+    } else {
+      await sleep(Math.round(capWaitMs * 0.3));
+    }
 
-    /* Landing pit green pulse — capture triggered */
     const landPit=sowTrace[sowTrace.length-1];
     const landEl=document.getElementById('pit-'+landPit);
     if(landEl){
@@ -2107,55 +2909,74 @@ async function animateMove(startPit,sowTrace,capInfo,player){
       if(b)b.style.boxShadow='inset 0 4px 10px rgba(0,0,0,.55),0 0 0 6px rgba(80,184,120,.9),0 0 36px rgba(80,184,120,.7)';
     }
 
-    /* Suspense sound + rumble */
+    _narrate(`🔥 CAPTURE! ${capInfo.seeds} seed${capInfo.seeds!==1?'s':''} captured from opponent!`,'var(--green2)');
     sndCapturePending();
-    await sleep(500);
 
-    /* Flash ALL opponent pits simultaneously */
+    if(isStep){
+      await _waitForStep();
+    } else {
+      await sleep(capWaitMs);
+    }
+
     const oppPits=capInfo.pits.slice(1);
     oppPits.forEach(p=>{
       const el=document.getElementById('pit-'+p);
       if(el)el.classList.add('capture-flash');
     });
-    await sleep(350);
 
-    /* STRIKE SOUND */
+    if(!isStep) await sleep(Math.max(350, travelMs*0.4));
+
     sndCaptureStrike();
 
-    /* Character swoops to each opponent pit */
     for(let pi=0;pi<oppPits.length;pi++){
       const tp=oppPits[pi];
-      await _travelTo(tp,200);
+      await _travelTo(tp, Math.max(200, travelMs*0.5));
       const hw=HW();
       const hx=hw?parseFloat(hw.style.left):0;
       const hy=hw?parseFloat(hw.style.top):0;
       _setHandState('grab-opp');
       sndGrabPit();
-      await sleep(80);
+      if(!isStep) await sleep(Math.max(80, travelMs*0.15));
       await _seedsRiseToChar(tp,hx,hy,player,Math.min(capInfo.seeds,6));
       _renderSeeds(capInfo.seeds,player);
       const el=document.getElementById('pit-'+tp);
       if(el)el.classList.remove('capture-flash');
-      await sleep(80);
+      if(!isStep) await sleep(Math.max(80, travelMs*0.15));
+      if(isStep){
+        _narrate(`✅ Collected seeds from pit ${tp}. Click ▶ to continue.`,'var(--green2)');
+        await _waitForStep();
+      }
     }
 
-    /* Capture banner + float */
     showCaptureBanner(player,capInfo.seeds);
     showFloatNum(capInfo.pits[0],'+'+capInfo.seeds+' 🔥','var(--gold2)');
 
-    /* ── PHASE 4: Triumphant lift ── */
     _setHandState('lift');
-    await sleep(600);
+    if(!isStep) await sleep(liftMs);
+    else{
+      _narrate(`🏆 Capture complete! +${capInfo.seeds} seeds. Click ▶ to finish.`,'var(--gold)');
+      await _waitForStep();
+    }
 
     renderBoard(new Set(),[]);
-    await sleep(60);
+    if(!isStep) await sleep(60);
+  } else {
+    /* No capture — briefly show "no capture" info */
+    if(!isStep && spd >= 900){
+      _narrate(`Move complete — no capture this turn.`,'var(--tx2)');
+      await sleep(Math.max(300, travelMs*0.3));
+    }
   }
 
   _hideHand();
+  _hideStepBtn();
+  _clearNarrate();
   renderBoard(new Set(game.legal()),[]);
   animating=false;
 }
 
+/* ═══════════════════════════════════════════════════
+   CONFETTI
 /* ═══════════════════════════════════════════════════
    CONFETTI
 ═══════════════════════════════════════════════════ */
@@ -2216,7 +3037,7 @@ function _coreDoMove(pit,after){
   const pl=snap.cur;
   animateMove(pit,res.sowTrace,res.capInfo,pl).then(()=>{
     renderBoard(new Set(game.legal()),[]);updateStatus();
-    if(game.done){stopGameTimer();setTimeout(()=>{showWin();if(game.winner)sndWin();else sndDraw();},500);}
+    if(game.done){stopGameTimer();_sealGameRecord(game.winner);setTimeout(()=>{showWin();if(game.winner)sndWin();else sndDraw();},500);}
     else{if(after)after();}
   });
 }
@@ -2226,7 +3047,10 @@ function schedAI(){
   const delay=getMode()==='ava'?Math.max(220,getSpd()*.6):380;
   aiTimer=setTimeout(()=>{
     if(animating||game.done)return;
-    const ai=getAI();const mv=ai.sel(game);if(mv===null)return;
+    const ai=getAI();
+    if(ai===qlA){ _lastAIExplore=qlA.training&&Math.random()<qlA.eps; }
+    else { _lastAIExplore=(ai===randA)?true:false; }
+    const mv=ai.sel(game);if(mv===null)return;
     doMove(mv,()=>{if(!game.done){if(getMode()==='ava')schedAI();else if(getMode()==='hva'&&game.cur===P2)schedAI();}});
   },delay);
 }
@@ -2283,34 +3107,96 @@ function updateStatus(){
 /* ═══════════════════════════════════════════════════
    WIN OVERLAY
 ═══════════════════════════════════════════════════ */
+
+/* ══ WIN OVERLAY + FIREWORKS ══════════════════════════════════════════ */
+let _fwIv=null;
+function startFireworks(){
+  const cv=document.getElementById('fireworks-canvas');
+  const ov=document.getElementById('win-overlay');
+  if(!cv||!ov)return;
+  cv.width=ov.offsetWidth||480;cv.height=ov.offsetHeight||560;
+  const ctx=cv.getContext('2d');
+  const pts=[];
+  const cols=['#d4a832','#f0c860','#50b878','#e07030','#40a8a8','#ff9090','#c0a0ff'];
+  const burst=(ox,oy)=>{for(let i=0;i<38;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*6;pts.push({x:ox,y:oy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,life:1,c:cols[0|Math.random()*cols.length],r:1.5+Math.random()*3.5,sp:Math.random()*.3-.15});}};
+  let t=0;
+  const frame=()=>{ctx.fillStyle='rgba(0,0,0,.14)';ctx.fillRect(0,0,cv.width,cv.height);t++;
+    if(t%16===0)burst(cv.width*(.2+Math.random()*.6),cv.height*(.08+Math.random()*.45));
+    for(let i=pts.length-1;i>=0;i--){const p=pts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.1;p.life-=.02;p.sp+=.05;
+      if(p.life<=0){pts.splice(i,1);continue;}
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.sp);ctx.globalAlpha=p.life;ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore();}
+  };
+  if(_fwIv)clearInterval(_fwIv);
+  burst(cv.width*.3,cv.height*.2);burst(cv.width*.7,cv.height*.22);burst(cv.width*.5,cv.height*.12);
+  _fwIv=setInterval(frame,16);
+  setTimeout(stopFireworks,9000);
+}
+function stopFireworks(){
+  if(_fwIv){clearInterval(_fwIv);_fwIv=null;}
+  const cv=document.getElementById('fireworks-canvas');
+  if(cv){const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);}
+}
+
 function showWin(){
-  const n1=getName(1),n2=getMode()==='hvh'?getName(2):'AI';
-  if(game.winner!==0)startConfetti();
-  const emojis=['🏆','🥇','👑','⭐','🎖'];
+  const n1=getName(P1),n2=getMode()==='hvh'?getName(P2):'AI';
+  if(game.winner!==0){startConfetti();setTimeout(startFireworks,250);}
+
+  const crown=document.getElementById('win-crown');
+  if(crown)crown.style.display=game.winner!==0?'block':'none';
+
+  const emojis=game.winner===0?['🤝','⚖️']:['🏆','👑','🥇','⭐','🎖','🎊','🎉'];
   document.getElementById('win-emoji').textContent=emojis[0|Math.random()*emojis.length];
+
   if(game.winner===0){
     document.getElementById('win-title').textContent='Draw!';
-    document.getElementById('win-sub').textContent='An equal match — seeds are perfectly balanced.';
-  }else{
-    const wn=game.winner===1?n1:n2;
+    document.getElementById('win-sub').innerHTML='An equal match — perfectly balanced!<br><small style="color:var(--tx3)">Both players: '+game.cap[P1]+' captured seeds</small>';
+  } else {
+    const wn=game.winner===P1?n1:n2;
+    const isHuman=(game.winner===P1)||(getMode()==='hvh');
     document.getElementById('win-title').textContent=wn+' Wins!';
-    document.getElementById('win-sub').textContent=game.winner===1?'Outstanding strategy and foresight!':'The AI secured the victory this time!';
+    const msgs=isHuman?[
+      'Outstanding strategy! You mastered the relay chains! ⚡',
+      'Brilliant capture play! The board bowed to you! 🔥',
+      'Excellent foresight and patience! 🌟',
+    ]:['The AI secured this one — study the game log and try again!','Machine learning in action — the AI really has learned!'];
+    document.getElementById('win-sub').innerHTML=msgs[0|Math.random()*msgs.length]+'<br><small style="color:var(--tx3)">Moves: '+game.moveCount+' · Board: '+COLS+' cols × 4 rows</small>';
   }
-  const m2=Math.floor(gameTimerSeconds/60),s2=gameTimerSeconds%60;
-  document.getElementById('win-scores').innerHTML=`
-    <div class="win-score-card ${game.winner===1?'winner':''}">
-      <div class="win-score-num" style="color:var(--p1)">${game.cap[P1]}</div>
-      <div class="win-score-name">${n1}</div>
-    </div>
-    <div style="align-self:center;font-size:1.4rem;color:var(--tx3)">vs</div>
-    <div class="win-score-card ${game.winner===2?'winner':''}">
-      <div class="win-score-num" style="color:var(--p2)">${game.cap[P2]}</div>
-      <div class="win-score-name">${n2}</div>
-    </div>`;
-  document.getElementById('win-time').textContent='⏱ Game time: '+m2+':'+(s2<10?'0':'')+s2+' · Moves: '+game.moveCount;
+
+  const m=Math.floor(gameTimerSeconds/60),ss=gameTimerSeconds%60;
+  const w1=game.winner===P1,w2=game.winner===P2;
+  document.getElementById('win-scores').innerHTML=
+    '<div class="win-score-card'+(w1?' winner':'')+'">'+
+    '<div class="win-score-num" style="color:var(--p1)">'+game.cap[P1]+'</div>'+
+    '<div class="win-score-name">'+n1+(w1?' 👑':'')+'</div></div>'+
+    '<div style="align-self:center;font-size:1.4rem;color:var(--tx4)">vs</div>'+
+    '<div class="win-score-card'+(w2?' winner':'')+'">'+
+    '<div class="win-score-num" style="color:var(--p2)">'+game.cap[P2]+'</div>'+
+    '<div class="win-score-name">'+n2+(w2?' 👑':'')+'</div></div>';
+
+  document.getElementById('win-time').textContent=
+    '⏱ '+m+':'+(ss<10?'0':'')+ss+' · Moves: '+game.moveCount+' · '+COLS+' cols × 4 rows · '+SEEDS_PER_PIT+' seeds/pit';
+
+  /* badges */
+  const badges=[];
+  if(game.winner!==0){
+    if(game.moveCount<20)badges.push('⚡ Speed Win');
+    if(game.cap[game.winner]>game.cap[game.winner===P1?P2:P1]+15)badges.push('💪 Dominant');
+    if(_capCountGame>5)badges.push('🎯 Capture Master');
+    if(_maxCapSingle>=5)badges.push('🔥 Big Haul');
+    if(COLS>=10)badges.push('🗺 Big Board');
+  }
+  const bEl=document.getElementById('win-badges');
+  if(bEl)bEl.innerHTML=badges.map((b,i)=>'<span class="win-badge-chip" style="animation-delay:'+i*.1+'s">'+b+'</span>').join('');
+
   document.getElementById('win-overlay').classList.add('show');
+  if(game.winner!==0)sndWin();else sndDraw();
 }
-function closeWin(){document.getElementById('win-overlay').classList.remove('show');stopConfetti();}
+
+function closeWin(){
+  document.getElementById('win-overlay').classList.remove('show');
+  stopConfetti();stopFireworks();
+}
+
 
 /* ═══════════════════════════════════════════════════
    TUTORIAL DATA
@@ -2343,6 +3229,680 @@ function launchTutGame(){goPanel('play');document.getElementById('sel-mode').val
    TRAINING
 ═══════════════════════════════════════════════════ */
 let tm={eps:[],wr:[],wh:[],e:[]},isTrain=false;
+
+/* ══ MODULE 16: TRAINING SYSTEM ════════════════════════════════════════
+ * 2000 self-play episodes in 50-ep setTimeout batches.
+ * Evaluates vs RandAgent and HeurAgent (60 games) every 200 episodes.
+ * Live win-rate and ε-decay charts rendered on canvas.
+ * Weights saved to localStorage on completion.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* ══ TIPS SYSTEM ════════════════════════════════════════════════════════ */
+const GAME_TIPS=[
+  "💡 Use Step-by-step speed to follow every single seed placement and understand how sowing works.",
+  "💡 RELAY CHAINS are the heart of Mufuvha! If your last seed lands in an occupied pit — pick up and keep sowing. Chains can span many loops!",
+  "💡 CAPTURE: Your last seed must land in an EMPTY pit in your front row, with opponent seeds directly opposite across the centre.",
+  "💡 OUTER ROW is your safe reserve. Seeds there cannot be directly captured. Use it to build relay-fuel.",
+  "💡 COUNTING: Before clicking, count how many pits your seeds will travel. Where does the last seed land?",
+  "💡 BOARD SIZE: Settings lets you try 4–12 columns and 1–4 seeds per pit. More = longer relay chains!",
+  "💡 Standard board: 4 rows × 8 cols = 32 pits · 64 seeds. Maximum: 4 rows × 12 cols = 48 pits · 192 seeds!",
+  "💡 STEP-BY-STEP mode pauses after every seed drop — perfect for learning the rules and capture mechanics.",
+  "💡 AI DIFFICULTY: Easy=random moves. Medium=greedy captures. Hard=trained Q-learning AI (2000 self-play games).",
+  "💡 WIN CONDITION: Game ends when any player runs out of seeds. Most captured seeds wins!",
+  "💡 HINT button (H) asks the Medium AI what it would play — great for learning capture opportunities.",
+  "💡 UNDO button (U) takes back your last move if you made a mistake.",
+];
+let _tipIdx=0,_tipsIv=null,_tipsShown=0;
+function updateDimBadge(){
+  const el=document.getElementById('dim-text');if(!el)return;
+  const pits=4*COLS,total=pits*SEEDS_PER_PIT;
+  el.textContent=`4 rows × ${COLS} cols = ${pits} pits · ${SEEDS_PER_PIT} seed${SEEDS_PER_PIT>1?'s':''}/pit · ${total} total seeds`;
+}
+function showTip(idx){
+  _tipIdx=(idx+GAME_TIPS.length)%GAME_TIPS.length;
+  const p=document.getElementById('tip-panel');
+  const t=document.getElementById('tip-text');
+  if(p&&t){t.textContent=GAME_TIPS[_tipIdx];p.style.display='flex';}
+}
+function nextTip(){showTip(_tipIdx+1);}
+function dismissTip(){const p=document.getElementById('tip-panel');if(p)p.style.display='none';}
+function startTipCycle(){
+  if(_tipsIv)clearInterval(_tipsIv);
+  _tipIdx=0;_tipsShown=0;showTip(0);
+  _tipsIv=setInterval(()=>{if(_tipsShown<4){nextTip();_tipsShown++;}else clearInterval(_tipsIv);},20000);
+}
+
+
+/* ══ AI LIVE VISUAL SYSTEM ═══════════════════════════════════════════════
+ * Updates the left and right side panels in real time during gameplay.
+ * Called from doMove() after every move resolution.
+ * Shows: TEP values, Q-value bars, weight heatmap, TD error, reward.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* ── Side chart data ── */
+const _sideWrRand=[], _sideWrHeur=[], _sideEp=[];
+let _sideTotalEp=0;
+
+/* ── Update TEP left panel ── */
+function updateTEPPanel(chosenPit, legalPits, reward, delta, isExplore){
+  try{
+    const ep = qlA ? Math.round((1 - Math.max(0.05, qlA.eps)) / 0.9994 * 100) : 0;
+    const eps = qlA ? qlA.eps : 1;
+
+    _set('tep-move-num', game.moveCount, 'neutral');
+    _set('tep-legal-count', legalPits.length, 'neutral');
+    _set('tep-chosen-pit', chosenPit !== null ? 'Pit ' + chosenPit : '—', 'neutral');
+    _setEps(eps);
+    _set('tep-episodes', qlA ? (_sideTotalEp||0) : 0, 'neutral');
+    _set('tep-mode', isExplore===null?'👤 Human move':isExplore?'🎲 Exploring':'🎯 Exploiting', isExplore===null?'neutral':isExplore?'neutral':'good');
+
+    /* Reward */
+    const rEl = document.getElementById('ai-reward');
+    if(rEl){
+      rEl.textContent = reward !== null ? (reward > 0 ? '+' : '') + reward.toFixed(3) : '—';
+      rEl.className = 'tep-live-val ' + (reward > 0 ? 'good' : reward < 0 ? 'bad' : 'neutral');
+    }
+
+    /* Delta */
+    const dEl = document.getElementById('ai-delta');
+    if(dEl && delta !== null){
+      dEl.textContent = (delta > 0 ? '+' : '') + delta.toFixed(4);
+      dEl.className = 'tep-live-val ' + (delta > 0.001 ? 'good' : delta < -0.001 ? 'bad' : 'neutral');
+    }
+
+    /* Action type badge */
+    const atEl = document.getElementById('ai-action-type');
+    if(atEl){
+      if(isExplore === null){ atEl.textContent = 'Human move'; atEl.className = 'delta-badge zero'; }
+      else if(isExplore){ atEl.textContent = '🎲 Random (ε-explore)'; atEl.className = 'delta-badge zero'; }
+      else { atEl.textContent = '🎯 Best Q (exploit)'; atEl.className = 'delta-badge pos'; }
+    }
+
+    /* Floaty reward if notable */
+    if(reward && Math.abs(reward) > 0.04){
+      _floatReward(reward);
+    }
+  } catch(e){}
+}
+
+function _setEps(eps){
+  const el = document.getElementById('tep-epsilon');
+  if(!el) return;
+  el.textContent = eps.toFixed(3);
+  if(eps > 0.7) el.className = 'tep-live-val bad';
+  else if(eps > 0.3) el.className = 'tep-live-val neutral';
+  else el.className = 'tep-live-val good';
+}
+
+function _set(id, val, cls){
+  const el = document.getElementById(id);
+  if(el){ el.textContent = val; if(cls) el.className = 'tep-live-val ' + cls; }
+}
+
+/* ── Floating reward indicator ── */
+function _floatReward(r){
+  const anchor = document.getElementById('reward-float-anchor');
+  if(!anchor) return;
+  const el = document.createElement('div');
+  el.className = 'reward-float';
+  el.textContent = (r > 0 ? '+' : '') + r.toFixed(2);
+  el.style.color = r > 0 ? 'var(--green2)' : 'var(--red2)';
+  anchor.appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+}
+
+/* ── Update Q-value bars for current legal moves ── */
+function updateQBars(legalPits, chosenPit){
+  const cont = document.getElementById('q-bars-container');
+  if(!cont || !qlA) return;
+  if(!legalPits || legalPits.length === 0){
+    cont.innerHTML = '<div style="font-size:.68rem;color:var(--tx4)">No legal moves</div>';
+    return;
+  }
+
+  /* Compute Q-value for each legal pit */
+  const qvals = legalPits.map(pit => {
+    const snap = game.clone();
+    snap.step(pit);
+    const phi = snap.feat(game.cur === P1 ? P1 : P2);
+    let q = 0;
+    for(let i = 0; i < qlA.w.length && i < phi.length; i++) q += qlA.w[i] * phi[i];
+    return { pit, q };
+  });
+
+  const maxQ = Math.max(...qvals.map(x => x.q));
+  const minQ = Math.min(...qvals.map(x => x.q));
+  const range = Math.max(0.001, maxQ - minQ);
+
+  /* Sort by Q descending, show top 8 */
+  qvals.sort((a,b) => b.q - a.q);
+  const show = qvals.slice(0, 8);
+
+  cont.innerHTML = '';
+
+  /* Update best/chosen */
+  const bestQ = qvals[0] ? qvals[0].q : 0;
+  const chosenQObj = chosenPit !== null ? qvals.find(x => x.pit === chosenPit) : null;
+  const chosenQ = chosenQObj ? chosenQObj.q : null;
+
+  const cEl = document.getElementById('ai-q-chosen');
+  const bEl = document.getElementById('ai-q-best');
+  if(cEl) { cEl.textContent = chosenQ !== null ? chosenQ.toFixed(4) : '—'; cEl.className = 'tep-live-val ' + (chosenQ > 0 ? 'good' : chosenQ < 0 ? 'bad' : 'neutral'); }
+  if(bEl) { bEl.textContent = bestQ.toFixed(4); bEl.className = 'tep-live-val ' + (bestQ > 0 ? 'good' : bestQ < 0 ? 'bad' : 'neutral'); }
+
+  show.forEach(({ pit, q }) => {
+    const pct = Math.round(((q - minQ) / range) * 100);
+    const isChosen = pit === chosenPit;
+    const isBest = pit === qvals[0].pit;
+    const barColor = isChosen ? 'var(--gold)' : isBest ? 'var(--green2)' : 'var(--teal2)';
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;align-items:center;gap:5px;' + (isChosen ? 'opacity:1' : 'opacity:.75');
+
+    const label = document.createElement('span');
+    label.style.cssText = 'font-size:.65rem;color:' + (isChosen ? 'var(--gold)' : 'var(--tx3)') + ';width:38px;flex-shrink:0;font-family:"Courier New",monospace;font-weight:' + (isChosen ? '700' : '400');
+    label.textContent = 'Pit ' + pit;
+
+    const track = document.createElement('div');
+    track.style.cssText = 'flex:1;background:rgba(255,255,255,.07);border-radius:3px;height:9px;overflow:hidden;position:relative';
+    const fill = document.createElement('div');
+    fill.style.cssText = 'height:100%;border-radius:3px;background:' + barColor + ';width:' + pct + '%;transition:width .4s ease';
+    track.appendChild(fill);
+
+    const val = document.createElement('span');
+    val.style.cssText = 'font-size:.63rem;color:' + barColor + ';width:48px;text-align:right;font-family:"Courier New",monospace;flex-shrink:0';
+    val.textContent = q.toFixed(3);
+
+    const badge = document.createElement('span');
+    badge.style.cssText = 'font-size:.58rem;width:14px;text-align:center;flex-shrink:0';
+    badge.textContent = isChosen ? '✔' : isBest ? '★' : '';
+
+    wrap.appendChild(label);
+    wrap.appendChild(track);
+    wrap.appendChild(val);
+    wrap.appendChild(badge);
+    cont.appendChild(wrap);
+  });
+}
+
+/* ── Weight heatmap ── */
+function updateWeightHeatmap(){
+  const grid = document.getElementById('weight-heatmap');
+  if(!grid || !qlA) return;
+  const w = qlA.w;
+  if(!w || w.length === 0) return;
+
+  const maxAbs = Math.max(0.001, ...w.map(Math.abs));
+  grid.innerHTML = '';
+  for(let i = 0; i < 50; i++){
+    const cell = document.createElement('div');
+    cell.className = 'w-cell';
+    const v = (w[i] || 0) / maxAbs; /* −1 to +1 */
+    let bg;
+    if(v > 0.01){
+      const g = Math.round(60 + v * 140);
+      bg = 'rgba(30,' + g + ',40,' + (0.3 + v * 0.7) + ')';
+    } else if(v < -0.01){
+      const r = Math.round(100 + Math.abs(v) * 120);
+      bg = 'rgba(' + r + ',30,20,' + (0.3 + Math.abs(v) * 0.7) + ')';
+    } else {
+      bg = 'rgba(255,255,255,.06)';
+    }
+    cell.style.background = bg;
+    cell.title = 'w[' + i + '] = ' + (w[i]||0).toFixed(4);
+    grid.appendChild(cell);
+  }
+}
+
+/* updateSideChart replaced by per-game analytics version above */
+
+/* logAIMove replaced by plain-English version above */
+
+/* ── Live board advantage meter ── */
+function updateAdvantage(){
+  try{
+    const totalSeeds = game.board.reduce((a,v)=>a+v,0);
+    const p1Seeds = allOf(P1).reduce((a,p)=>a+game.board[p],0);
+    const p2Seeds = allOf(P2).reduce((a,p)=>a+game.board[p],0);
+    const bothSeeds = p1Seeds + p2Seeds;
+
+    /* Seed bar */
+    const p1SP = bothSeeds>0 ? Math.round(p1Seeds/bothSeeds*100) : 50;
+    const p2SP = 100-p1SP;
+    const s1=document.getElementById('adv-seeds-p1'), s2=document.getElementById('adv-seeds-p2');
+    if(s1) s1.style.width=p1SP+'%';
+    if(s2) s2.style.width=p2SP+'%';
+    const st1=document.getElementById('adv-seeds-p1-txt'), st2=document.getElementById('adv-seeds-p2-txt');
+    if(st1) st1.textContent=p1Seeds;
+    if(st2) st2.textContent=p2Seeds;
+
+    /* Capture bar */
+    const c1=game.cap[P1], c2=game.cap[P2];
+    const bothCap = c1+c2;
+    const c1P = bothCap>0 ? Math.round(c1/bothCap*100) : 50;
+    const c2P = 100-c1P;
+    const cb1=document.getElementById('adv-cap-p1'), cb2=document.getElementById('adv-cap-p2');
+    if(cb1) cb1.style.width=c1P+'%';
+    if(cb2) cb2.style.width=c2P+'%';
+    const ct1=document.getElementById('adv-cap-p1-txt'), ct2=document.getElementById('adv-cap-p2-txt');
+    if(ct1) ct1.textContent=c1;
+    if(ct2) ct2.textContent=c2;
+
+    /* Label */
+    const lbl=document.getElementById('adv-label');
+    if(lbl){
+      const diff = c1-c2;
+      if(Math.abs(diff)<=1) { lbl.textContent='⚖️ Even game'; lbl.style.color='var(--tx3)'; }
+      else if(diff>8)  { lbl.textContent='🟡 You lead by '+diff; lbl.style.color='var(--p1)'; }
+      else if(diff>0)  { lbl.textContent='🟡 You ahead +'+diff; lbl.style.color='var(--p1)'; }
+      else if(diff<-8) { lbl.textContent='🟠 AI leads by '+Math.abs(diff); lbl.style.color='var(--p2)'; }
+      else             { lbl.textContent='🟠 AI ahead '+diff; lbl.style.color='var(--p2)'; }
+    }
+  }catch(e){}
+}
+
+
+
+/* ═══════════════════════════════════════════════════
+   PER-GAME PERFORMANCE & PLAIN-ENGLISH LEARNING ANALYTICS
+   ═══════════════════════════════════════════════════
+   Tracks every game outcome, method mix, capture stats,
+   TD errors, and weight shifts. After each game renders:
+   • Streak dots (W/L/D)  • Win-rate trend chart
+   • Plain-English learning story  • Method explainer
+   • Key stat cells  • Improved move-by-move log
+═══════════════════════════════════════════════════ */
+
+/* ── Per-game history store ── */
+const _gameHistory = [];        // { result:'W'|'L'|'D', moves, captures, exploits, explores, avgDelta, wNorm, eps }
+let _curGameStats = null;       // reset at startGame, filled during play
+
+function _initGameStats(){
+  _curGameStats = {
+    moves: 0,
+    aiCaptures: 0,
+    exploits: 0,
+    explores: 0,
+    deltas: [],
+    wBefore: qlA ? [...qlA.w] : [],
+  };
+}
+
+/* Called from doMove (below) for every AI move */
+function _recordAIMoveStats(isExplore, delta, didCapture){
+  if(!_curGameStats) return;
+  _curGameStats.moves++;
+  if(isExplore) _curGameStats.explores++;
+  else _curGameStats.exploits++;
+  if(delta !== null) _curGameStats.deltas.push(delta);
+  if(didCapture) _curGameStats.aiCaptures++;
+}
+
+/* Called from startGame to reset per-game counters */
+function _resetGameStats(){
+  _initGameStats();
+}
+
+/* Called from showWin / game-over path — seal the game record and refresh panels */
+function _sealGameRecord(winner){
+  if(!_curGameStats) return;
+  const mode = getMode();
+  /* result from AI's perspective (P2 = AI in hva) */
+  let result = 'D';
+  if(mode === 'hva'){
+    if(winner === P2) result = 'W';
+    else if(winner === P1) result = 'L';
+  } else if(mode === 'ava'){
+    result = winner === P1 ? 'P1' : winner === P2 ? 'P2' : 'D';
+  } else {
+    result = 'D'; /* hvh — record draw placeholder */
+  }
+
+  const wNow = qlA ? [...qlA.w] : [];
+  const wBefore = _curGameStats.wBefore || [];
+  let wChange = 0;
+  for(let i=0;i<Math.min(wNow.length,wBefore.length);i++) wChange += Math.abs(wNow[i]-wBefore[i]);
+
+  const avgDelta = _curGameStats.deltas.length
+    ? _curGameStats.deltas.reduce((a,b)=>a+b,0)/_curGameStats.deltas.length
+    : null;
+
+  _gameHistory.unshift({
+    result,
+    moves: _curGameStats.moves,
+    aiCaptures: _curGameStats.aiCaptures,
+    exploits: _curGameStats.exploits,
+    explores: _curGameStats.explores,
+    avgDelta,
+    wChange,
+    eps: qlA ? qlA.eps : 1,
+    gameNum: _gameHistory.length + 1,
+  });
+
+  /* Keep last 30 games */
+  if(_gameHistory.length > 30) _gameHistory.pop();
+
+  _updatePerfPanel();
+  _updateMethodBox();
+}
+
+/* ── Update the full Performance panel ── */
+function _updatePerfPanel(){
+  const n = _gameHistory.length;
+  if(n === 0) return;
+
+  /* Game count */
+  const gcEl = document.getElementById('perf-game-count');
+  if(gcEl) gcEl.textContent = n;
+
+  /* Streak dots */
+  _drawStreakBar();
+
+  /* Win-rate trend canvas */
+  _drawGameChart();
+
+  /* Plain-English story */
+  _renderStory();
+
+  /* Stat cells */
+  _renderStatCells();
+}
+
+/* Streak bar — coloured dots for last 20 games */
+function _drawStreakBar(){
+  const bar = document.getElementById('perf-streak-bar');
+  if(!bar) return;
+  const recent = _gameHistory.slice(0, 20);
+  bar.innerHTML = recent.map(g => {
+    const isWin = g.result==='W' || g.result==='P1';
+    const isLoss = g.result==='L' || g.result==='P2';
+    const col = isWin ? 'var(--green2)' : isLoss ? 'var(--red2)' : 'var(--tx4)';
+    const title = isWin ? 'AI Win' : isLoss ? 'AI Loss' : 'Draw';
+    return `<div class="streak-dot" style="background:${col}" title="${title} (game ${g.gameNum})"></div>`;
+  }).join('');
+}
+
+/* Per-game win-rate trend chart on canvas */
+function _drawGameChart(){
+  const canvas = document.getElementById('perf-game-canvas');
+  if(!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || 220, H = 70;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0,0,W,H);
+
+  /* Background */
+  ctx.fillStyle = 'rgba(255,255,255,.04)';
+  ctx.beginPath(); ctx.roundRect(0,0,W,H,6); ctx.fill();
+
+  const games = [..._gameHistory].reverse(); /* oldest first */
+  const n = games.length;
+  if(n < 2){
+    ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.font = '9px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText('Play more games to see trend', W/2, H/2+3);
+    return;
+  }
+
+  /* Rolling win rate (AI = W) over last 5 games */
+  const winRates = games.map((_,i) => {
+    const window5 = games.slice(Math.max(0,i-4), i+1);
+    const wins = window5.filter(g=>g.result==='W'||g.result==='P1').length;
+    return wins / window5.length;
+  });
+
+  /* Rolling exploit ratio */
+  const exploitRates = games.map(g => {
+    const total = (g.exploits||0) + (g.explores||0);
+    return total > 0 ? (g.exploits||0)/total : 0;
+  });
+
+  /* Epsilon trace */
+  const epsVals = games.map(g => g.eps || 0);
+
+  const toX = i => 4 + (i/(n-1)) * (W-8);
+  const toY = v => H - 6 - v * (H-12);
+
+  /* 50% line */
+  ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth=0.6;
+  ctx.setLineDash([2,3]);
+  ctx.beginPath(); ctx.moveTo(0,toY(0.5)); ctx.lineTo(W,toY(0.5)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  const drawLine = (vals, color, lw) => {
+    ctx.strokeStyle = color; ctx.lineWidth = lw;
+    ctx.beginPath();
+    vals.forEach((v,i) => i===0 ? ctx.moveTo(toX(i),toY(v)) : ctx.lineTo(toX(i),toY(v)));
+    ctx.stroke();
+  };
+
+  drawLine(epsVals, 'rgba(64,168,168,.7)', 1.2);
+  drawLine(exploitRates, 'rgba(80,184,120,.6)', 1.4);
+  drawLine(winRates, '#d4a832', 2);
+
+  /* Axis labels */
+  ctx.fillStyle='rgba(255,255,255,.25)'; ctx.font='8px Inter';
+  ctx.textAlign='left'; ctx.fillText('100%',2,10);
+  ctx.fillText('50%',2,toY(0.5)-2);
+  ctx.fillText('0%',2,H-3);
+  ctx.textAlign='right'; ctx.fillText('game '+n, W-2, H-3);
+
+  /* Latest win-rate dot */
+  const lastWr = winRates[winRates.length-1];
+  ctx.fillStyle='#d4a832';
+  ctx.beginPath(); ctx.arc(toX(n-1), toY(lastWr), 3.5, 0, Math.PI*2); ctx.fill();
+}
+
+/* Plain-English learning story after each game */
+function _renderStory(){
+  const el = document.getElementById('perf-story');
+  if(!el || _gameHistory.length===0) return;
+
+  const g = _gameHistory[0]; /* most recent game */
+  const n = _gameHistory.length;
+  const wins = _gameHistory.filter(x=>x.result==='W').length;
+  const losses = _gameHistory.filter(x=>x.result==='L').length;
+  const last5 = _gameHistory.slice(0,5);
+  const recentWins = last5.filter(x=>x.result==='W').length;
+  const eps = g.eps;
+  const totalMoves = g.exploits + g.explores;
+  const exploitPct = totalMoves>0 ? Math.round((g.exploits/totalMoves)*100) : 0;
+  const explorePct = 100-exploitPct;
+  const isAI = getMode()==='hva'||getMode()==='ava';
+  const avgD = g.avgDelta;
+
+  /* Result sentence */
+  let resultLine = '';
+  if(!isAI){
+    resultLine = `Game ${n} complete (Human vs Human).`;
+  } else if(g.result==='W'){
+    resultLine = `<span class="story-good">✅ Game ${n}: AI won!</span>`;
+  } else if(g.result==='L'){
+    resultLine = `<span class="story-bad">❌ Game ${n}: AI lost.</span>`;
+  } else {
+    resultLine = `<span style="color:var(--tx2)">🤝 Game ${n}: Draw.</span>`;
+  }
+
+  /* Exploration vs exploitation explanation */
+  let methodLine = '';
+  if(isAI){
+    if(eps > 0.7){
+      methodLine = `The AI is still <span class="method-tag method-explore">exploring</span> heavily — it tried <span class="story-highlight">${explorePct}%</span> random moves this game, experimenting to discover which pits work best. It doesn't know enough yet to be strategic.`;
+    } else if(eps > 0.3){
+      methodLine = `The AI is balancing <span class="method-tag method-explore">exploring</span> (<span class="story-highlight">${explorePct}%</span>) with <span class="method-tag method-exploit">exploiting</span> (<span class="story-highlight">${exploitPct}%</span>) — it's building on what it's learned while still testing new ideas.`;
+    } else {
+      methodLine = `The AI is mostly <span class="method-tag method-exploit">exploiting</span> — <span class="story-highlight">${exploitPct}%</span> of moves used its best known strategy, picking the pit with the highest Q-value. It's confident in what it's learned.`;
+    }
+  }
+
+  /* Learning signal (TD error) */
+  let deltaLine = '';
+  if(avgD !== null && isAI){
+    if(Math.abs(avgD) < 0.005){
+      deltaLine = `The AI's average <span class="method-tag method-update">learning signal (δ)</span> was near zero (<span class="story-highlight">${avgD.toFixed(4)}</span>), meaning its predictions matched reality — a sign its weights are converging.`;
+    } else if(avgD > 0){
+      deltaLine = `Average learning signal δ = <span class="story-good">+${avgD.toFixed(4)}</span> — the AI was pleasantly surprised (got more reward than expected), so it <strong>boosted the weights</strong> for the moves it played. It's learning these are good choices.`;
+    } else {
+      deltaLine = `Average learning signal δ = <span class="story-bad">${avgD.toFixed(4)}</span> — outcomes were worse than the AI expected, so it <strong>reduced the weights</strong> for those moves. It's learning to avoid them.`;
+    }
+  }
+
+  /* Weight change */
+  let wLine = '';
+  if(g.wChange > 0 && isAI){
+    if(g.wChange > 0.5){
+      wLine = `The 50 strategy weights changed by <span class="story-highlight">${g.wChange.toFixed(3)}</span> total this game — <strong>a big shift</strong>, meaning the AI updated its view of the board significantly.`;
+    } else if(g.wChange > 0.05){
+      wLine = `Weights shifted by <span class="story-highlight">${g.wChange.toFixed(3)}</span> — a moderate update. The AI is fine-tuning its strategy rather than overhauling it.`;
+    } else {
+      wLine = `Weights shifted by only <span class="story-highlight">${g.wChange.toFixed(4)}</span> — almost no change. The AI's strategy is largely stable.`;
+    }
+  }
+
+  /* Trend commentary */
+  let trendLine = '';
+  if(n >= 3 && isAI){
+    if(recentWins >= 4){
+      trendLine = `📈 <span class="story-good">Hot streak!</span> Won ${recentWins}/5 recent games — the AI is applying what it's learned effectively.`;
+    } else if(recentWins === 0 && last5.length >= 3){
+      trendLine = `📉 <span class="story-bad">Struggling recently</span> — 0 wins in the last ${last5.length} games. The AI may need more training episodes to improve.`;
+    } else if(wins > losses && n >= 5){
+      trendLine = `Overall record: <span class="story-good">${wins}W</span> / <span class="story-bad">${losses}L</span> / ${n-wins-losses}D — AI is winning more than losing.`;
+    } else if(losses > wins && n >= 5){
+      trendLine = `Overall record: <span class="story-good">${wins}W</span> / <span class="story-bad">${losses}L</span> — AI still learning; run <em>Train AI</em> in the Train tab to boost performance.`;
+    }
+  }
+
+  /* Captures */
+  let capLine = '';
+  if(isAI && g.aiCaptures > 0){
+    capLine = `AI captured seeds in <span class="story-highlight">${g.aiCaptures}</span> move${g.aiCaptures!==1?'s':''} — each capture gave a positive reward, reinforcing those pit choices.`;
+  }
+
+  const parts = [resultLine, methodLine, deltaLine, wLine, capLine, trendLine].filter(Boolean);
+  el.innerHTML = parts.join('<br><br>');
+}
+
+/* Method explainer box — changes based on current epsilon */
+function _updateMethodBox(){
+  const box = document.getElementById('perf-method-box');
+  if(!box || !qlA) return;
+  const eps = qlA.eps;
+  box.style.display = 'block';
+
+  let icon, title, body;
+  if(eps > 0.7){
+    icon='🎲'; title='Currently: Mostly Exploring (ε='+(eps.toFixed(2))+')';
+    body=`The AI picks <strong>random moves</strong> most of the time. This is intentional — like a student trying everything before settling on a strategy. Each random move that works reinforces those weights; each bad one reduces them. <span class="method-tag method-explore">ε-greedy exploration</span>`;
+  } else if(eps > 0.15){
+    icon='⚖️'; title='Currently: Balancing Explore & Exploit (ε='+(eps.toFixed(2))+')';
+    body=`The AI mixes random exploration with strategic play. When it exploits, it picks the pit with the highest <strong>Q-value</strong> — its learned estimate of "how good is this move?". When it explores, it tries something new and updates accordingly. <span class="method-tag method-explore">explore</span> + <span class="method-tag method-exploit">exploit</span>`;
+  } else {
+    icon='🎯'; title='Currently: Mostly Exploiting (ε='+(eps.toFixed(2))+')';
+    body=`The AI almost always picks the <strong>best move it knows</strong> — the pit with the highest Q-value based on 50 learned strategy weights. It still learns from each game via the <span class="method-tag method-update">TD update rule</span>: w ← w + α·δ·φ.`;
+  }
+
+  box.innerHTML = `<div style="font-size:.68rem;font-weight:700;color:var(--gold);margin-bottom:4px">${icon} ${title}</div><div style="font-size:.65rem;color:var(--tx3);line-height:1.65">${body}</div>`;
+}
+
+/* Stat cells */
+function _renderStatCells(){
+  const g = _gameHistory[0];
+  if(!g) return;
+  const totalMoves = (g.exploits||0)+(g.explores||0);
+  const exploitPct = totalMoves>0 ? Math.round((g.exploits/totalMoves)*100) : 0;
+
+  _setStatCell('psc-captures-val', g.aiCaptures??'—');
+  _setStatCell('psc-exploits-val', totalMoves>0 ? exploitPct+'%' : '—');
+  _setStatCell('psc-delta-val', g.avgDelta!==null ? (g.avgDelta>0?'+':'')+g.avgDelta.toFixed(4) : '—');
+  _setStatCell('psc-wchange-val', g.wChange!=null ? g.wChange.toFixed(4) : '—');
+
+  /* New enhanced stats */
+  const n = _gameHistory.length;
+  _setStatCell('psc-games-val', n);
+
+  const wins = _gameHistory.filter(x=>x.result==='W').length;
+  const winPct = n>0 ? Math.round((wins/n)*100) : 0;
+  const wrEl = document.getElementById('psc-winrate-val');
+  if(wrEl){
+    wrEl.textContent = n>0 ? winPct+'%' : '—';
+    wrEl.style.color = winPct>=50 ? 'var(--green2)' : winPct>=30 ? 'var(--amber2)' : 'var(--red2)';
+  }
+
+  /* Exploit bar */
+  const bar = document.getElementById('psc-exploit-bar');
+  const pctEl = document.getElementById('psc-exploit-pct');
+  if(bar) bar.style.width = exploitPct+'%';
+  if(pctEl) pctEl.textContent = exploitPct+'% exploit · '+(100-exploitPct)+'% explore';
+}
+function _setStatCell(id, val){
+  const el=document.getElementById(id); if(el) el.textContent=val;
+}
+
+/* Improved plain-English AI move log */
+function logAIMove(player, pit, q, delta, reward, isExplore){
+  const el = document.getElementById('ai-learn-log');
+  if(!el) return;
+
+  const time = new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const line = document.createElement('div');
+  line.style.cssText = 'border-bottom:1px solid rgba(255,255,255,.05);padding:3px 0;font-size:.68rem';
+
+  /* Choose a plain-English explanation */
+  let actionDesc, reasonDesc, learnDesc;
+
+  if(isExplore){
+    actionDesc = `<span class="method-tag method-explore">Explored</span> pit <b style="color:var(--gold)">${pit}</b>`;
+    reasonDesc = `picked at random (ε=${qlA?qlA.eps.toFixed(2):'?'}) — still testing options`;
+  } else {
+    actionDesc = `<span class="method-tag method-exploit">Exploited</span> pit <b style="color:var(--gold)">${pit}</b>`;
+    reasonDesc = `highest Q-value = <b style="color:var(--gold2)">${(q||0).toFixed(3)}</b> — best known move`;
+  }
+
+  if(delta !== null){
+    if(Math.abs(delta) < 0.002){
+      learnDesc = `<span style="color:var(--tx4)">δ≈0 — no surprise, weights unchanged</span>`;
+    } else if(delta > 0){
+      learnDesc = `<span style="color:var(--green2)">δ=+${delta.toFixed(3)} — better than expected → weights boosted ↑</span>`;
+    } else {
+      learnDesc = `<span style="color:var(--red2)">δ=${delta.toFixed(3)} — worse than expected → weights reduced ↓</span>`;
+    }
+  }
+
+  if(reward && Math.abs(reward) > 0.04){
+    const rStr = reward>0
+      ? `<span style="color:var(--green2)">+${reward.toFixed(2)} reward (capture!)</span>`
+      : `<span style="color:var(--red2)">${reward.toFixed(2)} reward</span>`;
+    learnDesc = (learnDesc?learnDesc+' · ':'')+rStr;
+  }
+
+  line.innerHTML =
+    `<span style="color:var(--tx4);font-size:.6rem">${time}</span> ${actionDesc}<br>` +
+    `<span style="color:var(--tx3);padding-left:4px">${reasonDesc}</span>` +
+    (learnDesc ? `<br><span style="padding-left:4px">${learnDesc}</span>` : '');
+
+  el.insertBefore(line, el.firstChild);
+  while(el.children.length > 10) el.removeChild(el.lastChild);
+}
+
+/* Update side chart (kept for training tab compatibility) */
+function updateSideChart(ep, wrRand, wrHeur){
+  if(ep !== undefined){ _sideEp.push(ep); _sideWrRand.push(wrRand); _sideWrHeur.push(wrHeur); _sideTotalEp = ep; }
+  /* Update win-rate labels in TEP panel */
+  if(_sideWrRand.length){
+    const lastRand = _sideWrRand[_sideWrRand.length-1];
+    const lastHeur = _sideWrHeur[_sideWrHeur.length-1];
+    const rEl = document.getElementById('tep-wr-rand');
+    const hEl = document.getElementById('tep-wr-heur');
+    if(rEl){ rEl.textContent=(lastRand*100).toFixed(0)+'%'; rEl.className='tep-live-val '+(lastRand>0.6?'good':lastRand>0.5?'neutral':'bad'); }
+    if(hEl){ hEl.textContent=(lastHeur*100).toFixed(0)+'%'; hEl.className='tep-live-val '+(lastHeur>0.55?'good':lastHeur>0.5?'neutral':'bad'); }
+    const prog = document.getElementById('side-progress');
+    if(prog) prog.textContent = _sideTotalEp + ' / 2000 ep';
+  }
+}
+
 function startTraining(){
   if(isTrain)return;isTrain=true;
   const btn=document.getElementById('train-btn');btn.disabled=true;btn.textContent='Training…';
@@ -2357,7 +3917,7 @@ function startTraining(){
     if(ep%EV===0&&ep>0){
       const wr=evalQl(randA,60),wh=evalQl(heurA,60);
       tm.eps.push(ep);tm.wr.push(wr);tm.wh.push(wh);tm.e.push(qlA.eps);
-      setMet('m-wr',wr,'m-wr-d',tm.wr);setMet('m-wh',wh,'m-wh-d',tm.wh);drawCharts();
+      setMet('m-wr',wr,'m-wr-d',tm.wr);setMet('m-wh',wh,'m-wh-d',tm.wh);drawCharts();try{updateSideChart(epDone,wrRandLast,wrHeurLast);}catch(e){}
     }
     if(ep<N)setTimeout(batch,0);
     else{isTrain=false;btn.disabled=false;btn.textContent='Train again (resets)';document.getElementById('prog-fill').style.width='100%';qlA.setEval();qlA._save();}
@@ -2419,7 +3979,7 @@ function goPanel(name){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
-  const order=['play','tutorial','train','learn','about'];
+  const order=['play','tutorial','train','formulas','learn','about'];
   const idx=order.indexOf(name);
   if(idx>=0)document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if(name==='tutorial')tutGo(0);
@@ -2435,9 +3995,9 @@ renderBoard(new Set(),[]);
 updateStatus();
 applyCharacter();
 
-document.addEventListener('contextmenu',e=>{if(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA')e.preventDefault();});
+/* contextmenu restriction removed for academic submission */
 document.addEventListener('keydown',e=>{
-  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&e.key==='U'))e.preventDefault();
+  /* DevTools/ViewSource access restored for academic submission */
   const tag=document.activeElement&&document.activeElement.tagName;
   if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
   if(e.key==='n'||e.key==='N'){e.preventDefault();startGame();}
@@ -2451,6 +4011,11 @@ document.addEventListener('keydown',e=>{
    ACHIEVEMENTS & LEARNING NUDGES
    Gamified learning system for kids, teens, youth
 ═══════════════════════════════════════════════════ */
+
+/* ══ MODULE 19: ACHIEVEMENTS ════════════════════════════════════════════
+ * Toast notifications fired once per session on game events.
+ * Connects game mechanics to transferable real-world skills.
+ * ════════════════════════════════════════════════════════════════════ */
 const ACHIEVEMENTS=[
   {id:'first_capture',icon:'🎯',title:'First Capture!',msg:"You grabbed your first seeds. That's strategic thinking in action!"},
   {id:'relay_master',icon:'⚡',title:'Relay Chain!',msg:'You chained a relay! Multi-step planning = STEM thinking.'},
@@ -2503,30 +4068,89 @@ function _showToast(icon,title,msg){
 }
 
 /* Hook achievements into the game */
+/* ── Shared AI-move metadata for TEP panels and analytics ── */
+let _lastAIExplore=null, _lastAIQChosen=null, _lastAIQBest=null;
+
 function doMove(pit,after){
   const snap=game.clone();snapshots.push(snap);
+
+  /* Determine AI context before stepping */
+  const isAITurn = (getMode()==='hva' && snap.cur===P2) || getMode()==='ava';
+  let moveReward=null, moveDelta=null, moveExplore=null;
+
+  if(isAITurn && qlA && getAI()===qlA){
+    moveExplore = _lastAIExplore;
+    const phi = qlA.af(snap, pit);
+    const qChosen = qlA.q(phi);
+    const legals = snap.legal();
+    let qBest = qChosen;
+    for(const mv of legals){ const qv=qlA.q(qlA.af(snap,mv)); if(qv>qBest) qBest=qv; }
+    _lastAIQChosen = qChosen;
+    _lastAIQBest = qBest;
+  } else {
+    moveExplore = null;
+  }
+
   const res=game.step(pit);if(!res)return;
   addLog(snap.cur,pit,res);
-  /* Track lowest score seen (for comeback detection) */
   _lowestScoreSeen=Math.min(_lowestScoreSeen,game.cap[P1]);
   checkAchievements(res.capInfo,game.moveCount);
   checkRelayAchievement(res.sowTrace);
+
+  /* Compute reward + TD error; do online weight update */
+  if(isAITurn && qlA && getAI()===qlA){
+    moveReward = res.reward !== undefined ? res.reward : (res.capInfo ? res.capInfo.seeds*0.05 : 0);
+    if(game.done) moveReward = game.winner===snap.cur?1:game.winner===0?0:-1;
+    const phiC = qlA.af(snap,pit);
+    const qC = qlA.q(phiC);
+    let maxQN = 0;
+    if(!game.done){ const nl=game.legal(); if(nl.length) maxQN=Math.max(...nl.map(m=>qlA.q(qlA.af(game,m)))); }
+    moveDelta = moveReward + qlA.gamma*maxQN - qC;
+    qlA.upd(snap, pit, moveReward, game, game.done);
+    /* Record for per-game analytics */
+    _recordAIMoveStats(moveExplore, moveDelta, !!res.capInfo);
+  }
+
+  /* Fire live panel updates */
+  const legalNow = game.legal();
+  updateTEPPanel(pit, snap.legal(), moveReward, moveDelta, moveExplore);
+  updateQBars(legalNow, null);
+  updateWeightHeatmap();
+  if(isAITurn && qlA && getAI()===qlA){
+    logAIMove(snap.cur, pit, _lastAIQChosen, moveDelta, moveReward, moveExplore);
+  }
+  _updateFormulaDisplay(pit, moveReward, moveDelta, moveExplore);
+
   const pl=snap.cur;
   animateMove(pit,res.sowTrace,res.capInfo,pl).then(()=>{
     renderBoard(new Set(game.legal()),[]);updateStatus();
+    updateQBars(game.legal(), null);
     if(game.done){
       stopGameTimer();
       if(game.winner===P1)checkWinAchievements();
-      setTimeout(()=>{showWin();if(game.winner)sndWin();else sndDraw();},500);
+      _sealGameRecord(game.winner);setTimeout(()=>{showWin();if(game.winner)sndWin();else sndDraw();},500);
     }else{if(after)after();}
   });
+}
+
+/* Live formula value display */
+function _updateFormulaDisplay(pit, r, delta, isExplore){
+  try{
+    const f1=document.getElementById('formula-q-val');
+    if(f1&&_lastAIQChosen!==null) f1.textContent='Q(s,'+pit+') ≈ '+_lastAIQChosen.toFixed(4);
+    const f2=document.getElementById('formula-delta-val');
+    if(f2&&delta!==null) f2.textContent='δ = '+(r!==null?(r>0?'+':'')+r.toFixed(3):'?')+' + '+(qlA?qlA.gamma:0.95)+'·maxQ − Q = '+(delta>0?'+':'')+delta.toFixed(4);
+    const f3=document.getElementById('formula-update-val');
+    if(f3&&delta!==null&&qlA) f3.textContent='Δw = '+qlA.alpha+' × '+(delta>0?'+':'')+delta.toFixed(4)+' × φ';
+  }catch(e){}
 }
 
 /* Reset achievement state on new game */
 function startGame(){
   _capCountGame=0;_maxCapSingle=0;_lowestScoreSeen=999;
   /* Don't clear _earned — achievements persist across games */
-  _coreStartGame();
+  _resetGameStats();   /* reset per-game analytics counters */
+  _coreStartGame();updateDimBadge();setTimeout(startTipCycle,3000);
 }
 
 </script>
